@@ -40,8 +40,8 @@ include(${Geant4_USE_FILE})
 #
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
                     ${Geant4_INCLUDE_DIR})
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/src/jsoncpp.cpp)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/include/json/*.h)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
@@ -55,6 +55,7 @@ target_link_libraries(mmSim ${Geant4_LIBRARIES} ${GSL_LIBRARIES} ${ROOT_LIBRARIE
 # relies on these scripts being in the current working directory.
 #
 set(_SCRIPTS
+  config.json
   gui.mac
   icons.mac
   init.mac

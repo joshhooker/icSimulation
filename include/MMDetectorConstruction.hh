@@ -38,8 +38,14 @@ public:
   virtual G4VPhysicalVolume* Construct();
   virtual void ConstructSDandField();
 
-  void SetPressure(G4double);
-  void SetTemperature(G4double);
+  void SetGasPressure(G4double pressure) {
+    fPressureInTorr = pressure;
+    G4cout << "SET: Gas Pressure (torr): " << fPressureInTorr << G4endl;
+  };
+  void SetGasTemperature(G4double temperature) {
+    fTemperature = temperature;
+    G4cout << "SET: Gas Temperature (K): " << fTemperature << G4endl;
+  };
 
   G4LogicalVolume* GetTargetVolume() const { return fTargetLogical; }
   G4LogicalVolume* GetDetectVolume() const { return fDetectLogical; }
@@ -47,10 +53,10 @@ public:
   G4LogicalVolume* GetFoilVolume() const { return fFoilLogical; }
 
 private:
-  double fPressureInTorr;
-  double fTemperature;
+  G4double fPressureInTorr;
+  G4double fTemperature;
+  G4Material* fGasMaterial;
 
-  G4double fDriftGap;
   G4double inchtocm;
   G4int numGrids;
 

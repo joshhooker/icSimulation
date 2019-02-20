@@ -3,8 +3,7 @@
 MMDetectorConstruction::MMDetectorConstruction() :
   G4VUserDetectorConstruction(),
   fPressureInTorr(760.),
-  fTemperature(293.15),
-  fDriftGap(5.5) {
+  fTemperature(293.15) {
 }
 
 MMDetectorConstruction::~MMDetectorConstruction() {
@@ -16,15 +15,15 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   inchtocm = 2.54;
 
   // Define Elements
-  G4Element*  H = new G4Element("Hydrogen", "H",   1,   1.008*g/mole);
-  G4Element*  C = new G4Element("Carbon",   "C",   6,  12.011*g/mole);
-  G4Element*  O = new G4Element("Oxygen",   "O",   8,  15.999*g/mole);
-  G4Element* Ar = new G4Element("Argon",    "Ar", 18,  39.948*g/mole);
-  G4Element* Cr = new G4Element("Chrome",   "Cr", 25,  51.996*g/mole);
-  G4Element* Fe = new G4Element("Iron",     "Fe", 26,  55.845*g/mole);
-  G4Element* Co = new G4Element("Cobalt",   "Co", 27,  58.933*g/mole);
-  G4Element* Ni = new G4Element("Nickel",   "Ni", 28,  58.693*g/mole);
-  G4Element* W  = new G4Element("Tungsten", "W",  74, 183.850*g/mole);
+  G4Element* H = new G4Element("Hydrogen", "H", 1, 1.008*g/mole);
+  G4Element* C = new G4Element("Carbon", "C", 6, 12.011*g/mole);
+  G4Element* O = new G4Element("Oxygen", "O", 8, 15.999*g/mole);
+  G4Element* Ar = new G4Element("Argon", "Ar", 18, 39.948*g/mole);
+  G4Element* Cr = new G4Element("Chrome", "Cr", 25, 51.996*g/mole);
+  G4Element* Fe = new G4Element("Iron", "Fe", 26, 55.845*g/mole);
+  G4Element* Co = new G4Element("Cobalt", "Co", 27, 58.933*g/mole);
+  G4Element* Ni = new G4Element("Nickel", "Ni", 28, 58.693*g/mole);
+  G4Element* W  = new G4Element("Tungsten", "W", 74, 183.850*g/mole);
 
   // Define Havar
   G4Material* Havar = new G4Material("Havar", 8.3*g/cm3, 5);
@@ -32,18 +31,18 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   Havar->AddElement(Fe, 0.1822);
   Havar->AddElement(Co, 0.4452);
   Havar->AddElement(Ni, 0.1310);
-  Havar->AddElement(W , 0.0631);
+  Havar->AddElement(W, 0.0631);
 
   // Define Mylar
   G4Material* Mylar = new G4Material("Mylar", 1.397*g/cm3, 3);
-  Mylar->AddElement(H,  8);
+  Mylar->AddElement(H, 8);
   Mylar->AddElement(C, 10);
-  Mylar->AddElement(O,  4);
+  Mylar->AddElement(O, 4);
 
   // Define BC-400 Plastic Scintillator
   G4Material* BC400 = new G4Material("BC400", 1.032*g/cm3, 2);
   BC400->AddElement(H, 10);
-  BC400->AddElement(C,  9);
+  BC400->AddElement(C, 9);
 
   // Define P10
   // P10 at  5 torr (room temp): 0.0009921 g/cm3
@@ -52,8 +51,8 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   // P10 at 30 torr (room temp): 0.0059528 g/cm3
   // P10 at 40 torr (room temp): 0.0079371 g/cm3
   G4Material* P10 = new G4Material("P10", 0.0009921*g/cm3, 3);
-  P10->AddElement(H,  0.0155);
-  P10->AddElement(C,  0.0623);
+  P10->AddElement(H, 0.0155);
+  P10->AddElement(C, 0.0623);
   P10->AddElement(Ar, 0.9222);
 
   // Define C2D4 (Deurated Polyethylene)
@@ -111,7 +110,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 
   // IC grids
   char name[256];
-  G4double distancePerGrid = 0.5*inchtocm*cm; // 0.5 inches
+  G4double distancePerGrid = 0.2*inchtocm*cm; // 0.5 inches
   numGrids = 4;
   G4double distanceTotalGrid = distancePerGrid*static_cast<G4double>(numGrids);
   G4double midGrid = foilToScintillator/2.; // Picking halfway between foil and scintillator
@@ -126,7 +125,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   }
 
   // BC-400 Plastic Scintillator
-  G4VSolid* scintSolid = new G4Tubs("scintSolid", 0., 2.75*inchtocm*cm, 0.5*inchtocm*cm/2., 0., 360.*deg);
+  G4VSolid* scintSolid = new G4Tubs("scintSolid", 0., 2.75*inchtocm*cm, 1.0*inchtocm*cm/2., 0., 360.*deg);
   fScintLogical =  new G4LogicalVolume(scintSolid, BC400, "scintLogical");
   new G4PVPlacement(0, G4ThreeVector(0., 0., scintillatorDetectPos), fScintLogical, "scintPhysical", fDetectLogical,
                     false, 0, checkOverlaps);

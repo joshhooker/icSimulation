@@ -16,11 +16,43 @@
 #include "G4UIExecutive.hh"
 #endif
 
+#include "json/json.h"
+
 #include "Randomize.hh"
 #include "time.h"
 
 int main(int argc,char** argv)
 {
+  if(argc < 2) {
+    std::cout << "Usage: mmSim config-file" << std::endl;
+    return 0;
+  }
+
+  //CREATE AND READ JSON CONFIG
+  Json::Value config;
+  std::string configFileName = argv[1];
+  std::ifstream configStream(configFileName.c_str());
+  configStream >> config;
+  configStream.close();
+
+  //Parse JSON
+  G4double gasPressure = config["gasPressure"].asDouble(); // Torr
+  G4double gasTemperature = config["gasTemperature"].asDouble(); // K
+  std::map<std::string,double> eventActionParams;
+  eventActionParams["fanoFactor"] = config["fanoFactor"].asDouble();
+  eventActionParams["workFunction"] = config["workFunction"].asDouble();
+  G4int processNumber = config["processNumber"].asInt();
+  G4String macroName = config["macroName"].asString();
+  G4bool isInteractive = config["interactive"].asBool();
+  std::map<std::string,double> reactionParams;
+  reactionParams["qValue"] = config["qValue"].asDouble();
+  reactionParams["lightProductCharge"] = config["lightProduct"][0].asDouble();
+  reactionParams["lightProductMass"] = config["lightProduct"][1].asDouble();
+  reactionParams["heavyProductCharge"] = config["heavyProduct"][0].asDouble();
+  reactionParams["heavyProductMass"] = config["heavyProduct"][1].asDouble();
+  reactionParams["targetCharge"] = config["target"][0].asDouble();
+  reactionParams["targetMass"] = config["target"][1].asDouble();
+
   //choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
   //set random seed with system time
@@ -29,29 +61,20 @@ int main(int argc,char** argv)
   CLHEP::HepRandom::setTheSeed(seed);
 
   MMAnalysis* analysis = MMAnalysis::Instance();
-  if(argc>2) {
-    char name[10];
-    char prefix[20];
-    if(argc>3) sprintf(prefix, "%s", argv[3]);
-    else sprintf(prefix, "sim");
-    sprintf(name,"%s_%d.root", prefix, atoi(argv[2]));
-    analysis->SetFilename(name);
-  } else {
-    analysis->SetFilename("sim.root");
-  }
-
-  G4double cmEnergy = (argc>4) ? atof(argv[4]) : 0.;
+  char name[10];
+  sprintf(name, "sim_%d.root", processNumber);
+  analysis->SetFilename(name);
 
   // Construct the default run manager
   G4RunManager* runManager = new G4RunManager;
 
   // Mandatory user initialization classes
-  runManager->SetUserInitialization(new MMDetectorConstruction);
+  MMDetectorConstruction* detector = new MMDetectorConstruction();
+  detector->SetGasPressure(gasPressure);
+  detector->SetGasTemperature(gasTemperature);
+  runManager->SetUserInitialization(detector);
 
   G4VModularPhysicsList* physicsList = new QGSP_BERT;
-  // ProtonScatteringPhysics* scatteringPhysics = new ProtonScatteringPhysics;
-  // scatteringPhysics->SetCMScatteringEnergy(cmEnergy);
-  // physicsList->RegisterPhysics(scatteringPhysics);
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
@@ -71,11 +94,11 @@ int main(int argc,char** argv)
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-  if (argc>1) {
-      // execute an argument macro file if exist
-      G4String command = "/control/execute ";
-      G4String fileName = argv[1];
-      UImanager->ApplyCommand(command+fileName);
+  if(!isInteractive) {
+    // execute an argument macro file if exists
+    G4String command = "/control/execute ";
+    G4String filename = macroName;
+    UImanager->ApplyCommand(command + filename);
   }
   else {
     // start interactive session
