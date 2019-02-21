@@ -6,7 +6,7 @@
   "gasTemperature" : 293.15,
   "workFunction"   : 28.0,
   "fanoFactor"     : 0.17,
-  "qValue"         : -2.09,
+  "qValue"         : 0.0,
   "target"         : [1,2],
   "lightProduct"   : [0,1],
   "heavyProduct"   : [5,8]

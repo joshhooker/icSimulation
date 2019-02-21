@@ -21,6 +21,7 @@
 #include "G4Tubs.hh"
 #include "G4TwoVector.hh"
 #include "G4UniformElectricField.hh"
+#include "G4UserLimits.hh"
 #include "G4VisAttributes.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4VUserDetectorConstruction.hh"
@@ -46,11 +47,13 @@ public:
     fTemperature = temperature;
     G4cout << "SET: Gas Temperature (K): " << fTemperature << G4endl;
   };
+  G4Material* GetGasMaterial() {return fGasMaterial;};
 
-  G4LogicalVolume* GetTargetVolume() const { return fTargetLogical; }
-  G4LogicalVolume* GetDetectVolume() const { return fDetectLogical; }
-  G4LogicalVolume* GetScintVolume() const { return fScintLogical; }
-  G4LogicalVolume* GetFoilVolume() const { return fFoilLogical; }
+  G4LogicalVolume* GetWorldVolume() const {return fWorldLogical;}
+  G4LogicalVolume* GetTargetVolume() const {return fTargetLogical;}
+  G4LogicalVolume* GetDetectVolume() const {return fDetectLogical;}
+  G4LogicalVolume* GetScintVolume() const {return fScintLogical;}
+  G4LogicalVolume* GetFoilVolume() const {return fFoilLogical;}
 
 private:
   G4double fPressureInTorr;

@@ -69,21 +69,29 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
   for(G4int i = 0; i < hICGridHC[0]->entries(); ++i) {
     icGrid1Energy += (*hICGridHC[0])[i]->GetTotalEnergy();
   }
+  G4double icGrid1EnergyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*icGrid1Energy);
+  icGrid1Energy = G4RandGauss::shoot(icGrid1Energy, icGrid1EnergyRes);
 
   G4double icGrid2Energy = 0.;
   for(G4int i = 0; i < hICGridHC[1]->entries(); ++i) {
     icGrid2Energy += (*hICGridHC[1])[i]->GetTotalEnergy();
   }
+  G4double icGrid2EnergyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*icGrid2Energy);
+  icGrid2Energy = G4RandGauss::shoot(icGrid2Energy, icGrid2EnergyRes);
 
   G4double icGrid3Energy = 0.;
   for(G4int i = 0; i < hICGridHC[2]->entries(); ++i) {
     icGrid3Energy += (*hICGridHC[2])[i]->GetTotalEnergy();
   }
+  G4double icGrid3EnergyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*icGrid3Energy);
+  icGrid3Energy = G4RandGauss::shoot(icGrid3Energy, icGrid3EnergyRes);
 
   G4double icGrid4Energy = 0.;
   for(G4int i = 0; i < hICGridHC[3]->entries(); ++i) {
     icGrid4Energy += (*hICGridHC[3])[i]->GetTotalEnergy();
   }
+  G4double icGrid4EnergyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*icGrid4Energy);
+  icGrid4Energy = G4RandGauss::shoot(icGrid4Energy, icGrid4EnergyRes);
 
   fScintE = scintEnergy;
 
@@ -101,4 +109,17 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
   analysis->SetICGridTotalE(fICGrid1E + fICGrid2E + fICGrid3E + fICGrid4E);
 
   analysis->Fill();
+}
+
+void MMEventAction::ParseParams(const std::map<std::string, G4double> &params) {
+  for(std::map<std::string, G4double>::const_iterator it = params.begin(); it != params.end(); it++) {
+    if(it->first == "fanoFactor") {
+      fFanoFactor = it->second;
+      G4cout << "SET: Fano Factor: " << fFanoFactor << G4endl;
+    }
+    else if(it->first == "workFunction") {
+      fWorkFunction = it->second;
+      G4cout << "SET: Work Function (eV): " << fWorkFunction << G4endl;
+    }
+  }
 }

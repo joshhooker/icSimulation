@@ -1,10 +1,5 @@
 #include "BinaryReactionPhysics.hh"
 
-#include "BinaryReactionProcess.hh"
-#include "G4GenericIon.hh"
-#include "globals.hh"
-#include "G4PhysicsListHelper.hh"
-
 // factory
 #include "G4PhysicsConstructorFactory.hh"
 //
@@ -31,7 +26,6 @@ void BinaryReactionPhysics::ConstructProcess()
 {
   BinaryReactionProcess* reactionProcess = new BinaryReactionProcess();
   reactionProcess->ParseParams(fReactionParams);
-  G4PhysicsListHelper::GetPhysicsListHelper()->
-    RegisterProcess(reactionProcess, G4GenericIon::GenericIon());
+  G4PhysicsListHelper::GetPhysicsListHelper()->RegisterProcess(reactionProcess, G4GenericIon::GenericIon());
 }
 

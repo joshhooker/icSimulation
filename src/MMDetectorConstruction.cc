@@ -3,8 +3,8 @@
 MMDetectorConstruction::MMDetectorConstruction() :
   G4VUserDetectorConstruction(),
   fPressureInTorr(760.),
-  fTemperature(293.15) {
-}
+  fTemperature(293.15)
+{}
 
 MMDetectorConstruction::~MMDetectorConstruction() {
 }
@@ -45,12 +45,13 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   BC400->AddElement(C, 9);
 
   // Define P10
+  // P10 at  2 torr (room temp): 0.0003968 g/cm3
   // P10 at  5 torr (room temp): 0.0009921 g/cm3
   // P10 at 10 torr (room temp): 0.0019843 g/cm3
   // P10 at 20 torr (room temp): 0.0039685 g/cm3
   // P10 at 30 torr (room temp): 0.0059528 g/cm3
   // P10 at 40 torr (room temp): 0.0079371 g/cm3
-  G4Material* P10 = new G4Material("P10", 0.0009921*g/cm3, 3);
+  G4Material* P10 = new G4Material("P10", 0.0003968*g/cm3, 3);
   P10->AddElement(H, 0.0155);
   P10->AddElement(C, 0.0623);
   P10->AddElement(Ar, 0.9222);
@@ -74,7 +75,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 		   1.e-25*g/cm3); //Pressure for Vaccum
 
   // Overlaps flag
-  G4bool checkOverlaps = false;
+  G4bool checkOverlaps = true;
 
   // Create vacuum filled world
   G4VSolid* worldSolid = new G4Box("worldBox", 0.2*m, 0.15*m, 0.7*m);
@@ -90,7 +91,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), fTargetLogical, "targetPhysical", fWorldLogical,
                                                         false, 0, checkOverlaps);
 
-  // P10 chamber
+  // IC chamber
   G4VSolid* detectSolid = new G4Tubs("detectBox", 0., 0.1*m, 0.3/2.*m, 0., 360.*deg);
   fDetectLogical = new G4LogicalVolume(detectSolid, P10, "detectLogical");
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.367*m), fDetectLogical, "detectPhysical", fWorldLogical,
@@ -136,14 +137,23 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 }
 
 void MMDetectorConstruction::ConstructMaterials() {
-  G4NistManager* man = G4NistManager::Instance();
 }
 
 void MMDetectorConstruction::ConstructSDandField() {
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   G4String SDname;
 
-  char name[256];
+  // Target
+  char nameTarget[] = "target";
+  G4VSensitiveDetector* targetDetector = new MMGenSD(SDname = nameTarget);
+  SDman->AddNewDetector(targetDetector);
+  fTargetLogical->SetSensitiveDetector(targetDetector);
+
+  // Foil
+  char nameFoil[] = "foil";
+  G4VSensitiveDetector* foilDetector = new MMGenSD(SDname = nameFoil);
+  SDman->AddNewDetector(foilDetector);
+  fFoilLogical->SetSensitiveDetector(foilDetector);
 
   // IC Grids
   for(int i = 0; i < numGrids; i++) {

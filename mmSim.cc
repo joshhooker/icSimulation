@@ -3,15 +3,14 @@
 #include "MMDetectorConstruction.hh"
 
 #include "QGSP_BERT.hh"
-#include "G4RadioactiveDecayPhysics.hh"
+#include "BinaryReactionPhysics.hh"
 
+#include "G4RadioactiveDecayPhysics.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
-
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
-
 #ifdef G4UI_USE
 #include "G4UIExecutive.hh"
 #endif
@@ -38,20 +37,20 @@ int main(int argc,char** argv)
   //Parse JSON
   G4double gasPressure = config["gasPressure"].asDouble(); // Torr
   G4double gasTemperature = config["gasTemperature"].asDouble(); // K
-  std::map<std::string,double> eventActionParams;
+  std::map<std::string, G4double> eventActionParams;
   eventActionParams["fanoFactor"] = config["fanoFactor"].asDouble();
   eventActionParams["workFunction"] = config["workFunction"].asDouble();
   G4int processNumber = config["processNumber"].asInt();
   G4String macroName = config["macroName"].asString();
   G4bool isInteractive = config["interactive"].asBool();
-  std::map<std::string,double> reactionParams;
+  std::map<std::string, G4int> reactionParams;
   reactionParams["qValue"] = config["qValue"].asDouble();
-  reactionParams["lightProductCharge"] = config["lightProduct"][0].asDouble();
-  reactionParams["lightProductMass"] = config["lightProduct"][1].asDouble();
-  reactionParams["heavyProductCharge"] = config["heavyProduct"][0].asDouble();
-  reactionParams["heavyProductMass"] = config["heavyProduct"][1].asDouble();
-  reactionParams["targetCharge"] = config["target"][0].asDouble();
-  reactionParams["targetMass"] = config["target"][1].asDouble();
+  reactionParams["lightProductCharge"] = config["lightProduct"][0].asInt();
+  reactionParams["lightProductMass"] = config["lightProduct"][1].asInt();
+  reactionParams["heavyProductCharge"] = config["heavyProduct"][0].asInt();
+  reactionParams["heavyProductMass"] = config["heavyProduct"][1].asInt();
+  reactionParams["targetCharge"] = config["target"][0].asInt();
+  reactionParams["targetMass"] = config["target"][1].asInt();
 
   //choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
@@ -75,19 +74,24 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(detector);
 
   G4VModularPhysicsList* physicsList = new QGSP_BERT;
+  BinaryReactionPhysics* reactionPhysics = new BinaryReactionPhysics();
+  reactionPhysics->SetReactionParams(reactionParams);
+  physicsList->RegisterPhysics(reactionPhysics);
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
-  runManager->SetUserInitialization(new MMActionInitialization());
+  MMActionInitialization* actionInit = new MMActionInitialization(detector);
+  actionInit->SetEventActionParams(eventActionParams);
+  runManager->SetUserInitialization(actionInit);
 
   // Initialize Geant4 kernel
   runManager->Initialize();
 
   #ifdef G4VIS_USE
     // Visualization manager construction
-    G4VisManager* visManager = new G4VisExecutive;
+    // G4VisManager* visManager = new G4VisExecutive();
     // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
-    // G4VisManager* visManager = new G4VisExecutive("Quiet");
+    G4VisManager* visManager = new G4VisExecutive("Quiet");
     visManager->Initialize();
   #endif
 

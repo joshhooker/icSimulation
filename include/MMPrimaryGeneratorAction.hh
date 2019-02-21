@@ -27,6 +27,8 @@ public:
 
   virtual void GeneratePrimaries(G4Event*);
 
+  G4ParticleGun* GetParticleGun() {return fParticleGun;};
+
 private:
   G4ParticleGun* fParticleGun;
   G4ParticleDefinition* fParticle;
