@@ -12,13 +12,9 @@
 
 MESSAGE(STATUS "Looking for Root...")
 
-SET(ROOTSYS /opt/root)
-
 SET(ROOT_CONFIG_SEARCHPATH
   ${SIMPATH}/tools/root/bin
   $ENV{ROOTSYS}/bin
-  /opt/root
-  ${ROOTSYS}/bin
 )
 
 SET(ROOT_DEFINITIONS "")

@@ -56,6 +56,11 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   P10->AddElement(C, 0.0623);
   P10->AddElement(Ar, 0.9222);
 
+  // Define CO2
+  // CO2 at 20 torr (room temp):
+  // CO2 at 50 torr (room temp):
+  // G4Material* CO2 =
+
   // Define C2D4 (Deurated Polyethylene)
   G4Isotope* iso_H2 = new G4Isotope("H2", 1, 2, 2.014*g/mole);
   G4Element* D = new G4Element("Deuterium Atom", "D", 1);
