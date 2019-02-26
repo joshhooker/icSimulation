@@ -37,20 +37,30 @@ int main(int argc,char** argv)
   //Parse JSON
   G4double gasPressure = config["gasPressure"].asDouble(); // Torr
   G4double gasTemperature = config["gasTemperature"].asDouble(); // K
+  G4String gasType = config["gasType"].asString();
+  G4double gasDensity = config["gasDensity"].asDouble(); // g/cm^3
+
+  G4int numGrids = config["numberGrids"].asInt();
+  G4double gridSize = config["gridSize"].asDouble();
+  G4double scintDist = config["distanceScint"].asDouble();
+  G4bool useInches = config["useInches"].asBool();
+  G4double fanoFactor = config["fanoFactor"].asDouble();
+  G4double workFunction = config["workFunction"].asDouble();
+
   std::map<std::string, G4double> eventActionParams;
   eventActionParams["fanoFactor"] = config["fanoFactor"].asDouble();
   eventActionParams["workFunction"] = config["workFunction"].asDouble();
-  G4int processNumber = config["processNumber"].asInt();
+
   G4String macroName = config["macroName"].asString();
   G4bool isInteractive = config["interactive"].asBool();
-  std::map<std::string, G4int> reactionParams;
-  reactionParams["qValue"] = config["qValue"].asDouble();
-  reactionParams["lightProductCharge"] = config["lightProduct"][0].asInt();
-  reactionParams["lightProductMass"] = config["lightProduct"][1].asInt();
-  reactionParams["heavyProductCharge"] = config["heavyProduct"][0].asInt();
-  reactionParams["heavyProductMass"] = config["heavyProduct"][1].asInt();
-  reactionParams["targetCharge"] = config["target"][0].asInt();
-  reactionParams["targetMass"] = config["target"][1].asInt();
+
+  G4double qValue = config["qValue"].asDouble();
+  G4int lightProductCharge = config["lightProduct"][0].asInt();
+  G4int lightProductMass = config["lightProduct"][1].asInt();
+  G4int heavyProductCharge = config["heavyProduct"][0].asInt();
+  G4int heavyProductMass = config["heavyProduct"][1].asInt();
+  G4int targetCharge = config["target"][0].asInt();
+  G4int targetMass = config["target"][1].asInt();
 
   //choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
@@ -61,7 +71,7 @@ int main(int argc,char** argv)
 
   MMAnalysis* analysis = MMAnalysis::Instance();
   char name[10];
-  sprintf(name, "sim_%d.root", processNumber);
+  sprintf(name, "sim.root");
   analysis->SetFilename(name);
 
   // Construct the default run manager
@@ -69,19 +79,25 @@ int main(int argc,char** argv)
 
   // Mandatory user initialization classes
   MMDetectorConstruction* detector = new MMDetectorConstruction();
-  detector->SetGasPressure(gasPressure);
-  detector->SetGasTemperature(gasTemperature);
+  detector->SetGasType(gasType);
+  detector->SetGasDensity(gasDensity);
+  detector->SetNumGrids(numGrids);
   runManager->SetUserInitialization(detector);
 
   G4VModularPhysicsList* physicsList = new QGSP_BERT;
   BinaryReactionPhysics* reactionPhysics = new BinaryReactionPhysics();
-  reactionPhysics->SetReactionParams(reactionParams);
+  reactionPhysics->SetQValue(qValue);
+  reactionPhysics->SetTarget(targetCharge, targetMass);
+  reactionPhysics->SetLightProduct(lightProductCharge, lightProductMass);
+  reactionPhysics->SetHeavyProduct(heavyProductCharge, heavyProductMass);
   physicsList->RegisterPhysics(reactionPhysics);
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
   MMActionInitialization* actionInit = new MMActionInitialization(detector);
-  actionInit->SetEventActionParams(eventActionParams);
+  actionInit->SetFanoFactor(fanoFactor);
+  actionInit->SetWorkFunction(workFunction);
+  actionInit->SetNumGrids(numGrids);
   runManager->SetUserInitialization(actionInit);
 
   // Initialize Geant4 kernel

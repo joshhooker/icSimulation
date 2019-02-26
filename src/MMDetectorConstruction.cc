@@ -117,10 +117,9 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   // IC grids
   char name[256];
   G4double distancePerGrid = 0.2*inchtocm*cm; // 0.5 inches
-  numGrids = 4;
-  G4double distanceTotalGrid = distancePerGrid*static_cast<G4double>(numGrids);
+  G4double distanceTotalGrid = distancePerGrid*static_cast<G4double>(fNumGrids);
   G4double midGrid = foilToScintillator/2.; // Picking halfway between foil and scintillator
-  for(int i = 0; i < numGrids; i++) {
+  for(G4int i = 0; i < fNumGrids; i++) {
     sprintf(name, "grid%d", i + 1);
     G4VSolid* gridSolid = new G4Tubs(name, 0., 2.75*inchtocm*cm, distancePerGrid/2., 0., 360.*deg);
     sprintf(name, "gridLogical%d", i + 1);
@@ -161,7 +160,7 @@ void MMDetectorConstruction::ConstructSDandField() {
   fFoilLogical->SetSensitiveDetector(foilDetector);
 
   // IC Grids
-  for(int i = 0; i < numGrids; i++) {
+  for(int i = 0; i < fNumGrids; i++) {
     char nameGrid[256];
     sprintf(nameGrid,"grid%d", i + 1);
     G4VSensitiveDetector* gridDetector = new MMGenSD(SDname = nameGrid);
@@ -200,7 +199,7 @@ void MMDetectorConstruction::SetAttributes() {
   G4Colour gridColors[10] = {G4Colour::Yellow(), G4Colour::Magenta(), G4Colour::Cyan(), G4Colour::Green(), G4Colour::White(),
                              G4Colour::Yellow(), G4Colour::Magenta(), G4Colour::Cyan(), G4Colour::Green(), G4Colour::White()};
 
-  for(int i = 0; i < numGrids; i++) {
+  for(int i = 0; i < fNumGrids; i++) {
     G4VisAttributes* gridAttr = new G4VisAttributes(gridColors[i]);
     gridAttr->SetVisibility(true);
     gridAttr->SetForceSolid(true);

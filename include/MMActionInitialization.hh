@@ -25,11 +25,26 @@ public:
 
   void SetEventActionParams(std::map<std::string, G4double> params) {
     fEventActionParams = params;
-  };
+  }
+
+  void SetFanoFactor(G4double fanoFactor) {
+    fFanoFactor = fanoFactor;
+  }
+
+  void SetWorkFunction(G4double workFunction) {
+    fWorkFunction = workFunction;
+  }
+
+  void SetNumGrids(G4int numGrids) {
+    fNumGrids = numGrids;
+  }
 
 private:
     MMDetectorConstruction* fDetector;
     std::map<std::string, G4double> fEventActionParams;
+    G4double fFanoFactor;
+    G4double fWorkFunction;
+    G4int fNumGrids;
 };
 
 #endif

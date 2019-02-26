@@ -21,12 +21,33 @@ public:
   virtual void ConstructParticle();
   virtual void ConstructProcess();
 
-  void SetReactionParams(std::map<std::string, G4int> params) {
-    fReactionParams = params;
-  };
+  void SetQValue(G4double qValue) {
+    fQValue = qValue;
+  }
+
+  void SetTarget(G4int charge, G4int mass) {
+    fTargetCharge = charge;
+    fTargetMass = mass;
+  }
+
+  void SetLightProduct(G4int charge, G4int mass) {
+    fLightProductCharge = charge;
+    fLightProductMass = mass;
+  }
+
+  void SetHeavyProduct(G4int charge, G4int mass) {
+    fHeavyProductCharge = charge;
+    fHeavyProductMass = mass;
+  }
 
 private:
-  std::map<std::string, G4int> fReactionParams;
+  G4double fQValue;
+  G4int fLightProductCharge;
+  G4int fLightProductMass;
+  G4int fHeavyProductCharge;
+  G4int fHeavyProductMass;
+  G4int fTargetCharge;
+  G4int fTargetMass;
 };
 
 #endif

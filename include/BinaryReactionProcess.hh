@@ -18,32 +18,37 @@ public:
   G4VParticleChange* PostStepDoIt(const G4Track&, const G4Step&);
 
   void StartTracking(G4Track*);
+
   void SetQValue(G4double qValue) {
     fQValue = qValue;
     G4cout << "SET: Q Value: " << fQValue << G4endl;
   }
+
   void SetTarget(G4int charge, G4int mass) {
     fTargetMass = mass;
     fTargetCharge = charge;
     G4cout << "SET: Target: " << fTargetCharge << ' ' << fTargetMass << G4endl;
   }
+
   void SetLightProduct(G4int charge, G4int mass) {
     fLightProductMass = mass;
     fLightProductCharge = charge;
     G4cout << "SET: Light Product: " << fLightProductCharge << ' ' << fLightProductMass << G4endl;
   }
+
   void SetHeavyProduct(G4int charge, G4int mass) {
     fHeavyProductMass = mass;
     fHeavyProductCharge = charge;
     G4cout << "SET: Heavy Product: " << fHeavyProductCharge << ' ' << fHeavyProductMass << G4endl;
   }
+
   G4double GetLightProductMass() {
     return fLightProductMass;
   }
+
   G4double GetLightProductCharge() {
     return fLightProductCharge;
   }
-  void ParseParams(std::map<std::string, G4int>&);
 
 private:
   G4double fScatteringEnergy;

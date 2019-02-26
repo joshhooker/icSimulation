@@ -1,13 +1,12 @@
 #include "BinaryReactionProcess.hh"
 
 BinaryReactionProcess::BinaryReactionProcess(const G4String& processName)
-  : G4VDiscreteProcess(processName,fHadronic), fScatteringEnergy(1e6) {
+  : G4VDiscreteProcess(processName, fHadronic), fScatteringEnergy(1e6) {
   SetProcessSubType(111);
   fQValue = 0.;
 }
 
-BinaryReactionProcess::~BinaryReactionProcess() {
-}
+BinaryReactionProcess::~BinaryReactionProcess() {}
 
 G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double /*previousStepSize*/, G4ForceCondition* condition) {
   G4double energy = aTrack.GetKineticEnergy()/MeV;
@@ -149,41 +148,4 @@ void BinaryReactionProcess::StartTracking(G4Track* track) {
 
   fScatteringEnergy = track->GetKineticEnergy()*G4UniformRand()/MeV;
 }
-
-void BinaryReactionProcess::ParseParams(std::map<std::string, G4int> &params) {
-    G4int lightProductMass = -1;
-    G4int lightProductCharge = -1;
-    G4int heavyProductMass = -1;
-    G4int heavyProductCharge = -1;
-    G4int targetMass = -1;
-    G4int targetCharge = -1;
-    for(std::map<std::string, G4int>::const_iterator it = params.begin(); it != params.end(); it++) {
-      G4cout << it->first << '\t' << it->second << G4endl;
-      if(it->first == "qValue"  ) {
-        SetQValue(it->second);
-      } else if(it->first == "lightProductMass" ) {
-        lightProductMass = it->second;
-      } else if(it->first == "lightProductCharge" ) {
-        lightProductCharge = it->second;
-      } else if(it->first == "heavyProductMass" ) {
-        heavyProductMass = it->second;
-      } else if(it->first == "heavyProductCharge" ) {
-        heavyProductCharge = it->second;
-      } else if(it->first == "targetMass" ) {
-        targetMass = it->second;
-      } else if(it->first == "targetCharge" ) {
-        targetCharge = it->second;
-      }
-    }
-    if(lightProductCharge > 0 || lightProductMass > 0) {
-      SetLightProduct(lightProductCharge, lightProductMass);
-    }
-    if(heavyProductCharge > 0 && heavyProductMass > 0) {
-      SetHeavyProduct(heavyProductCharge,heavyProductMass);
-    }
-    if(targetCharge > 0 && targetMass > 0) {
-      SetTarget(targetCharge,targetMass);
-    }
-}
-
 

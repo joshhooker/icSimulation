@@ -18,8 +18,9 @@ void MMActionInitialization::Build() const {
 
   SetUserAction(new MMRunAction(fDetector, primary));
 
-  MMEventAction* eventAction = new MMEventAction();
-  eventAction->ParseParams(fEventActionParams);
+  MMEventAction* eventAction = new MMEventAction(fNumGrids);
+  eventAction->SetFanoFactor(fFanoFactor);
+  eventAction->SetWorkFunction(fWorkFunction);
   SetUserAction(eventAction);
 
   SetUserAction(new MMTrackingAction);

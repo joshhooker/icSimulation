@@ -19,29 +19,43 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 
-#include <map>
 #include <assert.h>
 #include <cstdio>
+#include <map>
+#include <vector>
 
 class MMEventAction : public G4UserEventAction {
 
 public:
-  MMEventAction();
+  MMEventAction(G4int numGrids);
   ~MMEventAction();
 
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
   void ParseParams(const std::map<std::string, G4double>&);
 
+  void SetFanoFactor(G4double fanoFactor) {
+    fFanoFactor = fanoFactor;
+  }
+
+  void SetWorkFunction(G4double workFunction) {
+    fWorkFunction = workFunction;
+  }
+
+  void SetNumGrids(G4int numGrids) {
+    fNumGrids = numGrids;
+  }
+
 private:
-  G4int fICGridHCID[4];
+  std::vector<G4int> fICGridHCID;
   G4int fScintHCID;
 
   G4double fScintE;
-  G4double fICGrid1E, fICGrid2E, fICGrid3E, fICGrid4E;
+  std::vector<G4double> fICGridE;
 
   G4double fFanoFactor;
   G4double fWorkFunction;
+  G4int fNumGrids;
 
   gsl_rng * r;
 };

@@ -13,19 +13,18 @@ BinaryReactionPhysics::BinaryReactionPhysics(const G4String& name)
 :  G4VPhysicsConstructor(name) {
 }
 
-BinaryReactionPhysics::~BinaryReactionPhysics()
-{
-}
+BinaryReactionPhysics::~BinaryReactionPhysics() {}
 
-void BinaryReactionPhysics::ConstructParticle()
-{
+void BinaryReactionPhysics::ConstructParticle() {
   G4GenericIon::GenericIon();
 }
 
-void BinaryReactionPhysics::ConstructProcess()
-{
+void BinaryReactionPhysics::ConstructProcess() {
   BinaryReactionProcess* reactionProcess = new BinaryReactionProcess();
-  reactionProcess->ParseParams(fReactionParams);
+  reactionProcess->SetQValue(fQValue);
+  reactionProcess->SetTarget(fTargetCharge, fTargetMass);
+  reactionProcess->SetLightProduct(fLightProductCharge, fLightProductMass);
+  reactionProcess->SetHeavyProduct(fHeavyProductCharge, fHeavyProductMass);
   G4PhysicsListHelper::GetPhysicsListHelper()->RegisterProcess(reactionProcess, G4GenericIon::GenericIon());
 }
 

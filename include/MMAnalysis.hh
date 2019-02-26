@@ -23,11 +23,8 @@ public:
 
   void SetGunEnergy(double);
 
-  void SetICGrid1E(double);
-  void SetICGrid2E(double);
-  void SetICGrid3E(double);
-  void SetICGrid4E(double);
-  void SetICGridTotalE(double);
+  void SetICGridEnergy(std::vector<G4double>& v);
+  void SetICGridTotalEnergy(double);
 
   void SetScintE(double);
 
@@ -41,11 +38,8 @@ private:
 
   G4double fGunEnergy;
 
-  G4double fICGrid1E;
-  G4double fICGrid2E;
-  G4double fICGrid3E;
-  G4double fICGrid4E;
-  G4double fICGridTotalE;
+  std::vector<G4double> fICGridEnergy;
+  G4double fICGridTotalEnergy;
 
   G4double fScintE;
 };

@@ -42,12 +42,29 @@ public:
   void SetGasPressure(G4double pressure) {
     fPressureInTorr = pressure;
     G4cout << "SET: Gas Pressure (torr): " << fPressureInTorr << G4endl;
-  };
+  }
+
   void SetGasTemperature(G4double temperature) {
     fTemperature = temperature;
     G4cout << "SET: Gas Temperature (K): " << fTemperature << G4endl;
-  };
-  G4Material* GetGasMaterial() {return fGasMaterial;};
+  }
+
+  void SetGasType(G4String type) {
+    fGasType = type;
+    G4cout << "SET: Gas Type: " << fGasType << G4endl;
+  }
+
+  void SetGasDensity(G4double density) {
+    fGasDensity = density;
+    G4cout << "SET: Gas Density (g/cm3): " << fGasDensity << G4endl;
+  }
+
+  void SetNumGrids(G4int numGrids) {
+    fNumGrids = numGrids;
+    G4cout << "SET: Number of IC Grids: " << fNumGrids << G4endl;
+  }
+
+  G4Material* GetGasMaterial() {return fGasMaterial;}
 
   G4LogicalVolume* GetWorldVolume() const {return fWorldLogical;}
   G4LogicalVolume* GetTargetVolume() const {return fTargetLogical;}
@@ -58,10 +75,12 @@ public:
 private:
   G4double fPressureInTorr;
   G4double fTemperature;
+  G4String fGasType;
+  G4double fGasDensity;
   G4Material* fGasMaterial;
 
   G4double inchtocm;
-  G4int numGrids;
+  G4int fNumGrids;
 
   G4LogicalVolume* fWorldLogical;
   G4LogicalVolume* fTargetLogical;

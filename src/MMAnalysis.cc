@@ -13,7 +13,7 @@ MMAnalysis* MMAnalysis::Instance() {
 }
 
 void MMAnalysis::SetFilename(const char* filename) {
-  fFilename=filename;
+  fFilename = filename;
 }
 
 void MMAnalysis::OpenFile() {
@@ -22,11 +22,8 @@ void MMAnalysis::OpenFile() {
   fTree = new TTree("simData", "simulation data");
   fTree->Branch("gunEnergy", &fGunEnergy, "gunEnergy/D");
 
-  fTree->Branch("icGrid1E", &fICGrid1E, "icGrid1E/D");
-  fTree->Branch("icGrid2E", &fICGrid2E, "icGrid2E/D");
-  fTree->Branch("icGrid3E", &fICGrid3E, "icGrid3E/D");
-  fTree->Branch("icGrid4E", &fICGrid4E, "icGrid4E/D");
-  fTree->Branch("icGridTotalE", &fICGridTotalE, "icGridTotalE/D");
+  fTree->Branch("icGridEnergy", &fICGridEnergy);
+  fTree->Branch("icGridTotalEnergy", &fICGridTotalEnergy, "icGridTotalE/D");
 
   fTree->Branch("scintE", &fScintE, "scintE/D");
 }
@@ -40,24 +37,12 @@ void MMAnalysis::SetGunEnergy(double gunEnergy) {
   fGunEnergy = gunEnergy;
 }
 
-void MMAnalysis::SetICGrid1E(double energy) {
-  fICGrid1E = energy;
+void MMAnalysis::SetICGridEnergy(std::vector<G4double>& v) {
+  fICGridEnergy = v;
 }
 
-void MMAnalysis::SetICGrid2E(double energy) {
-  fICGrid2E = energy;
-}
-
-void MMAnalysis::SetICGrid3E(double energy) {
-  fICGrid3E = energy;
-}
-
-void MMAnalysis::SetICGrid4E(double energy) {
-  fICGrid4E = energy;
-}
-
-void MMAnalysis::SetICGridTotalE(double energy) {
-  fICGridTotalE = energy;
+void MMAnalysis::SetICGridTotalEnergy(double energy) {
+  fICGridTotalEnergy = energy;
 }
 
 void MMAnalysis::SetScintE(double energy) {
