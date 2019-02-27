@@ -2,4 +2,4 @@
 /run/verbose 0
 /run/initialize
 /run/printProgress 1000
-/run/beamOn 50000
+/run/beamOn 10000

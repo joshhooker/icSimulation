@@ -1,9 +1,7 @@
 #include "MMDetectorConstruction.hh"
 
 MMDetectorConstruction::MMDetectorConstruction() :
-  G4VUserDetectorConstruction(),
-  fPressureInTorr(760.),
-  fTemperature(293.15)
+  G4VUserDetectorConstruction()
 {}
 
 MMDetectorConstruction::~MMDetectorConstruction() {
@@ -12,54 +10,67 @@ MMDetectorConstruction::~MMDetectorConstruction() {
 G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   ConstructMaterials();
 
+  G4double z, fractionmass;
+  G4int nel, natoms;
+
   inchtocm = 2.54;
 
   // Define Elements
-  G4Element* H = new G4Element("Hydrogen", "H", 1, 1.008*g/mole);
-  G4Element* C = new G4Element("Carbon", "C", 6, 12.011*g/mole);
-  G4Element* O = new G4Element("Oxygen", "O", 8, 15.999*g/mole);
-  G4Element* Ar = new G4Element("Argon", "Ar", 18, 39.948*g/mole);
-  G4Element* Cr = new G4Element("Chrome", "Cr", 25, 51.996*g/mole);
-  G4Element* Fe = new G4Element("Iron", "Fe", 26, 55.845*g/mole);
-  G4Element* Co = new G4Element("Cobalt", "Co", 27, 58.933*g/mole);
-  G4Element* Ni = new G4Element("Nickel", "Ni", 28, 58.693*g/mole);
-  G4Element* W  = new G4Element("Tungsten", "W", 74, 183.850*g/mole);
+  G4Element* H = new G4Element("Hydrogen",  "H",  z = 1.,  1.008*g/mole);
+  G4Element* C = new G4Element("Carbon",    "C",  z = 6.,  12.011*g/mole);
+  G4Element* O = new G4Element("Oxygen",    "O",  z = 8.,  15.999*g/mole);
+  G4Element* Ar = new G4Element("Argon",    "Ar", z = 18., 39.948*g/mole);
+  G4Element* Cr = new G4Element("Chrome",   "Cr", z = 25., 51.996*g/mole);
+  G4Element* Fe = new G4Element("Iron",     "Fe", z = 26., 55.845*g/mole);
+  G4Element* Co = new G4Element("Cobalt",   "Co", z = 27., 58.933*g/mole);
+  G4Element* Ni = new G4Element("Nickel",   "Ni", z = 28., 58.693*g/mole);
+  G4Element* W  = new G4Element("Tungsten", "W",  z = 74., 183.850*g/mole);
 
   // Define Havar
-  G4Material* Havar = new G4Material("Havar", 8.3*g/cm3, 5);
-  Havar->AddElement(Cr, 0.1785);
-  Havar->AddElement(Fe, 0.1822);
-  Havar->AddElement(Co, 0.4452);
-  Havar->AddElement(Ni, 0.1310);
-  Havar->AddElement(W, 0.0631);
+  G4Material* Havar = new G4Material("Havar", 8.3*g/cm3, nel = 5);
+  Havar->AddElement(Cr, fractionmass = 0.1785);
+  Havar->AddElement(Fe, fractionmass = 0.1822);
+  Havar->AddElement(Co, fractionmass = 0.4452);
+  Havar->AddElement(Ni, fractionmass = 0.1310);
+  Havar->AddElement(W,  fractionmass = 0.0631);
 
   // Define Mylar
-  G4Material* Mylar = new G4Material("Mylar", 1.397*g/cm3, 3);
-  Mylar->AddElement(H, 8);
-  Mylar->AddElement(C, 10);
-  Mylar->AddElement(O, 4);
+  G4Material* Mylar = new G4Material("Mylar", 1.397*g/cm3, nel = 3);
+  Mylar->AddElement(H, natoms = 8);
+  Mylar->AddElement(C, natoms = 10);
+  Mylar->AddElement(O, natoms = 4);
 
   // Define BC-400 Plastic Scintillator
-  G4Material* BC400 = new G4Material("BC400", 1.032*g/cm3, 2);
-  BC400->AddElement(H, 10);
-  BC400->AddElement(C, 9);
+  G4Material* BC400 = new G4Material("BC400", 1.032*g/cm3, nel = 2);
+  BC400->AddElement(H, natoms = 10);
+  BC400->AddElement(C, natoms = 9);
 
-  // Define P10
   // P10 at  2 torr (room temp): 0.0003968 g/cm3
   // P10 at  5 torr (room temp): 0.0009921 g/cm3
   // P10 at 10 torr (room temp): 0.0019843 g/cm3
   // P10 at 20 torr (room temp): 0.0039685 g/cm3
   // P10 at 30 torr (room temp): 0.0059528 g/cm3
   // P10 at 40 torr (room temp): 0.0079371 g/cm3
-  G4Material* P10 = new G4Material("P10", 0.0003968*g/cm3, 3);
-  P10->AddElement(H, 0.0155);
-  P10->AddElement(C, 0.0623);
-  P10->AddElement(Ar, 0.9222);
-
-  // Define CO2
-  // CO2 at 20 torr (room temp):
-  // CO2 at 50 torr (room temp):
-  // G4Material* CO2 =
+  if(fGasType == "P10" || fGasType == "p10") {
+    fGasMaterial = new G4Material("P10", fGasDensity*g/cm3, nel = 3, kStateGas, fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
+    fGasMaterial->AddElement(H,  fractionmass = 0.0155);
+    fGasMaterial->AddElement(C,  fractionmass = 0.0623);
+    fGasMaterial->AddElement(Ar, fractionmass = 0.9222);
+  }
+  else if(fGasType == "CO2" || fGasType == "co2") {
+    fGasMaterial = G4Material::GetMaterial("CO2");
+  }
+  else if(fGasType == "Methane" || fGasType == "methane" || fGasType == "METHANE" || fGasType == "CH4") {
+    fGasMaterial = G4Material::GetMaterial("Methane");
+  }
+  else {
+    G4cout << "Unknown Gas Type. Add yourself or tell Josh to add" << G4endl;
+    G4cout << "Choosing Methane for you" << G4endl;
+    fGasMaterial = new G4Material("CH4", 0.00066697*g/cm3, nel = 2, kStateGas, fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
+    fGasMaterial->AddElement(C, natoms = 1);
+    fGasMaterial->AddElement(H, natoms = 4);
+  }
+  G4cout << GetGasMaterial() << G4endl;
 
   // Define C2D4 (Deurated Polyethylene)
   G4Isotope* iso_H2 = new G4Isotope("H2", 1, 2, 2.014*g/mole);
@@ -76,7 +87,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 		   1.008*g/mole,  //Mass per Mole "Atomic Weight"  1.008*g/mole for Hydoren
 		   1.e-25*g/cm3,  //Density of Vaccuum  *Cant be Zero, Must be small instead
 		   kStateGas,     //kStateGas for Gas
-		   2.73*kelvin,   //Temperatuer for ga
+       2.73*kelvin,   //Temperatuer for gas
 		   1.e-25*g/cm3); //Pressure for Vaccum
 
   // Overlaps flag
@@ -98,7 +109,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 
   // IC chamber
   G4VSolid* detectSolid = new G4Tubs("detectBox", 0., 0.1*m, 0.3/2.*m, 0., 360.*deg);
-  fDetectLogical = new G4LogicalVolume(detectSolid, P10, "detectLogical");
+  fDetectLogical = new G4LogicalVolume(detectSolid, fGasMaterial, "detectLogical");
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.367*m), fDetectLogical, "detectPhysical", fWorldLogical,
                     false, 0, checkOverlaps);
 
@@ -108,9 +119,6 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   new G4PVPlacement(0, G4ThreeVector(0., 0., -143.7*mm), fFoilLogical, "foilPhysical", fDetectLogical,
                     false, 0, checkOverlaps);
 
-  // Current configuration: 4 grids of 0.5 inches each in the middle of the foil and scintillator (scintillator is 14.14 inches from the target or 5.6 inches from the foil)
-  // Assuming the scintillator has a 2.75 in radius and recoil cone of 11 degrees
-
   G4double foilToScintillator = 5.6*inchtocm*cm;
   G4double scintillatorDetectPos = -0.7*mm;
 
@@ -119,11 +127,12 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   G4double distancePerGrid = 0.2*inchtocm*cm; // 0.5 inches
   G4double distanceTotalGrid = distancePerGrid*static_cast<G4double>(fNumGrids);
   G4double midGrid = foilToScintillator/2.; // Picking halfway between foil and scintillator
+  G4cout << distancePerGrid << '\t' << distanceTotalGrid << '\t' << foilToScintillator << '\t' << midGrid << G4endl;
   for(G4int i = 0; i < fNumGrids; i++) {
     sprintf(name, "grid%d", i + 1);
     G4VSolid* gridSolid = new G4Tubs(name, 0., 2.75*inchtocm*cm, distancePerGrid/2., 0., 360.*deg);
     sprintf(name, "gridLogical%d", i + 1);
-    fGridLogical[i] = new G4LogicalVolume(gridSolid, P10, name);
+    fGridLogical.push_back(new G4LogicalVolume(gridSolid, fGasMaterial, name));
     sprintf(name, "gridPhysical%d", i + 1);
     new G4PVPlacement(0, G4ThreeVector(0., 0., scintillatorDetectPos - midGrid - distanceTotalGrid/2. + distancePerGrid/2. + (i - 1)*distancePerGrid), fGridLogical[i], name, fDetectLogical,
                       false, 0, checkOverlaps);
@@ -141,6 +150,12 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 }
 
 void MMDetectorConstruction::ConstructMaterials() {
+  G4NistManager* man = G4NistManager::Instance();
+
+  man->ConstructNewGasMaterial("Methane", "G4_METHANE", fTemperature*kelvin,
+                               fPressureInTorr*1.333e-3*bar);
+  man->ConstructNewGasMaterial("CO2", "G4_CARBON_DIOXIDE", fTemperature*kelvin,
+                               fPressureInTorr*1.333e-3*bar);
 }
 
 void MMDetectorConstruction::ConstructSDandField() {
@@ -160,7 +175,7 @@ void MMDetectorConstruction::ConstructSDandField() {
   fFoilLogical->SetSensitiveDetector(foilDetector);
 
   // IC Grids
-  for(int i = 0; i < fNumGrids; i++) {
+  for(G4int i = 0; i < fNumGrids; i++) {
     char nameGrid[256];
     sprintf(nameGrid,"grid%d", i + 1);
     G4VSensitiveDetector* gridDetector = new MMGenSD(SDname = nameGrid);
@@ -199,7 +214,7 @@ void MMDetectorConstruction::SetAttributes() {
   G4Colour gridColors[10] = {G4Colour::Yellow(), G4Colour::Magenta(), G4Colour::Cyan(), G4Colour::Green(), G4Colour::White(),
                              G4Colour::Yellow(), G4Colour::Magenta(), G4Colour::Cyan(), G4Colour::Green(), G4Colour::White()};
 
-  for(int i = 0; i < fNumGrids; i++) {
+  for(G4int i = 0; i < fNumGrids; i++) {
     G4VisAttributes* gridAttr = new G4VisAttributes(gridColors[i]);
     gridAttr->SetVisibility(true);
     gridAttr->SetForceSolid(true);

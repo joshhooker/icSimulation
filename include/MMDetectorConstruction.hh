@@ -30,6 +30,10 @@
 
 #include "MMGenSD.hh"
 
+#include <algorithm>
+#include <iostream>
+#include <string>
+
 class MMDetectorConstruction : public G4VUserDetectorConstruction {
 
 public:
@@ -49,14 +53,14 @@ public:
     G4cout << "SET: Gas Temperature (K): " << fTemperature << G4endl;
   }
 
-  void SetGasType(G4String type) {
-    fGasType = type;
-    G4cout << "SET: Gas Type: " << fGasType << G4endl;
-  }
-
   void SetGasDensity(G4double density) {
     fGasDensity = density;
     G4cout << "SET: Gas Density (g/cm3): " << fGasDensity << G4endl;
+  }
+
+  void SetGasType(G4String type) {
+    fGasType = type;
+    G4cout << "SET: Gas Type: " << fGasType << G4endl;
   }
 
   void SetNumGrids(G4int numGrids) {
@@ -86,7 +90,7 @@ private:
   G4LogicalVolume* fTargetLogical;
   G4LogicalVolume* fDetectLogical;
   G4LogicalVolume* fFoilLogical;
-  G4LogicalVolume* fGridLogical[4];
+  std::vector<G4LogicalVolume*> fGridLogical;
   G4LogicalVolume* fScintLogical;
 
   void ConstructMaterials();

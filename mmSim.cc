@@ -35,32 +35,29 @@ int main(int argc,char** argv)
   configStream.close();
 
   //Parse JSON
-  G4double gasPressure = config["gasPressure"].asDouble(); // Torr
+  G4double gasPressure    = config["gasPressure"].asDouble(); // Torr
   G4double gasTemperature = config["gasTemperature"].asDouble(); // K
-  G4String gasType = config["gasType"].asString();
-  G4double gasDensity = config["gasDensity"].asDouble(); // g/cm^3
+  G4double gasDensity     = config["gasDensity"].asDouble(); // g/cm3
+  G4String gasType        = config["gasType"].asString();
 
-  G4int numGrids = config["numberGrids"].asInt();
-  G4double gridSize = config["gridSize"].asDouble();
+  G4int numGrids     = config["numberGrids"].asInt();
+  G4double gridSize  = config["gridSize"].asDouble();
   G4double scintDist = config["distanceScint"].asDouble();
-  G4bool useInches = config["useInches"].asBool();
-  G4double fanoFactor = config["fanoFactor"].asDouble();
+  G4bool useInches   = config["useInches"].asBool();
+
+  G4double fanoFactor   = config["fanoFactor"].asDouble();
   G4double workFunction = config["workFunction"].asDouble();
 
-  std::map<std::string, G4double> eventActionParams;
-  eventActionParams["fanoFactor"] = config["fanoFactor"].asDouble();
-  eventActionParams["workFunction"] = config["workFunction"].asDouble();
-
-  G4String macroName = config["macroName"].asString();
+  G4String macroName   = config["macroName"].asString();
   G4bool isInteractive = config["interactive"].asBool();
 
-  G4double qValue = config["qValue"].asDouble();
+  G4double qValue          = config["qValue"].asDouble();
   G4int lightProductCharge = config["lightProduct"][0].asInt();
-  G4int lightProductMass = config["lightProduct"][1].asInt();
+  G4int lightProductMass   = config["lightProduct"][1].asInt();
   G4int heavyProductCharge = config["heavyProduct"][0].asInt();
-  G4int heavyProductMass = config["heavyProduct"][1].asInt();
-  G4int targetCharge = config["target"][0].asInt();
-  G4int targetMass = config["target"][1].asInt();
+  G4int heavyProductMass   = config["heavyProduct"][1].asInt();
+  G4int targetCharge       = config["target"][0].asInt();
+  G4int targetMass         = config["target"][1].asInt();
 
   //choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
@@ -80,6 +77,8 @@ int main(int argc,char** argv)
   // Mandatory user initialization classes
   MMDetectorConstruction* detector = new MMDetectorConstruction();
   detector->SetGasType(gasType);
+  detector->SetGasTemperature(gasTemperature);
+  detector->SetGasPressure(gasPressure);
   detector->SetGasDensity(gasDensity);
   detector->SetNumGrids(numGrids);
   runManager->SetUserInitialization(detector);
