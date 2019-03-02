@@ -21,6 +21,8 @@ void MMActionInitialization::Build() const {
   MMEventAction* eventAction = new MMEventAction(fNumGrids);
   eventAction->SetFanoFactor(fFanoFactor);
   eventAction->SetWorkFunction(fWorkFunction);
+  eventAction->SetScintillatorResolution(fScintResolution);
+  eventAction->SetGridResolution(fGridResolution);
   SetUserAction(eventAction);
 
   SetUserAction(new MMTrackingAction);

@@ -37,16 +37,19 @@ int main(int argc,char** argv)
   //Parse JSON
   G4double gasPressure    = config["gasPressure"].asDouble(); // Torr
   G4double gasTemperature = config["gasTemperature"].asDouble(); // K
-  G4double gasDensity     = config["gasDensity"].asDouble(); // g/cm3
   G4String gasType        = config["gasType"].asString();
 
-  G4int numGrids     = config["numberGrids"].asInt();
-  G4double gridSize  = config["gridSize"].asDouble();
-  G4double scintDist = config["distanceScint"].asDouble();
-  G4bool useInches   = config["useInches"].asBool();
+  G4int numGrids      = config["numberGrids"].asInt();
+  G4double gridDist   = config["gridDistance"].asDouble();
+  G4double gridRadius = config["gridRadius"].asDouble();
+  G4double scintDist  = config["distanceScint"].asDouble();
+  G4bool useInches    = config["useInches"].asBool();
 
   G4double fanoFactor   = config["fanoFactor"].asDouble();
   G4double workFunction = config["workFunction"].asDouble();
+
+  G4double scintResolution   = config["scintResolution"].asDouble();
+  G4double extraGridResolution = config["extraGridResolution"].asDouble();
 
   G4String macroName   = config["macroName"].asString();
   G4bool isInteractive = config["interactive"].asBool();
@@ -79,8 +82,11 @@ int main(int argc,char** argv)
   detector->SetGasType(gasType);
   detector->SetGasTemperature(gasTemperature);
   detector->SetGasPressure(gasPressure);
-  detector->SetGasDensity(gasDensity);
   detector->SetNumGrids(numGrids);
+  detector->SetUseInches(useInches);
+  detector->SetGridDistance(gridDist);
+  detector->SetGridRadius(gridRadius);
+  detector->SetDistScint(scintDist);
   runManager->SetUserInitialization(detector);
 
   G4VModularPhysicsList* physicsList = new QGSP_BERT;
@@ -97,6 +103,8 @@ int main(int argc,char** argv)
   actionInit->SetFanoFactor(fanoFactor);
   actionInit->SetWorkFunction(workFunction);
   actionInit->SetNumGrids(numGrids);
+  actionInit->SetScintillatorResolution(scintResolution);
+  actionInit->SetGridResolution(extraGridResolution);
   runManager->SetUserInitialization(actionInit);
 
   // Initialize Geant4 kernel

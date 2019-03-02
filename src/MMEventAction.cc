@@ -67,6 +67,8 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
 
   if(scintEnergy < 0.001) return;
 
+  scintEnergy = G4RandGauss::shoot(scintEnergy, scintEnergy*fScintResolution);
+
   for(G4int i = 0; i < fNumGrids; i++) {
     G4double icGridEnergy = 0.;
     for(G4int j = 0; j < hICGridHC[i]->entries(); ++j) {
@@ -74,6 +76,7 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
     }
     G4double icGridEnergyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*icGridEnergy);
     icGridEnergy = G4RandGauss::shoot(icGridEnergy, icGridEnergyRes);
+    icGridEnergy = G4RandGauss::shoot(icGridEnergy, icGridEnergy*fGridResolution);
     fICGridE[i] = icGridEnergy;
   }
 

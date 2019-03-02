@@ -19,6 +19,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   G4Element* H = new G4Element("Hydrogen",  "H",  z = 1.,  1.008*g/mole);
   G4Element* C = new G4Element("Carbon",    "C",  z = 6.,  12.011*g/mole);
   G4Element* O = new G4Element("Oxygen",    "O",  z = 8.,  15.999*g/mole);
+  G4Element* F = new G4Element("Fluorine",  "F",  z = 9.,  18.998*g/mole);
   G4Element* Ar = new G4Element("Argon",    "Ar", z = 18., 39.948*g/mole);
   G4Element* Cr = new G4Element("Chrome",   "Cr", z = 25., 51.996*g/mole);
   G4Element* Fe = new G4Element("Iron",     "Fe", z = 26., 55.845*g/mole);
@@ -45,14 +46,11 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   BC400->AddElement(H, natoms = 10);
   BC400->AddElement(C, natoms = 9);
 
-  // P10 at  2 torr (room temp): 0.0003968 g/cm3
-  // P10 at  5 torr (room temp): 0.0009921 g/cm3
-  // P10 at 10 torr (room temp): 0.0019843 g/cm3
-  // P10 at 20 torr (room temp): 0.0039685 g/cm3
-  // P10 at 30 torr (room temp): 0.0059528 g/cm3
-  // P10 at 40 torr (room temp): 0.0079371 g/cm3
+  G4double atmPressure = 760; // torr
+
   if(fGasType == "P10" || fGasType == "p10") {
-    fGasMaterial = new G4Material("P10", fGasDensity*g/cm3, nel = 3, kStateGas, fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
+    G4double p10Density = 0.00159*g/cm3;
+    fGasMaterial = new G4Material("P10", p10Density*fPressureInTorr/atmPressure, nel = 3, kStateGas, fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
     fGasMaterial->AddElement(H,  fractionmass = 0.0155);
     fGasMaterial->AddElement(C,  fractionmass = 0.0623);
     fGasMaterial->AddElement(Ar, fractionmass = 0.9222);
@@ -63,12 +61,16 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   else if(fGasType == "Methane" || fGasType == "methane" || fGasType == "METHANE" || fGasType == "CH4") {
     fGasMaterial = G4Material::GetMaterial("Methane");
   }
-  else {
-    G4cout << "Unknown Gas Type. Add yourself or tell Josh to add" << G4endl;
-    G4cout << "Choosing Methane for you" << G4endl;
-    fGasMaterial = new G4Material("CH4", 0.00066697*g/cm3, nel = 2, kStateGas, fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
+  else if(fGasType == "CF4" || fGasType == "cf4") {
+    G4double cf4Density = 0.0036586*g/cm3;
+    fGasMaterial = new G4Material("CF4", cf4Density*fPressureInTorr/atmPressure, nel = 2, kStateGas, fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
     fGasMaterial->AddElement(C, natoms = 1);
-    fGasMaterial->AddElement(H, natoms = 4);
+    fGasMaterial->AddElement(F, natoms = 4);
+  }
+  else {
+    G4cout << "Unknown Gas Type. Either a mistake or you need to add it yourself or ask to add" << G4endl;
+    G4cout << "Choosing Methane for you" << G4endl;
+    fGasMaterial = G4Material::GetMaterial("Methane");
   }
   G4cout << GetGasMaterial() << G4endl;
 
@@ -107,30 +109,54 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), fTargetLogical, "targetPhysical", fWorldLogical,
                                                         false, 0, checkOverlaps);
 
+  G4double icChamberLength = 0.3*m;
+  G4double targetToWindow = 21.7*cm;
+
   // IC chamber
-  G4VSolid* detectSolid = new G4Tubs("detectBox", 0., 0.1*m, 0.3/2.*m, 0., 360.*deg);
+  G4VSolid* detectSolid = new G4Tubs("detectBox", 0., 0.1*m, icChamberLength/2., 0., 360.*deg);
   fDetectLogical = new G4LogicalVolume(detectSolid, fGasMaterial, "detectLogical");
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.367*m), fDetectLogical, "detectPhysical", fWorldLogical,
                     false, 0, checkOverlaps);
 
+  G4double gridDist;
+  G4double gridRadius;
+  G4double foilRadius;
+  G4double scintRadius;
+  G4double scintDist;
+
+  if(fUseInches) {
+    gridDist = fGridDist*inchtocm*cm;
+    gridRadius = fGridSize*inchtocm*cm;
+    foilRadius = fGridSize*inchtocm*cm;
+    scintRadius = fGridSize*inchtocm*cm;
+    scintDist = fDistScint*inchtocm*cm;
+  }
+  else {
+    gridDist = fGridDist*mm;
+    gridRadius = fGridSize*mm;
+    foilRadius = fGridSize*mm;
+    scintRadius = fGridSize*mm;
+    scintDist = fDistScint*mm;
+  }
+
   // Mylar foil
-  G4VSolid* foilSolid = new G4Tubs("foilSolid", 0., 2.75*inchtocm*cm, 4./2.*um, 0., 360.*deg);
+  G4double foilThickness = 4.*um;
+  G4VSolid* foilSolid = foilSolid = new G4Tubs("foilSolid", 0., foilRadius, foilThickness/2., 0., 360.*deg);
   fFoilLogical = new G4LogicalVolume(foilSolid, Mylar, "foilLogical");
-  new G4PVPlacement(0, G4ThreeVector(0., 0., -143.7*mm), fFoilLogical, "foilPhysical", fDetectLogical,
+  new G4PVPlacement(0, G4ThreeVector(0., 0., targetToWindow - foilThickness/2.), fFoilLogical, "foilPhysical", fWorldLogical,
                     false, 0, checkOverlaps);
 
-  G4double foilToScintillator = 5.6*inchtocm*cm;
-  G4double scintillatorDetectPos = -0.7*mm;
+  G4double scintillatorDetectPos = -icChamberLength/2. + scintDist;
 
   // IC grids
   char name[256];
-  G4double distancePerGrid = 0.2*inchtocm*cm; // 0.5 inches
+  G4double distancePerGrid = gridDist;
   G4double distanceTotalGrid = distancePerGrid*static_cast<G4double>(fNumGrids);
-  G4double midGrid = foilToScintillator/2.; // Picking halfway between foil and scintillator
-  G4cout << distancePerGrid << '\t' << distanceTotalGrid << '\t' << foilToScintillator << '\t' << midGrid << G4endl;
+  G4double midGrid = scintDist/2.; // Picking halfway between foil and scintillator
+  // G4cout << distancePerGrid << '\t' << distanceTotalGrid << '\t' << foilToScintillator << '\t' << midGrid << G4endl;
   for(G4int i = 0; i < fNumGrids; i++) {
     sprintf(name, "grid%d", i + 1);
-    G4VSolid* gridSolid = new G4Tubs(name, 0., 2.75*inchtocm*cm, distancePerGrid/2., 0., 360.*deg);
+    G4VSolid* gridSolid = new G4Tubs(name, 0., gridRadius, distancePerGrid/2., 0., 360.*deg);
     sprintf(name, "gridLogical%d", i + 1);
     fGridLogical.push_back(new G4LogicalVolume(gridSolid, fGasMaterial, name));
     sprintf(name, "gridPhysical%d", i + 1);
@@ -139,7 +165,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   }
 
   // BC-400 Plastic Scintillator
-  G4VSolid* scintSolid = new G4Tubs("scintSolid", 0., 2.75*inchtocm*cm, 1.0*inchtocm*cm/2., 0., 360.*deg);
+  G4VSolid* scintSolid = new G4Tubs("scintSolid", 0., scintRadius, 2.0*inchtocm*cm/2., 0., 360.*deg);
   fScintLogical =  new G4LogicalVolume(scintSolid, BC400, "scintLogical");
   new G4PVPlacement(0, G4ThreeVector(0., 0., scintillatorDetectPos), fScintLogical, "scintPhysical", fDetectLogical,
                     false, 0, checkOverlaps);

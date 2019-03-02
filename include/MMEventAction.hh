@@ -42,6 +42,14 @@ public:
     fWorkFunction = workFunction;
   }
 
+  void SetScintillatorResolution(G4double resolution) {
+    fScintResolution = resolution;
+  }
+
+  void SetGridResolution(G4double resolution) {
+    fGridResolution = resolution;
+  }
+
   void SetNumGrids(G4int numGrids) {
     fNumGrids = numGrids;
   }
@@ -55,6 +63,8 @@ private:
 
   G4double fFanoFactor;
   G4double fWorkFunction;
+  G4double fScintResolution;
+  G4double fGridResolution;
   G4int fNumGrids;
 
   gsl_rng * r;

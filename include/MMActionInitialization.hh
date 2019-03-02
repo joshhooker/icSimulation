@@ -39,12 +39,22 @@ public:
     fNumGrids = numGrids;
   }
 
+  void SetScintillatorResolution(G4double resolution) {
+    fScintResolution = resolution;
+  }
+
+  void SetGridResolution(G4double resolution) {
+    fGridResolution = resolution;
+  }
+
 private:
     MMDetectorConstruction* fDetector;
     std::map<std::string, G4double> fEventActionParams;
     G4double fFanoFactor;
     G4double fWorkFunction;
     G4int fNumGrids;
+    G4double fScintResolution;
+    G4double fGridResolution;
 };
 
 #endif

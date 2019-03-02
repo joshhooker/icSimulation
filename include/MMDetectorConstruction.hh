@@ -53,11 +53,6 @@ public:
     G4cout << "SET: Gas Temperature (K): " << fTemperature << G4endl;
   }
 
-  void SetGasDensity(G4double density) {
-    fGasDensity = density;
-    G4cout << "SET: Gas Density (g/cm3): " << fGasDensity << G4endl;
-  }
-
   void SetGasType(G4String type) {
     fGasType = type;
     G4cout << "SET: Gas Type: " << fGasType << G4endl;
@@ -66,6 +61,46 @@ public:
   void SetNumGrids(G4int numGrids) {
     fNumGrids = numGrids;
     G4cout << "SET: Number of IC Grids: " << fNumGrids << G4endl;
+  }
+
+  void SetGridDistance(G4double distance) {
+    fGridDist = distance;
+    if(fUseInches) {
+      G4cout << "SET: Grid Distance (in): " << fGridDist << G4endl;
+    }
+    else {
+      G4cout << "SET: Grid Distance (mm): " << fGridDist << G4endl;
+    }
+  }
+
+  void SetGridRadius(G4double size) {
+    fGridSize = size;
+    if(fUseInches) {
+      G4cout << "SET: Grid Radius (in): " << fGridSize << G4endl;
+    }
+    else {
+      G4cout << "SET: Grid Radius (mm): " << fGridSize << G4endl;
+    }
+  }
+
+  void SetDistScint(G4double dist) {
+    fDistScint = dist;
+    if(fUseInches) {
+      G4cout << "SET: Distance from window to scintillator (in): " << fDistScint << G4endl;
+    }
+    else {
+      G4cout << "SET: Distance from window to scintillator (mm): " << fDistScint << G4endl;
+    }
+  }
+
+  void SetUseInches(G4bool inch) {
+    fUseInches = inch;
+    if(fUseInches) {
+      G4cout << "SET: Using inches from input" << G4endl;
+    }
+    else {
+      G4cout << "SET: Using mm from input" << G4endl;
+    }
   }
 
   G4Material* GetGasMaterial() {return fGasMaterial;}
@@ -80,11 +115,14 @@ private:
   G4double fPressureInTorr;
   G4double fTemperature;
   G4String fGasType;
-  G4double fGasDensity;
   G4Material* fGasMaterial;
 
   G4double inchtocm;
   G4int fNumGrids;
+  G4double fGridDist;
+  G4double fGridSize;
+  G4double fDistScint;
+  G4bool fUseInches;
 
   G4LogicalVolume* fWorldLogical;
   G4LogicalVolume* fTargetLogical;
