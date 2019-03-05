@@ -147,12 +147,14 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
                     false, 0, checkOverlaps);
 
   G4double scintillatorDetectPos = -icChamberLength/2. + scintDist;
+  G4double scintillatorThickness = 10.*mm;
 
   // IC grids
   char name[256];
   G4double distancePerGrid = gridDist;
   G4double distanceTotalGrid = distancePerGrid*static_cast<G4double>(fNumGrids);
   G4double midGrid = scintDist/2.; // Picking halfway between foil and scintillator
+  G4double midGridPos = -icChamberLength/2. + midGrid; // Position of middle of IC Grids
   // G4cout << distancePerGrid << '\t' << distanceTotalGrid << '\t' << foilToScintillator << '\t' << midGrid << G4endl;
   for(G4int i = 0; i < fNumGrids; i++) {
     sprintf(name, "grid%d", i + 1);
@@ -160,12 +162,29 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
     sprintf(name, "gridLogical%d", i + 1);
     fGridLogical.push_back(new G4LogicalVolume(gridSolid, fGasMaterial, name));
     sprintf(name, "gridPhysical%d", i + 1);
-    new G4PVPlacement(0, G4ThreeVector(0., 0., scintillatorDetectPos - midGrid - distanceTotalGrid/2. + distancePerGrid/2. + (i - 1)*distancePerGrid), fGridLogical[i], name, fDetectLogical,
-                      false, 0, checkOverlaps);
+    if(fNumGrids % 2 == 0) {
+      int midGridNum = fNumGrids/2;
+      if(i < midGridNum) {
+        new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid), fGridLogical[i], name, fDetectLogical,
+                          false, 0, checkOverlaps);
+        // printf("%d %d %f %f\n", i, midGridNum, midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid, midGridPos);
+      }
+      else {
+        new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid), fGridLogical[i], name, fDetectLogical,
+                          false, 0, checkOverlaps);
+        // printf("%d %d %f %f\n", i, midGridNum, midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid, midGridPos);
+      }
+    }
+    else {
+      int midGridNum = (fNumGrids - 1)/2 + 1;
+      new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + (i + 1 - midGridNum)*distancePerGrid), fGridLogical[i], name, fDetectLogical,
+                        false, 0, checkOverlaps);
+      // printf("%d %d %f %f\n", i, midGridNum, midGridPos + (i + 1 - midGridNum)*distancePerGrid, midGridPos);
+    }
   }
 
   // BC-400 Plastic Scintillator
-  G4VSolid* scintSolid = new G4Tubs("scintSolid", 0., scintRadius, 2.0*inchtocm*cm/2., 0., 360.*deg);
+  G4VSolid* scintSolid = new G4Tubs("scintSolid", 0., scintRadius, scintillatorThickness/2., 0., 360.*deg);
   fScintLogical =  new G4LogicalVolume(scintSolid, BC400, "scintLogical");
   new G4PVPlacement(0, G4ThreeVector(0., 0., scintillatorDetectPos), fScintLogical, "scintPhysical", fDetectLogical,
                     false, 0, checkOverlaps);
