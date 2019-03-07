@@ -1,7 +1,7 @@
 #include "MMTrackingAction.hh"
 
 MMTrackingAction::MMTrackingAction() {
-  fName = "ProtonScattering";
+  fName = "BinaryReaction";
 }
 
 MMTrackingAction::~MMTrackingAction() {
@@ -12,7 +12,15 @@ void MMTrackingAction::PreUserTrackingAction(const G4Track* track) {
   if(!creatorProcess) return;
 
   if(creatorProcess->GetProcessName() != fName) return;
-//  if(track->GetParticleDefinition()->GetParticleName() != "proton") return;
+
+  BinaryReactionProcess* reactionProcess = (BinaryReactionProcess*) creatorProcess;
+  if(track->GetParticleDefinition()->GetAtomicMass() != G4int(reactionProcess->GetLightProductMass()) ||
+     track->GetParticleDefinition()->GetAtomicNumber() != G4int(reactionProcess->GetLightProductCharge())) return;
 
   MMTrackingInformation* info = (MMTrackingInformation*) track->GetUserInformation();
+
+  MMAnalysis* analysis = MMAnalysis::Instance();
+  analysis->SetLightAngleLab(info->GetLightAngleLab());
+  analysis->SetLightEnergyLab(info->GetLightEnergyLab());
+  analysis->SetHeavyEnergyLab(info->GetHeavyEnergyLab());
 }

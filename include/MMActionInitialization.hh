@@ -47,6 +47,10 @@ public:
     fGridResolution = resolution;
   }
 
+  void SetWriteAllEvents(G4bool writeAll) {
+    fWriteAllEvents = writeAll;
+  }
+
 private:
     MMDetectorConstruction* fDetector;
     std::map<std::string, G4double> fEventActionParams;
@@ -55,6 +59,7 @@ private:
     G4int fNumGrids;
     G4double fScintResolution;
     G4double fGridResolution;
+    G4bool fWriteAllEvents;
 };
 
 #endif

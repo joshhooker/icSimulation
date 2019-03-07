@@ -73,6 +73,8 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   G4double pAngleLightLab = acos(arg);
   G4double aAngleLightLab = 2.*M_PI*G4UniformRand();
 
+  G4double angleLightLab = atan(sqrt(tan(pAngleLightLab)*tan(pAngleLightLab) + tan(aAngleLightLab)*tan(aAngleLightLab)));
+
   // printf("B: %f D: %f\n", B, D);
 
   G4double lightEnergyLab = (B <= D) ? totalEnergy*B*pow(cos(pAngleLightLab) + sqrt(D/B - sin(pAngleLightLab)*sin(pAngleLightLab)), 2.) :
@@ -128,7 +130,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 			      aTrack.GetGlobalTime(),
 			      aTrack.GetPosition());
   sec1->SetUserInformation(new MMTrackingInformation(energy*fTargetMass/(projectileMass + fTargetMass), pAngleLightCM, pAngleLightLab,
-						     aAngleLightCM,aTrack.GetPosition()));
+                 aAngleLightCM, pAngleLightLab, lightEnergyLab, heavyEnergyLab, aTrack.GetPosition()));
   G4Track* sec2 = new G4Track(new G4DynamicParticle(heavy, heavyLab.unit(), heavyEnergyLab*MeV),
 			      aTrack.GetGlobalTime(),
 			      aTrack.GetPosition());

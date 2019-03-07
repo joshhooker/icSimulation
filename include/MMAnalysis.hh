@@ -27,14 +27,25 @@ public:
   void SetICGridTotalEnergy(double);
 
   void SetScintE(double);
+  void SetScintMass(int);
+  void SetScintCharge(int);
+  void SetScintXPos(double);
+  void SetScintYPos(double);
+  void SetScintZPos(double);
+
+  void SetLightAngleLab(double);
+  void SetLightEnergyLab(double);
+  void SetHeavyEnergyLab(double);
 
   void Fill();
+  void FillAll();
 
 private:
   static MMAnalysis* fInstance;
   std::string fFilename;
   TFile* fFile;
   TTree* fTree;
+  TTree* fAllTree;
 
   G4double fGunEnergy;
 
@@ -42,6 +53,15 @@ private:
   G4double fICGridTotalEnergy;
 
   G4double fScintE;
+  G4int fScintMass;
+  G4int fScintCharge;
+  G4double fScintXPos;
+  G4double fScintYPos;
+  G4double fScintZPos;
+
+  G4double fLightAngleLab;
+  G4double fLightEnergyLab;
+  G4double fHeavyEnergyLab;
 };
 
 #endif
