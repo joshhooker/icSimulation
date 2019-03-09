@@ -25,12 +25,15 @@ G4bool MMGenSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
   if (edep==0.) return true;
 
   G4StepPoint* preStepPoint = step->GetPreStepPoint();
-  G4StepPoint* postStepPoint = step->GetPostStepPoint();
+
+  G4ThreeVector pos = step->GetPreStepPoint()->GetPosition();
+  G4double posX = pos.x();
+  G4double posY = pos.y();
+  G4double posZ = pos.z();
 
   G4TouchableHistory* touchable = (G4TouchableHistory*)(preStepPoint->GetTouchable());
   G4int copyNo = touchable->GetVolume()->GetCopyNo();
   G4double hitTime = preStepPoint->GetGlobalTime();
-
 
   G4int ix = -1;
   for(G4int i = 0; i < fHitsCollection->entries(); i++) {
@@ -41,7 +44,7 @@ G4bool MMGenSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
   }
   if(ix >= 0) {
     MMGenHit* hit = (*fHitsCollection)[ix];
-    if(hit->GetFirstHitTime()>hitTime) {
+    if(hit->GetFirstHitTime() > hitTime) {
       hit->SetFirstHitTime(hitTime);
     }
     hit->AddEnergy(edep);
@@ -52,6 +55,9 @@ G4bool MMGenSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
     hit->AddEnergy(edep);
     hit->SetMass(hitMass);
     hit->SetCharge(hitCharge);
+    hit->SetXPosition(posX);
+    hit->SetYPosition(posY);
+    hit->SetZPosition(posZ);
     fHitsCollection->insert(hit);
   }
   return true;

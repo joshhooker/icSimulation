@@ -54,18 +54,31 @@ public:
     fNumGrids = numGrids;
   }
 
+  void SetWriteAllEvents(G4bool writeAll) {
+    fWriteAllEvents = writeAll;
+  }
+
 private:
   std::vector<G4int> fICGridHCID;
   G4int fScintHCID;
 
+  G4int fScintMass;
+  G4int fScintCharge;
   G4double fScintE;
+  G4double fScintXPos;
+  G4double fScintYPos;
+  G4double fScintZPos;
+
   std::vector<G4double> fICGridE;
+  G4double fICTotalE;
 
   G4double fFanoFactor;
   G4double fWorkFunction;
   G4double fScintResolution;
   G4double fGridResolution;
   G4int fNumGrids;
+
+  G4bool fWriteAllEvents;
 
   gsl_rng * r;
 };

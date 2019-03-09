@@ -110,6 +110,7 @@ public:
   G4LogicalVolume* GetDetectVolume() const {return fDetectLogical;}
   G4LogicalVolume* GetScintVolume() const {return fScintLogical;}
   G4LogicalVolume* GetFoilVolume() const {return fFoilLogical;}
+  G4LogicalVolume* GetGridVolume(G4int grid) const {return fGridLogical[grid];}
 
 private:
   G4double fPressureInTorr;

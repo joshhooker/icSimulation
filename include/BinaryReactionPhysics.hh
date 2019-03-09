@@ -40,6 +40,10 @@ public:
     fHeavyProductMass = mass;
   }
 
+  void SetNumGrids(G4int numGrids) {
+    fNumGrids = numGrids;
+  }
+
 private:
   G4double fQValue;
   G4int fLightProductCharge;
@@ -48,6 +52,7 @@ private:
   G4int fHeavyProductMass;
   G4int fTargetCharge;
   G4int fTargetMass;
+  G4int fNumGrids;
 };
 
 #endif

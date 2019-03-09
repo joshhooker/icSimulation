@@ -42,6 +42,10 @@ public:
     G4cout << "SET: Heavy Product: " << fHeavyProductCharge << ' ' << fHeavyProductMass << G4endl;
   }
 
+  void SetNumGrids(G4int numGrids) {
+    fNumGrids = numGrids;
+  }
+
   G4double GetLightProductMass() {
     return fLightProductMass;
   }
@@ -60,6 +64,7 @@ private:
   G4int fLightProductCharge;
   G4int fHeavyProductMass;
   G4int fHeavyProductCharge;
+  G4int fNumGrids;
 };
 
 #endif

@@ -5,6 +5,8 @@
 #include "G4UserTrackingAction.hh"
 #include "G4VProcess.hh"
 
+#include "BinaryReactionProcess.hh"
+#include "MMAnalysis.hh"
 #include "MMTrackingInformation.hh"
 
 class MMTrackingAction : public G4UserTrackingAction {

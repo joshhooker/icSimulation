@@ -60,14 +60,21 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
   MMAnalysis* analysis = MMAnalysis::Instance();
 
   // scintillator
-  double scintEnergy = 0.;
+  fScintE = 0.;
   for(G4int i = 0; i < (hScint->entries()); ++i) {
-    scintEnergy += (*hScint)[i]->GetTotalEnergy();
+    fScintE += (*hScint)[i]->GetTotalEnergy();
+    fScintMass = (*hScint)[0]->GetMass();
+    fScintCharge = (*hScint)[0]->GetCharge();
+    fScintXPos = (*hScint)[0]->GetXPosition()/mm;
+    fScintYPos = (*hScint)[0]->GetYPosition()/mm;
+    fScintZPos = (*hScint)[0]->GetZPosition()/mm;
   }
 
-  if(scintEnergy < 0.001) return;
+  if(fWriteAllEvents && fScintMass == 8 && fScintCharge == 5) analysis->FillAll();
 
-  scintEnergy = G4RandGauss::shoot(scintEnergy, scintEnergy*fScintResolution);
+  if(fScintE < 0.001) return;
+
+  fScintE = G4RandGauss::shoot(fScintE, fScintE*fScintResolution);
 
   for(G4int i = 0; i < fNumGrids; i++) {
     G4double icGridEnergy = 0.;
@@ -85,9 +92,12 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
     icGridETotal += fICGridE[i];
   }
 
-  fScintE = scintEnergy;
-
   analysis->SetScintE(fScintE);
+  analysis->SetScintMass(fScintMass);
+  analysis->SetScintCharge(fScintCharge);
+  analysis->SetScintXPos(fScintXPos);
+  analysis->SetScintYPos(fScintYPos);
+  analysis->SetScintZPos(fScintZPos);
 
   analysis->SetICGridEnergy(fICGridE);
   analysis->SetICGridTotalEnergy(icGridETotal);

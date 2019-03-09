@@ -62,6 +62,8 @@ int main(int argc,char** argv)
   G4int targetCharge       = config["target"][0].asInt();
   G4int targetMass         = config["target"][1].asInt();
 
+  G4bool writeAllEvents = config["writeAllEvents"].asBool();
+
   //choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
   //set random seed with system time
@@ -95,6 +97,7 @@ int main(int argc,char** argv)
   reactionPhysics->SetTarget(targetCharge, targetMass);
   reactionPhysics->SetLightProduct(lightProductCharge, lightProductMass);
   reactionPhysics->SetHeavyProduct(heavyProductCharge, heavyProductMass);
+  reactionPhysics->SetNumGrids(numGrids);
   physicsList->RegisterPhysics(reactionPhysics);
   runManager->SetUserInitialization(physicsList);
 
@@ -105,6 +108,7 @@ int main(int argc,char** argv)
   actionInit->SetNumGrids(numGrids);
   actionInit->SetScintillatorResolution(scintResolution);
   actionInit->SetGridResolution(extraGridResolution);
+  actionInit->SetWriteAllEvents(writeAllEvents);
   runManager->SetUserInitialization(actionInit);
 
   // Initialize Geant4 kernel
