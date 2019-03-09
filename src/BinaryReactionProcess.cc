@@ -28,6 +28,12 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
                   particleMass != 7 ||
                   particleCharge != 4) ? DBL_MAX : 0.;
 
+  for(G4int i = 0; i < fNumGrids; i++) {
+    if(currentVolume == detectorConstruction->GetGridVolume(i)) {
+      mfp = DBL_MAX;
+    }
+  }
+
   *condition = NotForced;
   return mfp;
 }
