@@ -97,6 +97,7 @@ int main(int argc,char** argv)
   reactionPhysics->SetTarget(targetCharge, targetMass);
   reactionPhysics->SetLightProduct(lightProductCharge, lightProductMass);
   reactionPhysics->SetHeavyProduct(heavyProductCharge, heavyProductMass);
+  reactionPhysics->SetNumGrids(numGrids);
   physicsList->RegisterPhysics(reactionPhysics);
   runManager->SetUserInitialization(physicsList);
 

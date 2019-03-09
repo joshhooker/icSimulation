@@ -25,6 +25,7 @@ void BinaryReactionPhysics::ConstructProcess() {
   reactionProcess->SetTarget(fTargetCharge, fTargetMass);
   reactionProcess->SetLightProduct(fLightProductCharge, fLightProductMass);
   reactionProcess->SetHeavyProduct(fHeavyProductCharge, fHeavyProductMass);
+  reactionProcess->SetNumGrids(fNumGrids);
   G4PhysicsListHelper::GetPhysicsListHelper()->RegisterProcess(reactionProcess, G4GenericIon::GenericIon());
 }
 

@@ -35,6 +35,7 @@ public:
 
   void SetLightAngleLab(double);
   void SetLightEnergyLab(double);
+  void SetHeavyAngleLab(double);
   void SetHeavyEnergyLab(double);
 
   void Fill();
@@ -61,7 +62,12 @@ private:
 
   G4double fLightAngleLab;
   G4double fLightEnergyLab;
+  G4double fpLightAngleCM;
+  G4double faLightAngleCM;
+  G4double fLightAngleCM;
+  G4double fHeavyAngleLab;
   G4double fHeavyEnergyLab;
+  G4double fHeavyAngleCM;
 };
 
 #endif

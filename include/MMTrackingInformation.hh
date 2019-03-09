@@ -7,7 +7,8 @@
 class MMTrackingInformation : public G4VUserTrackInformation {
 
 public:
-  MMTrackingInformation(G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4ThreeVector);
+  MMTrackingInformation(G4double, G4double, G4double, G4double, G4double,
+                        G4double, G4double, G4double, G4ThreeVector);
   ~MMTrackingInformation();
 
   void Print() const;
@@ -18,6 +19,7 @@ public:
   G4double GetCMLightPhi() const {return fCMLightPhi;}
   G4double GetLightAngleLab() const {return fLightAngle;}
   G4double GetLightEnergyLab() const {return fLightEnergy;}
+  G4double GetHeavyAngleLab() const {return fHeavyAngle;}
   G4double GetHeavyEnergyLab() const {return fHeavyEnergy;}
   G4ThreeVector GetVertex() const {return fVertex;}
 
@@ -37,6 +39,7 @@ private:
   G4double fCMLightPhi;
   G4double fLightAngle;
   G4double fLightEnergy;
+  G4double fHeavyAngle;
   G4double fHeavyEnergy;
   G4ThreeVector fVertex;
 };

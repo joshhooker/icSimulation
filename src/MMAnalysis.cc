@@ -32,13 +32,11 @@ void MMAnalysis::OpenFile() {
   fTree->Branch("scintYPos", &fScintYPos);
   fTree->Branch("scintZPos", &fScintZPos);
 
-  fTree->Branch("lightAngleLab", &fLightAngleLab);
-  fTree->Branch("lightEnergyLab", &fLightEnergyLab);
-  fTree->Branch("heavyEnergyLab", &fHeavyEnergyLab);
-
   fAllTree = new TTree("allData", "all events");
   fAllTree->Branch("lightAngleLab", &fLightAngleLab);
+
   fAllTree->Branch("lightEnergyLab", &fLightEnergyLab);
+  fAllTree->Branch("heavyAngleLab", &fHeavyAngleLab);
   fAllTree->Branch("heavyEnergyLab", &fHeavyEnergyLab);
 }
 
@@ -90,6 +88,10 @@ void MMAnalysis::SetLightAngleLab(double angle) {
 
 void MMAnalysis::SetLightEnergyLab(double energy) {
   fLightEnergyLab = energy;
+}
+
+void MMAnalysis::SetHeavyAngleLab(double angle) {
+  fHeavyAngleLab = angle;
 }
 
 void MMAnalysis::SetHeavyEnergyLab(double energy) {
