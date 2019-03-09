@@ -16,6 +16,6 @@
   "distanceScint"       : 140,
   "useInches"           : false,
   "scintResolution"     : 0.1,
-  "extraGridResolution" : 0.05,
+  "extraGridResolution" : 0.1,
   "writeAllEvents"      : true
 }
