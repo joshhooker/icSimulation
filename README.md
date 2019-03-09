@@ -44,6 +44,14 @@ There are two configuration files provided needed to run the simulation: run.mac
 
 #### run.mac
 
+The current example run.mac file looks like this:
+```
+/run/printProgress 1000
+/run/beamOn 50000
+```
+
+This will run 50,000 events and print the progress every 1,000 events.
+
 #### config.json
 
 The config.json is the main file you will be editing. You can change some (not all) of the geometry, gas, reaction products and resolution parameters.
