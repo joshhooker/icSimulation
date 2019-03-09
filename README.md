@@ -149,3 +149,14 @@ heavyEnergyLab
 The light and heavy refer to the recoil products. This is mainly used to check the kinematics of the reaction.
 
 #### Example Plots
+
+Here are some example plots from the current settings. The run.mac and config.json used to generate these plots are located in examplePlots/
+
+Total Grid Energy vs Scintillator Energy:
+![ICTotalE_ScintE](https://github.com/joshhooker/icSimulation/blob/master/examplePlots/icTotalEnergy_ScintE.png)
+
+Light Recoil Energy vs Light Recoil Angle (for reaction products only):
+![lightEnergyLab_lightAngleLab](https://github.com/joshhooker/icSimulation/blob/master/examplePlots/lightEnergy_lightAngle.png)
+
+Heavy Recoil Energy vs Heavy Recoil Angle (for reaction products only):
+![heavyEnergyLab_heavyAngleLab](https://github.com/joshhooker/icSimulation/blob/master/examplePlots/heavyEnergy_heavyAngle.png)
