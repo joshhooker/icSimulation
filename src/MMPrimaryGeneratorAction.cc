@@ -50,8 +50,10 @@ void MMPrimaryGeneratorAction::GeneratePrimaries(G4Event* g4Event) {
 
   G4double sigma = kinE*0.05;
 
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,-50.0*cm));
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+  G4double beamXPos = gsl_ran_gaussian(r, 5.);
+  G4double beamYPos = gsl_ran_gaussian(r, 5.);
+  fParticleGun->SetParticlePosition(G4ThreeVector(beamXPos*mm, beamYPos*mm, -50.0*cm));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
 
   kinE = G4RandGauss::shoot(kinE*MeV,sigma*MeV);
   fParticleGun->SetParticleEnergy(kinE*MeV);
