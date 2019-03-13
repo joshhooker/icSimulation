@@ -140,7 +140,9 @@ The light and heavy refer to the recoil products. This is mainly used to check t
 
 #### Example Plots
 
-Here are some example plots from the current settings. The run.mac and config.json used to generate these plots are located in examplePlots/
+Here are some example plots from the current settings. The run.mac and config.json used to generate these plots are located in examplePlots/.
+
+The current beam settings are a 7Be secondary beam with contaminants of 7Li, 6Li and 4He. It is setup to do 7Be(d, n)8B. Below, the light and heavy recoils are the neutrons and 8B respectively.
 
 Total Grid Energy vs Scintillator Energy:
 ![ICTotalE_ScintE](https://github.com/joshhooker/icSimulation/blob/master/examplePlots/icTotalEnergy_ScintE.png)
