@@ -64,8 +64,6 @@ The current example config.json file looks like this:
   "gasType"             : "P10",
   "gasTemperature"      : 293.15,
   "gasPressure"         : 40,
-  "workFunction"        : 28.0,
-  "fanoFactor"          : 0.17,
   "qValue"              : -2.09,
   "target"              : [1,2],
   "lightProduct"        : [0,1],
@@ -87,9 +85,7 @@ An explanation of each configuration parameter is described below:
 - "macroName": This is macro file to run automatically when "interactive" is false. It's parameters are described above.
 - "gasType": This is the name of the gas to use in the ionization chamber. Currently there are four gases to choose from: “P10” (Argon 90% CH4 10%), “CH4”, “CO2” and “CF4”. Other gases can be added by editing the MMDetectorConstruction files.
 - "gasTemperature": This is temperature of the above gas in Kelvin.
-- "gasPressure": This is the pressure of the above gas in Torr
-- "workFunction": This is the average energy (in eV) required to create an electron-ion pair in the gas. The Work Function is dependent on the gas type used.
-- "fanoFactor": The Fano Factor defines the energy resolution for collisions not being purely statistical. The Fano Factor is dependent on the gas type used.
+- "gasPressure": This is the pressure of the above gas in Torr.
 - "qValue": This is the Q-Value of the reaction.
 - "target": Defined the be the [charge, mass] of the target nuclei.
 - "lightProduct": The [charge, mass] of the light recoil.
@@ -103,12 +99,6 @@ An explanation of each configuration parameter is described below:
 - "extraGridResolution": Just using the fanoFactor will still under estimate the errors of the energy in the grids. This is an extra resolution on top of that (1 is 100%).
 - "writeAllEvents": When this is set to true, it will create a second TTree called "allData". This will be discussed below. This can be only set to true or false.
 
-
-The Work Function and Fano Factors for the currently available gases are:
-* P10 gas: workFunction is 28.0 eV and fanoFactor is 0.17
-* CH4 gas: workFunction is 29.1 eV  and fanoFactor is 0.26
-* CO2 gas: workFunction is 34.2 eV and fanoFactor is 0.33
-* CF4 gas: workFunction is 33.8 eV and fanoFactor is ~0.2
 
 ### Output Files
 Currently, the GEANT4 simulation is not available to be run with multi-threading. So as of right now, there will but one output file called "sim.root". In this file, there will be up to two TTrees depending on the "writeAllEvents" flag. The TTrees are:
