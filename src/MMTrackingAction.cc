@@ -4,8 +4,7 @@ MMTrackingAction::MMTrackingAction() {
   fName = "BinaryReaction";
 }
 
-MMTrackingAction::~MMTrackingAction() {
-}
+MMTrackingAction::~MMTrackingAction() {}
 
 void MMTrackingAction::PreUserTrackingAction(const G4Track* track) {
   const G4VProcess* creatorProcess = track->GetCreatorProcess();

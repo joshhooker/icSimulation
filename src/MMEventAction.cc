@@ -14,12 +14,14 @@ MMEventAction::MMEventAction(G4int numGrids) :
   fScintHCID = -1;
 
   r = gsl_rng_alloc(gsl_rng_taus);
-  G4long seed = floor(2147483647*G4UniformRand());
-  gsl_rng_set(r,seed);
+  G4long seed = static_cast<G4long>(floor(2147483647*G4UniformRand()));
+  gsl_rng_set(r, seed);
+  fRandom3 = new TRandom3(seed);
 }
 
 MMEventAction::~MMEventAction() {
-  gsl_rng_free (r);
+  gsl_rng_free(r);
+  delete fRandom3;
 }
 
 void MMEventAction::BeginOfEventAction(const G4Event*) {
@@ -74,7 +76,7 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
 
   if(fScintE < 0.001) return;
 
-  fScintE = G4RandGauss::shoot(fScintE, fScintE*fScintResolution);
+  fScintE = fRandom3->Gaus(fScintE, fScintE*fScintResolution);
 
   for(G4int i = 0; i < fNumGrids; i++) {
     G4double icGridEnergy = 0.;
@@ -82,8 +84,8 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
       icGridEnergy += (*hICGridHC[i])[j]->GetTotalEnergy();
     }
     G4double icGridEnergyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*icGridEnergy);
-    icGridEnergy = G4RandGauss::shoot(icGridEnergy, icGridEnergyRes);
-    icGridEnergy = G4RandGauss::shoot(icGridEnergy, icGridEnergy*fGridResolution);
+    icGridEnergy = fRandom3->Gaus(icGridEnergy, icGridEnergyRes);
+    icGridEnergy = fRandom3->Gaus(icGridEnergy, icGridEnergy*fGridResolution);
     fICGridE[i] = icGridEnergy;
   }
 

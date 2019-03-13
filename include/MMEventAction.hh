@@ -15,6 +15,7 @@
 #include "TROOT.h"
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TRandom3.h>
 
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
@@ -80,7 +81,8 @@ private:
 
   G4bool fWriteAllEvents;
 
-  gsl_rng * r;
+  gsl_rng *r;
+  TRandom3 *fRandom3;
 };
 
 #endif

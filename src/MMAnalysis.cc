@@ -2,8 +2,7 @@
 
 MMAnalysis* MMAnalysis::fInstance = NULL;
 
-MMAnalysis::MMAnalysis() {
-}
+MMAnalysis::MMAnalysis() {}
 
 MMAnalysis* MMAnalysis::Instance() {
   if(!fInstance) {

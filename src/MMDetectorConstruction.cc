@@ -4,8 +4,7 @@ MMDetectorConstruction::MMDetectorConstruction() :
   G4VUserDetectorConstruction()
 {}
 
-MMDetectorConstruction::~MMDetectorConstruction() {
-}
+MMDetectorConstruction::~MMDetectorConstruction() {}
 
 G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   ConstructMaterials();
@@ -50,7 +49,8 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 
   if(fGasType == "P10" || fGasType == "p10") {
     G4double p10Density = 0.00159*g/cm3;
-    fGasMaterial = new G4Material("P10", p10Density*fPressureInTorr/atmPressure, nel = 3, kStateGas, fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
+    fGasMaterial = new G4Material("P10", p10Density*fPressureInTorr/atmPressure, nel = 3, kStateGas,
+                                  fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
     fGasMaterial->AddElement(H,  fractionmass = 0.0155);
     fGasMaterial->AddElement(C,  fractionmass = 0.0623);
     fGasMaterial->AddElement(Ar, fractionmass = 0.9222);
@@ -63,7 +63,8 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   }
   else if(fGasType == "CF4" || fGasType == "cf4") {
     G4double cf4Density = 0.0036586*g/cm3;
-    fGasMaterial = new G4Material("CF4", cf4Density*fPressureInTorr/atmPressure, nel = 2, kStateGas, fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
+    fGasMaterial = new G4Material("CF4", cf4Density*fPressureInTorr/atmPressure, nel = 2, kStateGas,
+                                  fTemperature*kelvin, fPressureInTorr*1.333e-3*bar);
     fGasMaterial->AddElement(C, natoms = 1);
     fGasMaterial->AddElement(F, natoms = 4);
   }
@@ -143,8 +144,8 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   G4double foilThickness = 4.*um;
   G4VSolid* foilSolid = foilSolid = new G4Tubs("foilSolid", 0., foilRadius, foilThickness/2., 0., 360.*deg);
   fFoilLogical = new G4LogicalVolume(foilSolid, Mylar, "foilLogical");
-  new G4PVPlacement(0, G4ThreeVector(0., 0., targetToWindow - foilThickness/2.), fFoilLogical, "foilPhysical", fWorldLogical,
-                    false, 0, checkOverlaps);
+  new G4PVPlacement(0, G4ThreeVector(0., 0., targetToWindow - foilThickness/2.), fFoilLogical, "foilPhysical",
+                    fWorldLogical, false, 0, checkOverlaps);
 
   G4double scintillatorDetectPos = -icChamberLength/2. + scintDist;
   G4double scintillatorThickness = 10.*mm;
@@ -165,21 +166,18 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
     if(fNumGrids % 2 == 0) {
       int midGridNum = fNumGrids/2;
       if(i < midGridNum) {
-        new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid), fGridLogical[i], name, fDetectLogical,
-                          false, 0, checkOverlaps);
-        // printf("%d %d %f %f\n", i, midGridNum, midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid, midGridPos);
+        new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid),
+                          fGridLogical[i], name, fDetectLogical, false, 0, checkOverlaps);
       }
       else {
-        new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid), fGridLogical[i], name, fDetectLogical,
-                          false, 0, checkOverlaps);
-        // printf("%d %d %f %f\n", i, midGridNum, midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid, midGridPos);
+        new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + distancePerGrid/2. + (i - midGridNum)*distancePerGrid),
+                          fGridLogical[i], name, fDetectLogical, false, 0, checkOverlaps);
       }
     }
     else {
       int midGridNum = (fNumGrids - 1)/2 + 1;
-      new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + (i + 1 - midGridNum)*distancePerGrid), fGridLogical[i], name, fDetectLogical,
-                        false, 0, checkOverlaps);
-      // printf("%d %d %f %f\n", i, midGridNum, midGridPos + (i + 1 - midGridNum)*distancePerGrid, midGridPos);
+      new G4PVPlacement(0, G4ThreeVector(0., 0., midGridPos + (i + 1 - midGridNum)*distancePerGrid), fGridLogical[i],
+                        name, fDetectLogical, false, 0, checkOverlaps);
     }
   }
 
