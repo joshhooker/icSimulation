@@ -4,8 +4,6 @@
   "gasType"             : "P10",
   "gasTemperature"      : 293.15,
   "gasPressure"         : 40,
-  "workFunction"        : 28.0,
-  "fanoFactor"          : 0.17,
   "qValue"              : -2.09,
   "target"              : [1,2],
   "lightProduct"        : [0,1],

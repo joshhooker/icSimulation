@@ -23,10 +23,6 @@ public:
   virtual void BuildForMaster() const;
   virtual void Build() const;
 
-  void SetEventActionParams(std::map<std::string, G4double> params) {
-    fEventActionParams = params;
-  }
-
   void SetFanoFactor(G4double fanoFactor) {
     fFanoFactor = fanoFactor;
   }

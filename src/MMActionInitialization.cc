@@ -5,8 +5,7 @@ MMActionInitialization::MMActionInitialization(MMDetectorConstruction* detector)
 
 }
 
-MMActionInitialization::~MMActionInitialization() {
-}
+MMActionInitialization::~MMActionInitialization() {}
 
 void MMActionInitialization::BuildForMaster() const {
   SetUserAction(new MMRunAction(fDetector, NULL));

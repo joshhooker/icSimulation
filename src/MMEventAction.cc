@@ -106,16 +106,3 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
 
   analysis->Fill();
 }
-
-void MMEventAction::ParseParams(const std::map<std::string, G4double> &params) {
-  for(std::map<std::string, G4double>::const_iterator it = params.begin(); it != params.end(); it++) {
-    if(it->first == "fanoFactor") {
-      fFanoFactor = it->second;
-      G4cout << "SET: Fano Factor: " << fFanoFactor << G4endl;
-    }
-    else if(it->first == "workFunction") {
-      fWorkFunction = it->second;
-      G4cout << "SET: Work Function (eV): " << fWorkFunction << G4endl;
-    }
-  }
-}

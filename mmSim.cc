@@ -2,12 +2,13 @@
 #include "MMAnalysis.hh"
 #include "MMDetectorConstruction.hh"
 
-#include "QGSP_BERT.hh"
 #include "BinaryReactionPhysics.hh"
+#include "QGSP_BERT.hh"
 
 #include "G4RadioactiveDecayPhysics.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
+#include "G4VModularPhysicsList.hh"
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
@@ -27,6 +28,9 @@ int main(int argc,char** argv)
     return 0;
   }
 
+  // Get the pointer to the User Interface manager
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
   //CREATE AND READ JSON CONFIG
   Json::Value config;
   std::string configFileName = argv[1];
@@ -45,9 +49,6 @@ int main(int argc,char** argv)
   G4double scintDist  = config["distanceScint"].asDouble();
   G4bool useInches    = config["useInches"].asBool();
 
-  G4double fanoFactor   = config["fanoFactor"].asDouble();
-  G4double workFunction = config["workFunction"].asDouble();
-
   G4double scintResolution   = config["scintResolution"].asDouble();
   G4double extraGridResolution = config["extraGridResolution"].asDouble();
 
@@ -63,6 +64,30 @@ int main(int argc,char** argv)
   G4int targetMass         = config["target"][1].asInt();
 
   G4bool writeAllEvents = config["writeAllEvents"].asBool();
+
+  // Work out fanoFactor and workFunction from gasType
+  G4double fanoFactor;
+  G4double workFunction;
+  if(gasType == "P10" || gasType == "p10") {
+    fanoFactor = 0.17;
+    workFunction = 28.0;
+  }
+  else if(gasType == "CO2" || gasType == "co2") {
+    fanoFactor = 0.33;
+    workFunction = 34.2;
+  }
+  else if(gasType == "Methane" || gasType == "methane" || gasType == "METHANE" || gasType == "CH4") {
+    fanoFactor = 0.26;
+    workFunction = 29.1;
+  }
+  else if(gasType == "CF4" || gasType == "cf4") {
+    fanoFactor = 0.2;
+    workFunction = 33.8;
+  }
+  else {
+    fanoFactor = 0.26;
+    workFunction = 29.1;
+  }
 
   //choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
@@ -91,7 +116,7 @@ int main(int argc,char** argv)
   detector->SetDistScint(scintDist);
   runManager->SetUserInitialization(detector);
 
-  G4VModularPhysicsList* physicsList = new QGSP_BERT;
+  G4VModularPhysicsList* physicsList = new QGSP_BERT(0);
   BinaryReactionPhysics* reactionPhysics = new BinaryReactionPhysics();
   reactionPhysics->SetQValue(qValue);
   reactionPhysics->SetTarget(targetCharge, targetMass);
@@ -121,9 +146,6 @@ int main(int argc,char** argv)
     G4VisManager* visManager = new G4VisExecutive("Quiet");
     visManager->Initialize();
   #endif
-
-  // Get the pointer to the User Interface manager
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
   if(!isInteractive) {
     // execute an argument macro file if exists

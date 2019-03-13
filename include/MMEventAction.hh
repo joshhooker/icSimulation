@@ -33,7 +33,6 @@ public:
 
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
-  void ParseParams(const std::map<std::string, G4double>&);
 
   void SetFanoFactor(G4double fanoFactor) {
     fFanoFactor = fanoFactor;
@@ -71,7 +70,6 @@ private:
   G4double fScintZPos;
 
   std::vector<G4double> fICGridE;
-  G4double fICTotalE;
 
   G4double fFanoFactor;
   G4double fWorkFunction;
