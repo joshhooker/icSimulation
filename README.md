@@ -131,8 +131,12 @@ scintZPos
 
 The allData Tree has the following branches:
 ```
+energy
+cmEnergy
+lightAngleCM
 lightAngleLab
 lightEnergy
+heavyAngleCM
 heavyAngleLab
 heavyEnergy
 ```
