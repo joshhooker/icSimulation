@@ -19,8 +19,8 @@ void MMTrackingAction::PreUserTrackingAction(const G4Track* track) {
   MMTrackingInformation* info = (MMTrackingInformation*) track->GetUserInformation();
 
   MMAnalysis* analysis = MMAnalysis::Instance();
-  analysis->SetLightAngleLab(info->GetLightAngleLab());
-  analysis->SetLightEnergyLab(info->GetLightEnergyLab());
-  analysis->SetHeavyAngleLab(info->GetHeavyAngleLab());
-  analysis->SetHeavyEnergyLab(info->GetHeavyEnergyLab());
+  analysis->SetLabLightAngle(info->GetLabLightTheta());
+  analysis->SetLightEnergy(info->GetLightEnergy());
+  analysis->SetLabHeavyAngle(info->GetLabHeavyTheta());
+  analysis->SetHeavyEnergy(info->GetHeavyEnergy());
 }

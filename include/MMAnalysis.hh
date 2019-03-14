@@ -21,22 +21,27 @@ public:
   void OpenFile();
   void CloseFile();
 
-  void SetGunEnergy(double);
+  void SetGunEnergy(G4double);
 
   void SetICGridEnergy(std::vector<G4double>& v);
-  void SetICGridTotalEnergy(double);
+  void SetICGridTotalEnergy(G4double);
 
-  void SetScintE(double);
-  void SetScintMass(int);
-  void SetScintCharge(int);
-  void SetScintXPos(double);
-  void SetScintYPos(double);
-  void SetScintZPos(double);
+  void SetScintE(G4double);
+  void SetScintMass(G4int);
+  void SetScintCharge(G4int);
+  void SetScintXPos(G4double);
+  void SetScintYPos(G4double);
+  void SetScintZPos(G4double);
 
-  void SetLightAngleLab(double);
-  void SetLightEnergyLab(double);
-  void SetHeavyAngleLab(double);
-  void SetHeavyEnergyLab(double);
+  void SetEnergy(G4double);
+  void SetCMEnergy(G4double);
+
+  void SetCMLightAngle(G4double);
+  void SetLabLightAngle(G4double);
+  void SetLightEnergy(G4double);
+  void SetCMHeavyAngle(G4double);
+  void SetLabHeavyAngle(G4double);
+  void SetHeavyEnergy(G4double);
 
   void Fill();
   void FillAll();
@@ -60,14 +65,15 @@ private:
   G4double fScintYPos;
   G4double fScintZPos;
 
-  G4double fLightAngleLab;
-  G4double fLightEnergyLab;
-  G4double fpLightAngleCM;
-  G4double faLightAngleCM;
-  G4double fLightAngleCM;
-  G4double fHeavyAngleLab;
-  G4double fHeavyEnergyLab;
-  G4double fHeavyAngleCM;
+  G4double fEnergy;
+  G4double fCMEnergy;
+
+  G4double fCMLightAngle;
+  G4double fLabLightAngle;
+  G4double fLightEnergy;
+  G4double fCMHeavyAngle;
+  G4double fLabHeavyAngle;
+  G4double fHeavyEnergy;
 };
 
 #endif

@@ -132,9 +132,9 @@ scintZPos
 The allData Tree has the following branches:
 ```
 lightAngleLab
-lightEnergyLab
+lightEnergy
 heavyAngleLab
-heavyEnergyLab
+heavyEnergy
 ```
 The light and heavy refer to the recoil products. This is mainly used to check the kinematics of the reaction.
 

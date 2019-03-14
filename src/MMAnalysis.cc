@@ -32,11 +32,10 @@ void MMAnalysis::OpenFile() {
   fTree->Branch("scintZPos", &fScintZPos);
 
   fAllTree = new TTree("allData", "all events");
-  fAllTree->Branch("lightAngleLab", &fLightAngleLab);
-
-  fAllTree->Branch("lightEnergyLab", &fLightEnergyLab);
-  fAllTree->Branch("heavyAngleLab", &fHeavyAngleLab);
-  fAllTree->Branch("heavyEnergyLab", &fHeavyEnergyLab);
+  fAllTree->Branch("lightAngleLab", &fLabLightAngle);
+  fAllTree->Branch("lightEnergy", &fLightEnergy);
+  fAllTree->Branch("heavyAngleLab", &fLabHeavyAngle);
+  fAllTree->Branch("heavyEnergy", &fHeavyEnergy);
 }
 
 void MMAnalysis::CloseFile() {
@@ -45,7 +44,7 @@ void MMAnalysis::CloseFile() {
   fFile->Close();
 }
 
-void MMAnalysis::SetGunEnergy(double gunEnergy) {
+void MMAnalysis::SetGunEnergy(G4double gunEnergy) {
   fGunEnergy = gunEnergy;
 }
 
@@ -53,11 +52,11 @@ void MMAnalysis::SetICGridEnergy(std::vector<G4double>& v) {
   fICGridEnergy = v;
 }
 
-void MMAnalysis::SetICGridTotalEnergy(double energy) {
+void MMAnalysis::SetICGridTotalEnergy(G4double energy) {
   fICGridTotalEnergy = energy;
 }
 
-void MMAnalysis::SetScintE(double energy) {
+void MMAnalysis::SetScintE(G4double energy) {
   fScintE = energy;
 }
 
@@ -69,32 +68,32 @@ void MMAnalysis::SetScintCharge(int charge) {
   fScintCharge = charge;
 }
 
-void MMAnalysis::SetScintXPos(double position) {
+void MMAnalysis::SetScintXPos(G4double position) {
   fScintXPos = position;
 }
 
-void MMAnalysis::SetScintYPos(double position) {
+void MMAnalysis::SetScintYPos(G4double position) {
   fScintYPos = position;
 }
 
-void MMAnalysis::SetScintZPos(double position) {
+void MMAnalysis::SetScintZPos(G4double position) {
   fScintZPos = position;
 }
 
-void MMAnalysis::SetLightAngleLab(double angle) {
-  fLightAngleLab = angle;
+void MMAnalysis::SetLabLightAngle(G4double angle) {
+  fLabLightAngle = angle;
 }
 
-void MMAnalysis::SetLightEnergyLab(double energy) {
-  fLightEnergyLab = energy;
+void MMAnalysis::SetLightEnergy(G4double energy) {
+  fLightEnergy = energy;
 }
 
-void MMAnalysis::SetHeavyAngleLab(double angle) {
-  fHeavyAngleLab = angle;
+void MMAnalysis::SetLabHeavyAngle(G4double angle) {
+  fLabHeavyAngle = angle;
 }
 
-void MMAnalysis::SetHeavyEnergyLab(double energy) {
-  fHeavyEnergyLab = energy;
+void MMAnalysis::SetHeavyEnergy(G4double energy) {
+  fHeavyEnergy = energy;
 }
 
 void MMAnalysis::Fill() {
