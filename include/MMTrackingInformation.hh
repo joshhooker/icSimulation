@@ -13,6 +13,7 @@ public:
 
   void Print() const;
 
+  G4double GetEnergy() const {return fEnergy;}
   G4double GetCMEnergy() const {return fCMEnergy;}
   G4double GetCMLightTheta() const {return fCMLightTheta;}
   G4double GetLabLightTheta() const {return fLabLightTheta;}
@@ -23,6 +24,7 @@ public:
   G4double GetHeavyEnergy() const {return fHeavyEnergy;}
   G4ThreeVector GetVertex() const {return fVertex;}
 
+  void SetEnergy(G4double energy) {fEnergy = energy;}
   void SetCMEnergy(G4double cmEnergy) {fCMEnergy = cmEnergy;}
   void SetCMLightTheta(G4double theta) {fCMLightTheta = theta;}
   void SetLabLightTheta(G4double theta) {fLabLightTheta = theta;}

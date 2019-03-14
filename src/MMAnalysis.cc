@@ -32,8 +32,12 @@ void MMAnalysis::OpenFile() {
   fTree->Branch("scintZPos", &fScintZPos);
 
   fAllTree = new TTree("allData", "all events");
+  fAllTree->Branch("energy", &fEnergy);
+  fAllTree->Branch("cmEnergy", &fCMEnergy);
+  fAllTree->Branch("lighAngleCM", &fCMLightAngle);
   fAllTree->Branch("lightAngleLab", &fLabLightAngle);
   fAllTree->Branch("lightEnergy", &fLightEnergy);
+  fAllTree->Branch("heavyAngleCM", &fCMHeavyAngle);
   fAllTree->Branch("heavyAngleLab", &fLabHeavyAngle);
   fAllTree->Branch("heavyEnergy", &fHeavyEnergy);
 }
@@ -60,11 +64,11 @@ void MMAnalysis::SetScintE(G4double energy) {
   fScintE = energy;
 }
 
-void MMAnalysis::SetScintMass(int mass) {
+void MMAnalysis::SetScintMass(G4int mass) {
   fScintMass = mass;
 }
 
-void MMAnalysis::SetScintCharge(int charge) {
+void MMAnalysis::SetScintCharge(G4int charge) {
   fScintCharge = charge;
 }
 
@@ -80,12 +84,28 @@ void MMAnalysis::SetScintZPos(G4double position) {
   fScintZPos = position;
 }
 
+void MMAnalysis::SetEnergy(G4double energy) {
+  fEnergy = energy;
+}
+
+void MMAnalysis::SetCMEnergy(G4double energy) {
+  fCMEnergy = energy;
+}
+
+void MMAnalysis::SetCMLightAngle(G4double angle) {
+  fCMLightAngle = angle;
+}
+
 void MMAnalysis::SetLabLightAngle(G4double angle) {
   fLabLightAngle = angle;
 }
 
 void MMAnalysis::SetLightEnergy(G4double energy) {
   fLightEnergy = energy;
+}
+
+void MMAnalysis::SetCMHeavyAngle(G4double angle) {
+  fCMHeavyAngle = angle;
 }
 
 void MMAnalysis::SetLabHeavyAngle(G4double angle) {
