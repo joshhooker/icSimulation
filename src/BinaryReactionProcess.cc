@@ -161,6 +161,13 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 void BinaryReactionProcess::StartTracking(G4Track* track) {
   G4VProcess::StartTracking(track);	// Apply base class actions
 
-  fScatteringEnergy = track->GetKineticEnergy()*G4UniformRand()/MeV;
+  // To make interaction happen anywhere from beam energy to 0
+  // fScatteringEnergy = track->GetKineticEnergy()*G4UniformRand()/MeV;
+
+  // To make interaction happen anywhere from beam energy to beam energy - 20 MeV
+  G4double beamEnergy = track->GetKineticEnergy()/MeV;
+  G4double beamEnergyMin = 20.*MeV;
+
+  fScatteringEnergy = (beamEnergy - beamEnergyMin)*G4UniformRand() + beamEnergyMin;
 }
 
