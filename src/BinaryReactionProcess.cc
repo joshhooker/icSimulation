@@ -48,9 +48,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
 
-  // G4cout << aTrack.GetDefinition()->GetAtomicMass() << G4endl;
   if(aTrack.GetDefinition()->GetAtomicMass() != 7) {
-    // G4cout << aTrack.GetDefinition()->GetAtomicMass() << G4endl;
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
 
@@ -84,8 +82,6 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   G4ThreeVector lightVector(sin(pAngleLightLab)*cos(aAngleLightLab), sin(pAngleLightLab)*sin(aAngleLightLab),
                             cos(pAngleLightLab));
   G4ThreeVector beamVector(0., 0., 1.);
-
-  // G4cout << pAngleLightLab*180./M_PI << '\t' << aAngleLightLab*180./M_PI << '\t' << lightVector << '\t' << angleLightLab*180./M_PI << G4endl;
 
   G4double lightEnergyLab = (B <= D) ? totalEnergy*B*pow(cos(pAngleLightLab) +
                                        sqrt(D/B - sin(pAngleLightLab)*sin(pAngleLightLab)), 2.) :
