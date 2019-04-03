@@ -105,7 +105,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   // C2D4 Target
   // 6.60 um for 0.7 mg/cm2
   // 3.77 um for 0.4 mg/cm2
-  G4VSolid* targetSolid = new G4Tubs("targetSolid", 0., 10*mm, 6.60/2.*um, 0., 360.*deg);
+  G4VSolid* targetSolid = new G4Tubs("targetSolid", 0., 20*mm, 6.60/2.*um, 0., 360.*deg);
   fTargetLogical =  new G4LogicalVolume(targetSolid, C2D4, "targetLogical");
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), fTargetLogical, "targetPhysical", fWorldLogical,
                                                         false, 0, checkOverlaps);
