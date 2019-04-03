@@ -7,7 +7,7 @@
 class MMTrackingInformation : public G4VUserTrackInformation {
 
 public:
-  MMTrackingInformation(G4double, G4double, G4double, G4double, G4double,
+  MMTrackingInformation(G4int, G4double, G4double, G4double, G4double, G4double,
                         G4double, G4double, G4double, G4double, G4ThreeVector);
   ~MMTrackingInformation();
 
@@ -23,6 +23,7 @@ public:
   G4double GetLightEnergy() const {return fLightEnergy;}
   G4double GetHeavyEnergy() const {return fHeavyEnergy;}
   G4ThreeVector GetVertex() const {return fVertex;}
+  G4int GetReactionType() const {return fReactionType;}
 
   void SetEnergy(G4double energy) {fEnergy = energy;}
   void SetCMEnergy(G4double cmEnergy) {fCMEnergy = cmEnergy;}
@@ -34,6 +35,7 @@ public:
   void SetLightEnergy(G4double energy) {fLightEnergy = energy;}
   void SetHeavyEnergy(G4double energy) {fHeavyEnergy = energy;}
   void SetVertex(G4ThreeVector v) {fVertex = v;}
+  void SetReactionType(G4int type) {fReactionType = type;}
 
 private:
   G4double fEnergy;
@@ -46,6 +48,8 @@ private:
   G4double fLightEnergy;
   G4double fHeavyEnergy;
   G4ThreeVector fVertex;
+
+  G4int fReactionType;
 };
 
 #endif

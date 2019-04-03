@@ -2,7 +2,8 @@
 
 MMAnalysis* MMAnalysis::fInstance = NULL;
 
-MMAnalysis::MMAnalysis() {}
+MMAnalysis::MMAnalysis()
+  : fReactionType(0) {}
 
 MMAnalysis* MMAnalysis::Instance() {
   if(!fInstance) {
@@ -19,17 +20,19 @@ void MMAnalysis::OpenFile() {
   fFile = new TFile(fFilename.c_str(),"recreate");
 
   fTree = new TTree("simData", "simulation data");
-  fTree->Branch("gunEnergy", &fGunEnergy, "gunEnergy/D");
+  fTree->Branch("gunEnergy", &fGunEnergy);
 
   fTree->Branch("icGridEnergy", &fICGridEnergy);
-  fTree->Branch("icGridTotalEnergy", &fICGridTotalEnergy, "icGridTotalE/D");
+  fTree->Branch("icGridTotalEnergy", &fICGridTotalEnergy);
 
-  fTree->Branch("scintE", &fScintE, "scintE/D");
+  fTree->Branch("scintE", &fScintE);
   fTree->Branch("scintMass", &fScintMass);
   fTree->Branch("scintCharge", &fScintCharge);
   fTree->Branch("scintXPos", &fScintXPos);
   fTree->Branch("scintYPos", &fScintYPos);
   fTree->Branch("scintZPos", &fScintZPos);
+
+  fTree->Branch("reactionType", &fReactionType);
 
   fAllTree = new TTree("allData", "all events");
   fAllTree->Branch("energy", &fEnergy);
@@ -40,6 +43,7 @@ void MMAnalysis::OpenFile() {
   fAllTree->Branch("heavyAngleCM", &fCMHeavyAngle);
   fAllTree->Branch("heavyAngleLab", &fLabHeavyAngle);
   fAllTree->Branch("heavyEnergy", &fHeavyEnergy);
+  fAllTree->Branch("reactionType", &fReactionType);
 }
 
 void MMAnalysis::CloseFile() {
@@ -114,6 +118,10 @@ void MMAnalysis::SetLabHeavyAngle(G4double angle) {
 
 void MMAnalysis::SetHeavyEnergy(G4double energy) {
   fHeavyEnergy = energy;
+}
+
+void MMAnalysis::SetReactionType(G4int reactionType) {
+  fReactionType = reactionType;
 }
 
 void MMAnalysis::Fill() {

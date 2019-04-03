@@ -43,6 +43,9 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
     mfp = 0.;
   }
 
+  MMAnalysis* analysis = MMAnalysis::Instance();
+  analysis->SetReactionType(0);
+
   *condition = NotForced;
   return mfp;
 }
@@ -72,8 +75,10 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   aParticleChange.Initialize(aTrack);
 
   // Randomly choose if populating excited states
+  G4int reactionType = 1;
   G4double excitedEnergy = 0.;
   if(G4UniformRand() > 0.5) {
+    reactionType = 2;
     excitedEnergy = fExcitedStateEnergy;
   }
 
@@ -152,7 +157,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 
   G4Track* sec1 = new G4Track(new G4DynamicParticle(light,lightLab.unit(), lightEnergyLab*MeV),
                   aTrack.GetGlobalTime(), aTrack.GetPosition());
-  sec1->SetUserInformation(new MMTrackingInformation(energy, energy*fTargetMass/(static_cast<G4double>(projectileMass)
+  sec1->SetUserInformation(new MMTrackingInformation(reactionType, energy, energy*fTargetMass/(static_cast<G4double>(projectileMass)
                                                      + static_cast<G4double>(fTargetMass)), pAngleLightCM,
                                                      pAngleLightLab, aAngleLightCM, pAngleHeavyCM, pAngleHeavyLab,
                                                      lightEnergyLab, heavyEnergyLab, aTrack.GetPosition()));
