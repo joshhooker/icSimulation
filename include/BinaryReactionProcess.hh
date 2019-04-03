@@ -19,7 +19,7 @@ public:
   G4double GetMeanFreePath(const G4Track&, G4double, G4ForceCondition*);
   G4VParticleChange* PostStepDoIt(const G4Track&, const G4Step&);
 
-  G4VParticleChange* Decay(const G4Track&, const G4Step&, G4int, G4int, G4int, G4int);
+  G4VParticleChange* Decay(const G4Track&, G4int, G4int, G4int, G4int);
 
   void StartTracking(G4Track*);
 
