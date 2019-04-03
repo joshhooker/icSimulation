@@ -44,6 +44,10 @@ public:
     fNumGrids = numGrids;
   }
 
+  void SetExcitedStateEnergy(G4double energy) {
+    fExcitedStateEnergy = energy;
+  }
+
 private:
   G4double fQValue;
   G4int fLightProductCharge;
@@ -53,6 +57,8 @@ private:
   G4int fTargetCharge;
   G4int fTargetMass;
   G4int fNumGrids;
+
+  G4double fExcitedStateEnergy;
 };
 
 #endif

@@ -72,6 +72,7 @@ foreach(_script ${_SCRIPTS})
     COPYONLY
     )
 endforeach()
+
 #
 #----------------------------------------------------------------------------
 # Add program to the project targets
@@ -83,4 +84,3 @@ add_custom_target(MM DEPENDS mmSim)
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 install(TARGETS mmSim DESTINATION bin)
-

@@ -63,6 +63,8 @@ int main(int argc,char** argv)
   G4int targetCharge       = config["target"][0].asInt();
   G4int targetMass         = config["target"][1].asInt();
 
+  G4double excitedStateEnergy = config["excitedStateEnergy"].asDouble();
+
   G4bool writeAllEvents = config["writeAllEvents"].asBool();
 
   // Work out fanoFactor and workFunction from gasType
@@ -123,6 +125,7 @@ int main(int argc,char** argv)
   reactionPhysics->SetLightProduct(lightProductCharge, lightProductMass);
   reactionPhysics->SetHeavyProduct(heavyProductCharge, heavyProductMass);
   reactionPhysics->SetNumGrids(numGrids);
+  reactionPhysics->SetExcitedStateEnergy(excitedStateEnergy);
   physicsList->RegisterPhysics(reactionPhysics);
   runManager->SetUserInitialization(physicsList);
 

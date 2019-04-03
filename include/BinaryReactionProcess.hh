@@ -9,6 +9,8 @@
 #include "MMDetectorConstruction.hh"
 #include "MMTrackingInformation.hh"
 
+#include <cmath>
+
 class BinaryReactionProcess : public G4VDiscreteProcess {
 public:
   BinaryReactionProcess(const G4String& name = "BinaryReaction");
@@ -16,6 +18,8 @@ public:
 
   G4double GetMeanFreePath(const G4Track&, G4double, G4ForceCondition*);
   G4VParticleChange* PostStepDoIt(const G4Track&, const G4Step&);
+
+  G4VParticleChange* Decay(const G4Track&, const G4Step&, G4int, G4int, G4int, G4int);
 
   void StartTracking(G4Track*);
 
@@ -46,6 +50,10 @@ public:
     fNumGrids = numGrids;
   }
 
+  void SetExcitedStateEnergy(G4double energy) {
+    fExcitedStateEnergy = energy;
+  }
+
   G4double GetLightProductMass() {
     return fLightProductMass;
   }
@@ -65,6 +73,7 @@ private:
   G4int fHeavyProductMass;
   G4int fHeavyProductCharge;
   G4int fNumGrids;
+  G4double fExcitedStateEnergy;
 };
 
 #endif
