@@ -72,7 +72,7 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
     fScintZPos = (*hScint)[0]->GetZPosition()/mm;
   }
 
-  if(fWriteAllEvents && fScintMass == 8 && fScintCharge == 5) analysis->FillAll();
+  if(fWriteAllEvents) analysis->FillAll();
 
   if(fScintE < 0.001) return;
 

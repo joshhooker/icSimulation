@@ -38,6 +38,7 @@ public:
   void SetReactionType(G4int type) {fReactionType = type;}
 
 private:
+  G4int fReactionType;
   G4double fEnergy;
   G4double fCMEnergy;
   G4double fCMLightTheta;
@@ -48,8 +49,6 @@ private:
   G4double fLightEnergy;
   G4double fHeavyEnergy;
   G4ThreeVector fVertex;
-
-  G4int fReactionType;
 };
 
 #endif

@@ -39,7 +39,7 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
   }
 
   if((excitedname != "Be7") && (excitedname != "Li6") && (excitedname != "Li7") &&
-    (excitedname != "B8")) {
+    (excitedname != "B8") && (excitedname != "He4")) {
     mfp = 0.;
   }
 
@@ -77,25 +77,29 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   // Randomly choose if populating excited states
   G4int reactionType = 1;
   G4double excitedEnergy = 0.;
+  G4double qValue = fQValue;
   if(G4UniformRand() > 0.5) {
     reactionType = 2;
+    qValue -= fExcitedStateEnergy;
     excitedEnergy = fExcitedStateEnergy;
   }
 
   G4double energy = aTrack.GetKineticEnergy()/MeV;
-  G4double totalEnergy = energy + fQValue - excitedEnergy;
+  G4double totalEnergy = energy + qValue;
   G4ParticleDefinition* projectile = aTrack.GetDefinition();
   G4double projectileMass = projectile->GetAtomicMass();
 
-  G4double B = projectileMass*fLightProductMass/(projectileMass + fTargetMass)/(fLightProductMass +
-               fHeavyProductMass)*(energy/totalEnergy);
-  G4double D = fTargetMass*fHeavyProductMass/(projectileMass + fTargetMass)/(fLightProductMass +
-               fHeavyProductMass)*(1. + projectileMass/fTargetMass*fQValue/totalEnergy);
+  G4double B = static_cast<G4double>(projectileMass)*static_cast<G4double>(fLightProductMass)/(static_cast<G4double>(projectileMass) +
+    static_cast<G4double>(fTargetMass))/(static_cast<G4double>(fLightProductMass) + static_cast<G4double>(fHeavyProductMass))*(energy/totalEnergy);
+  G4double D = static_cast<G4double>(fTargetMass)*static_cast<G4double>(fHeavyProductMass)/(static_cast<G4double>(projectileMass) +
+    static_cast<G4double>(fTargetMass))/(static_cast<G4double>(fLightProductMass) + static_cast<G4double>(fHeavyProductMass))*
+    (1. + static_cast<G4double>(projectileMass)/static_cast<G4double>(fTargetMass)*qValue/totalEnergy);
 
   G4double maxAngle = (B < D) ? M_PI : asin(sqrt(D/B));
 
   G4double arg = (1. - cos(maxAngle))*G4UniformRand() + cos(maxAngle);
-  G4double pAngleLightLab = acos(arg);
+  // G4double pAngleLightLab = acos(arg);
+  G4double pAngleLightLab = M_PI*G4UniformRand();
   G4double aAngleLightLab = 2.*M_PI*G4UniformRand();
   G4ThreeVector lightVector(sin(pAngleLightLab)*cos(aAngleLightLab), sin(pAngleLightLab)*sin(aAngleLightLab),
                             cos(pAngleLightLab));
@@ -115,8 +119,8 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   G4double pAngleLightCM = (val2 > val) ? asin(val) : M_PI - asin(val);
   G4double aAngleLightCM = aAngleLightLab;
 
-  G4double pAngleHeavyLab = asin(sqrt(static_cast<G4double>(fLightProductMass)/
-                                      (static_cast<G4double>(fHeavyProductMass))*lightEnergyLab/heavyEnergyLab)*sin(pAngleLightLab));
+  G4double pAngleHeavyLab = asin(sqrt(static_cast<G4double>(fLightProductMass)/(static_cast<G4double>(fHeavyProductMass))*
+    lightEnergyLab/heavyEnergyLab)*sin(pAngleLightLab));
   G4ThreeVector heavyVector(-1.*sin(pAngleHeavyLab)*cos(aAngleLightLab), -1.*sin(pAngleHeavyLab)*sin(aAngleLightLab),
                             cos(pAngleHeavyLab));
   G4double pAngleHeavyCM = M_PI - pAngleLightCM;
@@ -187,29 +191,29 @@ void BinaryReactionProcess::StartTracking(G4Track* track) {
   fScatteringEnergy = (beamEnergy - beamEnergyMin)*G4UniformRand() + beamEnergyMin;
 }
 
-G4VParticleChange* BinaryReactionProcess::Decay(const G4Track& aTrack, G4int Z1, G4int A1,
-  G4int Z2, G4int A2) {
+G4VParticleChange* BinaryReactionProcess::Decay(const G4Track& aTrack, G4int lightCharge, G4int lightMass,
+  G4int heavyCharge, G4int heavyMass) {
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 
   // Setup Particle 1
   G4DynamicParticle* particle1 = new G4DynamicParticle;
   G4ParticleDefinition* particle1Def;
-  if(Z1 == 0 && A1 == 1) {
+  if(lightCharge == 0 && lightMass == 1) {
     G4String particleName;
     particle1Def = particleTable->FindParticle(particleName="neutron");
   }
   else {
-    if(particleTable->GetIonTable()->FindIon(Z1, A1, 0.)) {
-      particle1Def = particleTable->GetIonTable()->FindIon(Z1, A1, 0.);
+    if(particleTable->GetIonTable()->FindIon(lightCharge, lightMass, 0.)) {
+      particle1Def = particleTable->GetIonTable()->FindIon(lightCharge, lightMass, 0.);
     }
-    else particle1Def = particleTable->GetIonTable()->GetIon(Z1, A1, 0.);
+    else particle1Def = particleTable->GetIonTable()->GetIon(lightCharge, lightMass, 0.);
   }
   particle1->SetDefinition(particle1Def);
   G4double particle1Mass = particle1Def->GetPDGMass()/CLHEP::amu_c2;
 
   // Setup Particle 2
   G4DynamicParticle* particle2 = new G4DynamicParticle;
-  G4ParticleDefinition* particle2Def = G4IonTable::GetIonTable()->GetIon(Z2, A2, 0.);
+  G4ParticleDefinition* particle2Def = G4IonTable::GetIonTable()->GetIon(heavyCharge, heavyMass, 0.);
   particle2->SetDefinition(particle2Def);
   G4double particle2Mass = particle2Def->GetPDGMass()/CLHEP::amu_c2;
 
@@ -220,8 +224,8 @@ G4VParticleChange* BinaryReactionProcess::Decay(const G4Track& aTrack, G4int Z1,
   if(cmEnergy < 0.) return &aParticleChange; // Below the threshold
 
   // Generate random CM Angles
-  G4double cmTheta = G4UniformRand()*4.*atan(1.); // 0 to pi
-  G4double cmPhi = G4UniformRand()*4.*2.*atan(1.); // 0 to 2pi
+  G4double cmTheta = M_PI*G4UniformRand();; // 0 to pi
+  G4double cmPhi = 2.*M_PI*G4UniformRand(); // 0 to 2pi
 
   G4double p1 = sqrt(2.*particle1->GetMass()*cmEnergy*particle2Mass/(particle1Mass + particle2Mass));
   G4double p2 = sqrt(2.*particle2->GetMass()*cmEnergy*particle1Mass/(particle1Mass + particle2Mass));
