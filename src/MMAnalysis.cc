@@ -2,8 +2,9 @@
 
 MMAnalysis* MMAnalysis::fInstance = NULL;
 
-MMAnalysis::MMAnalysis()
-  : fReactionType(0) {}
+MMAnalysis::MMAnalysis() {
+  fReactionType = 0;
+}
 
 MMAnalysis* MMAnalysis::Instance() {
   if(!fInstance) {

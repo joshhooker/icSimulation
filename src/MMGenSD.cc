@@ -22,6 +22,9 @@ G4bool MMGenSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
   G4int hitMass = step->GetTrack()->GetDefinition()->GetAtomicMass();
   G4int hitCharge = step->GetTrack()->GetDefinition()->GetAtomicNumber();
 
+  G4String type = step->GetTrack()->GetDefinition()->GetParticleType();
+  if(type != "nucleus" && type != "baryon") return true;
+
   if (edep==0.) return true;
 
   G4StepPoint* preStepPoint = step->GetPreStepPoint();

@@ -175,6 +175,9 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   aParticleChange.ProposeEnergy(0.);
   aParticleChange.ProposeTrackStatus(fStopAndKill);
 
+  // G4cout << "Reaction" << G4endl;
+  // G4cout << reactionType << '\t' << heavy->GetParticleName() << '\t' << aTrack.GetTrackID() << G4endl;
+
   return &aParticleChange;
 }
 
