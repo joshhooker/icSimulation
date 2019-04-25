@@ -1,5 +1,5 @@
 from ROOT import TCanvas, TFile, TPad
-from ROOT import TH1F, TH2F
+from ROOT import TH1F, TH1I, TH2F
 from ROOT import gROOT, gStyle
 
 tfile = TFile.Open("sim.root", "read")
@@ -38,8 +38,13 @@ heavyEnergy
 2: 7Be or 1H with trackID = 5, 4 there was (d, n)8B*
 '''
 
+# Output Files
+output_root = TFile("output.root", "recreate")
+
+# Canvas Definitions
 c1 = TCanvas('c1', 'Scint. Energy vs Grid Energy', 200, 10, 800, 600 )
-c2 = TCanvas('c2', 'Scint. Energy vs Grid Energy with Reaction Types', 500, 10, 800, 600 )
+c2 = TCanvas('scintGridRT', 'Scint. Energy vs Grid Energy with Reaction Types', 500, 10, 800, 600 )
+c3 = TCanvas('scintGridMP', 'Scint. Energy vs Grid Energy with Multiple Particles', 800, 10, 800, 600 )
 
 gStyle.SetOptStat(10)
 gStyle.SetStatW(0.1)
@@ -54,6 +59,11 @@ h_scint_grid_rt.append(TH2F('scintGridRT0', 'Scint. Energy vs Grid Energy with R
 h_scint_grid_rt.append(TH2F('scintGridRT1', 'Scint. Energy vs Grid Energy with Reaction Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
 h_scint_grid_rt.append(TH2F('scintGridRT2', 'Scint. Energy vs Grid Energy with Reaction Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
 
+h_scint_grid_mp = []
+h_scint_grid_mp.append(TH2F('scintGridMP0', 'Scint. Energy vs Grid Energy with Multiple Particles; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
+h_scint_grid_mp.append(TH2F('scintGridMP1', 'Scint. Energy vs Grid Energy with Multiple Particles; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
+
+h_multiple_particles = TH2F('multiple_particles', 'Mass vs Charge of Events with > 1 Particles; Mass; Charge', 9, 0, 9, 9, 0, 9)
 
 # Loop over all events in simData
 for event in sim_data:
@@ -69,6 +79,19 @@ for event in sim_data:
       (sim_data.scintTrackID[i] == 4 and sim_data.scintCharge[i] == 1 and sim_data.scintMass[i] == 1)):
       reaction_type = 2
 
+  # Get events with multiple particles hitting scintillator
+  multiple_particles = 0
+  for i in range(len(sim_data.scintTrackID)):
+    if i == 0:
+      previousTrack = sim_data.scintTrackID[i]
+    else:
+      currentTrack = sim_data.scintTrackID[i]
+      if(previousTrack != currentTrack):
+        multiple_particles = 1
+
+  if multiple_particles:
+    for i in range(len(sim_data.scintTrackID)):
+      h_multiple_particles.Fill(sim_data.scintMass[i], sim_data.scintCharge[i])
 
   # Get energy in scintillator
   scintillator_energy = 0
@@ -82,9 +105,21 @@ for event in sim_data:
   # Fill Histograms
   h_scint_grid.Fill(scintillator_energy, grid_energy)
   h_scint_grid_rt[reaction_type].Fill(scintillator_energy, grid_energy)
+  h_scint_grid_mp[multiple_particles].Fill(scintillator_energy, grid_energy)
 
+############################
+# Done with event by event #
+############################
 
+# Write histograms to file
+h_scint_grid.Write()
+for i in range(len(h_scint_grid_rt)):
+  h_scint_grid_rt[i].Write()
+for i in range(len(h_scint_grid_mp)):
+  h_scint_grid_mp[i].Write()
+h_multiple_particles.Write()
 
+# Draw histograms
 c1.cd()
 h_scint_grid.Draw()
 c1.Update()
@@ -103,5 +138,16 @@ h_scint_grid_rt[2].SetMarkerSize(0.3)
 h_scint_grid_rt[2].SetMarkerColor(3)
 h_scint_grid_rt[2].Draw("PSame")
 c2.Update()
+c2.Write()
+
+c3.cd()
+h_scint_grid_mp[0].SetMarkerColor(1)
+h_scint_grid_mp[0].Draw("P")
+h_scint_grid_mp[1].SetMarkerStyle(20)
+h_scint_grid_mp[1].SetMarkerSize(0.3)
+h_scint_grid_mp[1].SetMarkerColor(2)
+h_scint_grid_mp[1].Draw("PSame")
+c3.Update()
+c3.Write()
 
 input('Press Enter to Exit')
