@@ -26,12 +26,14 @@ public:
   void SetICGridEnergy(std::vector<G4double>& v);
   void SetICGridTotalEnergy(G4double);
 
-  void SetScintE(G4double);
-  void SetScintMass(G4int);
-  void SetScintCharge(G4int);
-  void SetScintXPos(G4double);
-  void SetScintYPos(G4double);
-  void SetScintZPos(G4double);
+  void SetScintXPos(std::vector<G4double>);
+  void SetScintYPos(std::vector<G4double>);
+  void SetScintZPos(std::vector<G4double>);
+  void SetScintE(std::vector<G4double>);
+  void SetScintT(std::vector<G4double>);
+  void SetScintTrackID(std::vector<G4int>);
+  void SetScintMass(std::vector<G4int>);
+  void SetScintCharge(std::vector<G4int>);
 
   void SetEnergy(G4double);
   void SetCMEnergy(G4double);
@@ -61,12 +63,14 @@ private:
   std::vector<G4double> fICGridEnergy;
   G4double fICGridTotalEnergy;
 
-  G4double fScintE;
-  G4int fScintMass;
-  G4int fScintCharge;
-  G4double fScintXPos;
-  G4double fScintYPos;
-  G4double fScintZPos;
+  std::vector<G4double> fScintXPos;
+  std::vector<G4double> fScintYPos;
+  std::vector<G4double> fScintZPos;
+  std::vector<G4double> fScintE;
+  std::vector<G4double> fScintT;
+  std::vector<G4int> fScintTrackID;
+  std::vector<G4int> fScintCharge;
+  std::vector<G4int> fScintMass;
 
   G4double fEnergy;
   G4double fCMEnergy;

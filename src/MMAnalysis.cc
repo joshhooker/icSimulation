@@ -26,12 +26,14 @@ void MMAnalysis::OpenFile() {
   fTree->Branch("icGridEnergy", &fICGridEnergy);
   fTree->Branch("icGridTotalEnergy", &fICGridTotalEnergy);
 
-  fTree->Branch("scintE", &fScintE);
-  fTree->Branch("scintMass", &fScintMass);
-  fTree->Branch("scintCharge", &fScintCharge);
   fTree->Branch("scintXPos", &fScintXPos);
   fTree->Branch("scintYPos", &fScintYPos);
   fTree->Branch("scintZPos", &fScintZPos);
+  fTree->Branch("scintE", &fScintE);
+  fTree->Branch("scintT", &fScintT);
+  fTree->Branch("scintTrackID", &fScintTrackID);
+  fTree->Branch("scintMass", &fScintMass);
+  fTree->Branch("scintCharge", &fScintCharge);
 
   fTree->Branch("reactionType", &fReactionType);
 
@@ -65,28 +67,36 @@ void MMAnalysis::SetICGridTotalEnergy(G4double energy) {
   fICGridTotalEnergy = energy;
 }
 
-void MMAnalysis::SetScintE(G4double energy) {
-  fScintE = energy;
-}
-
-void MMAnalysis::SetScintMass(G4int mass) {
-  fScintMass = mass;
-}
-
-void MMAnalysis::SetScintCharge(G4int charge) {
-  fScintCharge = charge;
-}
-
-void MMAnalysis::SetScintXPos(G4double position) {
+void MMAnalysis::SetScintXPos(std::vector<G4double> position) {
   fScintXPos = position;
 }
 
-void MMAnalysis::SetScintYPos(G4double position) {
+void MMAnalysis::SetScintYPos(std::vector<G4double> position) {
   fScintYPos = position;
 }
 
-void MMAnalysis::SetScintZPos(G4double position) {
+void MMAnalysis::SetScintZPos(std::vector<G4double> position) {
   fScintZPos = position;
+}
+
+void MMAnalysis::SetScintE(std::vector<G4double> energy) {
+  fScintE = energy;
+}
+
+void MMAnalysis::SetScintT(std::vector<G4double> time) {
+  fScintT = time;
+}
+
+void MMAnalysis::SetScintTrackID(std::vector<G4int> trackID) {
+  fScintTrackID = trackID;
+}
+
+void MMAnalysis::SetScintCharge(std::vector<G4int> charge) {
+  fScintCharge = charge;
+}
+
+void MMAnalysis::SetScintMass(std::vector<G4int> mass) {
+  fScintMass = mass;
 }
 
 void MMAnalysis::SetEnergy(G4double energy) {

@@ -2,6 +2,7 @@
 #define MMEventAction_h
 
 #include "G4Event.hh"
+#include "G4ParticleDefinition.hh"
 #include "G4SDManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
@@ -61,13 +62,6 @@ public:
 private:
   std::vector<G4int> fICGridHCID;
   G4int fScintHCID;
-
-  G4int fScintMass;
-  G4int fScintCharge;
-  G4double fScintE;
-  G4double fScintXPos;
-  G4double fScintYPos;
-  G4double fScintZPos;
 
   std::vector<G4double> fICGridE;
 
