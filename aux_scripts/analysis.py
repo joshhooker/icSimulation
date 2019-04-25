@@ -19,7 +19,6 @@ scintT [vector]
 scintTrackID [vector]
 scintMass [vector]
 scintCharge [vector]
-reactionType
 '''
 
 ''' allData Branches
@@ -31,7 +30,6 @@ lightEnergy
 heavyAngleCM
 heavyAngleLab
 heavyEnergy
-reactionType
 '''
 
 ''' Reaction Types

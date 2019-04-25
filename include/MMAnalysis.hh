@@ -45,9 +45,6 @@ public:
   void SetLabHeavyAngle(G4double);
   void SetHeavyEnergy(G4double);
 
-  G4int GetReactionType() const {return fReactionType;}
-  void SetReactionType(G4int);
-
   void Fill();
   void FillAll();
 
@@ -82,7 +79,6 @@ private:
   G4double fLabHeavyAngle;
   G4double fHeavyEnergy;
 
-  G4int fReactionType;
 };
 
 #endif
