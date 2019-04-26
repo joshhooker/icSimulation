@@ -1,3 +1,6 @@
+import numpy as np
+from sklearn.metrics import silhouette_score
+
 from ROOT import TCanvas, TFile, TPad
 from ROOT import TH1F, TH1I, TH2F
 from ROOT import gROOT, gStyle
@@ -71,6 +74,11 @@ for i in range(len(h_scint_grid_mp)):
 h_multiple_particles = TH2F('multiple_particles', 'Mass vs Charge of Events with > 1 Particles; Mass; Charge', 9, 0, 9, 9, 0, 9)
 h_multiple_particles.GetXaxis().CenterTitle(); h_multiple_particles.GetYaxis().CenterTitle();
 
+# Define variables for silhouette score
+silhouette_arr = []
+silhouette_label_2_clusters = []
+silhouette_label_3_clusters = []
+
 # Loop over all events in simData
 for event in sim_data:
 
@@ -109,6 +117,11 @@ for event in sim_data:
   for energy in sim_data.gridEnergy:
     grid_energy += energy
 
+  tmp_arr = [scintillator_energy, grid_energy]
+  silhouette_arr.append(tmp_arr)
+  silhouette_label_2_clusters.append(1 if reaction_type > 0 else 0)
+  silhouette_label_3_clusters.append(reaction_type)
+
   # Fill Histograms
   h_scint_grid.Fill(scintillator_energy, grid_energy)
   h_scint_grid_rt[reaction_type].Fill(scintillator_energy, grid_energy)
@@ -142,5 +155,11 @@ h_scint_grid_rt[2].SetMarkerColor(3)
 h_scint_grid_rt[2].Draw("PSame")
 c2.Update()
 c2.Write()
+
+silhouette_avg_2_clusters = silhouette_score(silhouette_arr, silhouette_label_2_clusters)
+print("Silhouette Score for 2 Clusters: ", silhouette_avg_2_clusters)
+
+silhouette_avg_3_clusters = silhouette_score(silhouette_arr, silhouette_label_3_clusters)
+print("Silhouette Score for 3 Clusters: ", silhouette_avg_3_clusters)
 
 input('Press Enter to Exit')
