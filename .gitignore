@@ -5,3 +5,4 @@ build/
 *.user
 cmake-build-debug/
 sim.root
+output.root

@@ -9,13 +9,14 @@ all_data = tfile.Get("allData")
 
 ''' simData Branches
 gunEnergy
-icGridEnergy [vector]
-icGridTotalEnergy
-scintXPos [vector]
-scintYPos [vector]
-scintZPos [vector]
-scintE [vector]
-scintT [vector]
+gridEnergy [vector]
+gridID [vector]
+gridTrackID [vector]
+scintXPosition [vector]
+scintYPosition [vector]
+scintZPosition [vector]
+scintEnergy [vector]
+scintTime [vector]
 scintTrackID [vector]
 scintMass [vector]
 scintCharge [vector]
@@ -42,9 +43,8 @@ heavyEnergy
 output_root = TFile("output.root", "recreate")
 
 # Canvas Definitions
-c1 = TCanvas('c1', 'Scint. Energy vs Grid Energy', 200, 10, 800, 600 )
+#c1 = TCanvas('c1', 'Scint. Energy vs Grid Energy', 200, 10, 800, 600 )
 c2 = TCanvas('scintGridRT', 'Scint. Energy vs Grid Energy with Reaction Types', 500, 10, 800, 600 )
-c3 = TCanvas('scintGridMP', 'Scint. Energy vs Grid Energy with Multiple Particles', 800, 10, 800, 600 )
 
 gStyle.SetOptStat(10)
 gStyle.SetStatW(0.1)
@@ -95,12 +95,13 @@ for event in sim_data:
 
   # Get energy in scintillator
   scintillator_energy = 0
-  for energy in sim_data.scintE:
+  for energy in sim_data.scintEnergy:
     scintillator_energy += energy
 
   # Get emergy in grids
-  grid_energy = sim_data.icGridTotalEnergy
-
+  grid_energy = 0
+  for energy in sim_data.gridEnergy:
+    grid_energy += energy
 
   # Fill Histograms
   h_scint_grid.Fill(scintillator_energy, grid_energy)
@@ -120,10 +121,6 @@ for i in range(len(h_scint_grid_mp)):
 h_multiple_particles.Write()
 
 # Draw histograms
-c1.cd()
-h_scint_grid.Draw()
-c1.Update()
-
 c2.cd()
 h_scint_grid_rt[0].SetMarkerStyle(20)
 h_scint_grid_rt[0].SetMarkerSize(0.3)
@@ -139,15 +136,5 @@ h_scint_grid_rt[2].SetMarkerColor(3)
 h_scint_grid_rt[2].Draw("PSame")
 c2.Update()
 c2.Write()
-
-c3.cd()
-h_scint_grid_mp[0].SetMarkerColor(1)
-h_scint_grid_mp[0].Draw("P")
-h_scint_grid_mp[1].SetMarkerStyle(20)
-h_scint_grid_mp[1].SetMarkerSize(0.3)
-h_scint_grid_mp[1].SetMarkerColor(2)
-h_scint_grid_mp[1].Draw("PSame")
-c3.Update()
-c3.Write()
 
 input('Press Enter to Exit')

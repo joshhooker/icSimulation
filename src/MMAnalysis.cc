@@ -21,14 +21,15 @@ void MMAnalysis::OpenFile() {
   fTree = new TTree("simData", "simulation data");
   fTree->Branch("gunEnergy", &fGunEnergy);
 
-  fTree->Branch("icGridEnergy", &fICGridEnergy);
-  fTree->Branch("icGridTotalEnergy", &fICGridTotalEnergy);
+  fTree->Branch("gridEnergy", &fGridEnergy);
+  fTree->Branch("gridID", &fGridID);
+  fTree->Branch("gridTrackID", &fGridTrackID);
 
-  fTree->Branch("scintXPos", &fScintXPos);
-  fTree->Branch("scintYPos", &fScintYPos);
-  fTree->Branch("scintZPos", &fScintZPos);
-  fTree->Branch("scintE", &fScintE);
-  fTree->Branch("scintT", &fScintT);
+  fTree->Branch("scintXPosition", &fScintXPosition);
+  fTree->Branch("scintYPosition", &fScintYPosition);
+  fTree->Branch("scintZPosition", &fScintZPosition);
+  fTree->Branch("scintEnergy", &fScintEnergy);
+  fTree->Branch("scintTime", &fScintTime);
   fTree->Branch("scintTrackID", &fScintTrackID);
   fTree->Branch("scintMass", &fScintMass);
   fTree->Branch("scintCharge", &fScintCharge);
@@ -54,32 +55,36 @@ void MMAnalysis::SetGunEnergy(G4double gunEnergy) {
   fGunEnergy = gunEnergy;
 }
 
-void MMAnalysis::SetICGridEnergy(std::vector<G4double>& v) {
-  fICGridEnergy = v;
+void MMAnalysis::SetGridEnergy(std::vector<G4double> energy) {
+  fGridEnergy = energy;
 }
 
-void MMAnalysis::SetICGridTotalEnergy(G4double energy) {
-  fICGridTotalEnergy = energy;
+void MMAnalysis::SetGridID(std::vector<G4int> id) {
+  fGridID = id;
 }
 
-void MMAnalysis::SetScintXPos(std::vector<G4double> position) {
-  fScintXPos = position;
+void MMAnalysis::SetGridTrackID(std::vector<G4int> trackID) {
+  fGridTrackID = trackID;
 }
 
-void MMAnalysis::SetScintYPos(std::vector<G4double> position) {
-  fScintYPos = position;
+void MMAnalysis::SetScintXPosition(std::vector<G4double> position) {
+  fScintXPosition = position;
 }
 
-void MMAnalysis::SetScintZPos(std::vector<G4double> position) {
-  fScintZPos = position;
+void MMAnalysis::SetScintYPosition(std::vector<G4double> position) {
+  fScintYPosition = position;
 }
 
-void MMAnalysis::SetScintE(std::vector<G4double> energy) {
-  fScintE = energy;
+void MMAnalysis::SetScintZPosition(std::vector<G4double> position) {
+  fScintZPosition = position;
 }
 
-void MMAnalysis::SetScintT(std::vector<G4double> time) {
-  fScintT = time;
+void MMAnalysis::SetScintEnergy(std::vector<G4double> energy) {
+  fScintEnergy = energy;
+}
+
+void MMAnalysis::SetScintTime(std::vector<G4double> time) {
+  fScintTime = time;
 }
 
 void MMAnalysis::SetScintTrackID(std::vector<G4int> trackID) {

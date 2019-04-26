@@ -59,23 +59,23 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
   MMAnalysis* analysis = MMAnalysis::Instance();
 
   // scintillator
-  std::vector<G4double> scintHitXPos;
-  std::vector<G4double> scintHitYPos;
-  std::vector<G4double> scintHitZPos;
-  std::vector<G4double> scintHitE;
-  std::vector<G4double> scintHitT;
+  std::vector<G4double> scintHitXPosition;
+  std::vector<G4double> scintHitYPosition;
+  std::vector<G4double> scintHitZPosition;
+  std::vector<G4double> scintHitEnergy;
+  std::vector<G4double> scintHitTime;
   std::vector<G4int> scintHitTrackID;
   std::vector<G4int> scintHitCharge;
   std::vector<G4int> scintHitMass;
   G4double fScintE = 0.;
   for(G4int i = 0; i < (hScint->entries()); ++i) {
     G4ThreeVector pos = (*hScint)[i]->GetPosition();
-    scintHitXPos.push_back(pos.x());
-    scintHitYPos.push_back(pos.y());
-    scintHitZPos.push_back(pos.z());
+    scintHitXPosition.push_back(pos.x());
+    scintHitYPosition.push_back(pos.y());
+    scintHitZPosition.push_back(pos.z());
     G4double energy = (*hScint)[i]->GetEnergy();
-    scintHitE.push_back(fRandom3->Gaus(energy, energy*fScintResolution));
-    scintHitT.push_back((*hScint)[i]->GetTime());
+    scintHitEnergy.push_back(fRandom3->Gaus(energy, energy*fScintResolution));
+    scintHitTime.push_back((*hScint)[i]->GetTime());
     scintHitTrackID.push_back((*hScint)[i]->GetTrackID());
     scintHitCharge.push_back((*hScint)[i]->GetParticle()->GetAtomicNumber());
     scintHitMass.push_back((*hScint)[i]->GetParticle()->GetAtomicMass());
@@ -86,33 +86,33 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
 
   if(fScintE/eV < 0.1) return;
 
+  std::vector<G4double> gridHitEnergy;
+  std::vector<G4int> gridHitID;
+  std::vector<G4int> gridHitTrackID;
   for(G4int i = 0; i < fNumGrids; i++) {
-    G4double icGridEnergy = 0.;
     for(G4int j = 0; j < hICGridHC[i]->entries(); ++j) {
-      icGridEnergy += (*hICGridHC[i])[j]->GetEnergy();
+      G4double energy = (*hICGridHC[i])[j]->GetEnergy();
+      G4double energyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*energy);
+      energy = fRandom3->Gaus(energy, energyRes);
+      energy = fRandom3->Gaus(energy, energy*fGridResolution);
+      gridHitEnergy.push_back(energy);
+      gridHitID.push_back(i);
+      gridHitTrackID.push_back((*hICGridHC[i])[j]->GetTrackID());
     }
-    G4double icGridEnergyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*icGridEnergy);
-    icGridEnergy = fRandom3->Gaus(icGridEnergy, icGridEnergyRes);
-    icGridEnergy = fRandom3->Gaus(icGridEnergy, icGridEnergy*fGridResolution);
-    fICGridE[i] = icGridEnergy;
   }
 
-  G4double icGridETotal = 0.;
-  for(G4int i = 0; i < fNumGrids; i++) {
-    icGridETotal += fICGridE[i];
-  }
+  analysis->SetGridEnergy(gridHitEnergy);
+  analysis->SetGridID(gridHitID);
+  analysis->SetGridTrackID(gridHitTrackID);
 
-  analysis->SetScintXPos(scintHitXPos);
-  analysis->SetScintXPos(scintHitYPos);
-  analysis->SetScintXPos(scintHitZPos);
-  analysis->SetScintE(scintHitE);
-  analysis->SetScintT(scintHitT);
+  analysis->SetScintXPosition(scintHitXPosition);
+  analysis->SetScintYPosition(scintHitYPosition);
+  analysis->SetScintZPosition(scintHitZPosition);
+  analysis->SetScintEnergy(scintHitEnergy);
+  analysis->SetScintTime(scintHitTime);
   analysis->SetScintTrackID(scintHitTrackID);
   analysis->SetScintCharge(scintHitCharge);
   analysis->SetScintMass(scintHitMass);
-
-  analysis->SetICGridEnergy(fICGridE);
-  analysis->SetICGridTotalEnergy(icGridETotal);
 
   analysis->Fill();
 }

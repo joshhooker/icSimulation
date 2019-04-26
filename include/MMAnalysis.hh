@@ -23,14 +23,15 @@ public:
 
   void SetGunEnergy(G4double);
 
-  void SetICGridEnergy(std::vector<G4double>& v);
-  void SetICGridTotalEnergy(G4double);
+  void SetGridEnergy(std::vector<G4double>);
+  void SetGridID(std::vector<G4int>);
+  void SetGridTrackID(std::vector<G4int>);
 
-  void SetScintXPos(std::vector<G4double>);
-  void SetScintYPos(std::vector<G4double>);
-  void SetScintZPos(std::vector<G4double>);
-  void SetScintE(std::vector<G4double>);
-  void SetScintT(std::vector<G4double>);
+  void SetScintXPosition(std::vector<G4double>);
+  void SetScintYPosition(std::vector<G4double>);
+  void SetScintZPosition(std::vector<G4double>);
+  void SetScintEnergy(std::vector<G4double>);
+  void SetScintTime(std::vector<G4double>);
   void SetScintTrackID(std::vector<G4int>);
   void SetScintMass(std::vector<G4int>);
   void SetScintCharge(std::vector<G4int>);
@@ -57,14 +58,15 @@ private:
 
   G4double fGunEnergy;
 
-  std::vector<G4double> fICGridEnergy;
-  G4double fICGridTotalEnergy;
+  std::vector<G4double> fGridEnergy;
+  std::vector<G4int> fGridID;
+  std::vector<G4int> fGridTrackID;
 
-  std::vector<G4double> fScintXPos;
-  std::vector<G4double> fScintYPos;
-  std::vector<G4double> fScintZPos;
-  std::vector<G4double> fScintE;
-  std::vector<G4double> fScintT;
+  std::vector<G4double> fScintXPosition;
+  std::vector<G4double> fScintYPosition;
+  std::vector<G4double> fScintZPosition;
+  std::vector<G4double> fScintEnergy;
+  std::vector<G4double> fScintTime;
   std::vector<G4int> fScintTrackID;
   std::vector<G4int> fScintCharge;
   std::vector<G4int> fScintMass;
