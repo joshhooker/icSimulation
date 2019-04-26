@@ -53,17 +53,23 @@ gStyle.SetStatH(0.1)
 # Histogram Definitions
 h_scint_grid = TH2F('scintGrid', 'Scint. Energy vs Grid Energy; Scintillator Energy [MeV]; Total Grid Energy [MeV]',
   500, 0, 40, 500, 0, 4)
+h_scint_grid.GetXaxis().CenterTitle(); h_scint_grid.GetYaxis().CenterTitle();
 
 h_scint_grid_rt = []
 h_scint_grid_rt.append(TH2F('scintGridRT0', 'Scint. Energy vs Grid Energy with Reaction Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
 h_scint_grid_rt.append(TH2F('scintGridRT1', 'Scint. Energy vs Grid Energy with Reaction Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
 h_scint_grid_rt.append(TH2F('scintGridRT2', 'Scint. Energy vs Grid Energy with Reaction Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
+for i in range(len(h_scint_grid_rt)):
+  h_scint_grid_rt[i].GetXaxis().CenterTitle(); h_scint_grid_rt[i].GetYaxis().CenterTitle();
 
 h_scint_grid_mp = []
 h_scint_grid_mp.append(TH2F('scintGridMP0', 'Scint. Energy vs Grid Energy with Multiple Particles; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
 h_scint_grid_mp.append(TH2F('scintGridMP1', 'Scint. Energy vs Grid Energy with Multiple Particles; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
+for i in range(len(h_scint_grid_mp)):
+  h_scint_grid_mp[i].GetXaxis().CenterTitle(); h_scint_grid_mp[i].GetYaxis().CenterTitle();
 
 h_multiple_particles = TH2F('multiple_particles', 'Mass vs Charge of Events with > 1 Particles; Mass; Charge', 9, 0, 9, 9, 0, 9)
+h_multiple_particles.GetXaxis().CenterTitle(); h_multiple_particles.GetYaxis().CenterTitle();
 
 # Loop over all events in simData
 for event in sim_data:
