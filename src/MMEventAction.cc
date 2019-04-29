@@ -82,10 +82,7 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
     fScintE += (*hScint)[i]->GetEnergy();
   }
 
-  if(fWriteAllEvents) analysis->FillAll();
-
-  if(fScintE/eV < 0.1) return;
-
+  // grids
   std::vector<G4double> gridHitEnergy;
   std::vector<G4int> gridHitID;
   std::vector<G4int> gridHitTrackID;
@@ -115,4 +112,14 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
   analysis->SetScintMass(scintHitMass);
 
   analysis->Fill();
+
+  analysis->SetEnergy(0.);
+  analysis->SetCMEnergy(0.);
+  analysis->SetCMLightAngle(0.);
+  analysis->SetLabLightAngle(0.);
+  analysis->SetLightEnergy(0.);
+  analysis->SetCMHeavyAngle(0.);
+  analysis->SetLabHeavyAngle(0.);
+  analysis->SetHeavyEnergy(0.);
+  analysis->SetQValue(0.);
 }

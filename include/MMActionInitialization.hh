@@ -23,39 +23,22 @@ public:
   virtual void BuildForMaster() const;
   virtual void Build() const;
 
-  void SetFanoFactor(G4double fanoFactor) {
-    fFanoFactor = fanoFactor;
-  }
-
-  void SetWorkFunction(G4double workFunction) {
-    fWorkFunction = workFunction;
-  }
-
-  void SetNumGrids(G4int numGrids) {
-    fNumGrids = numGrids;
-  }
-
-  void SetScintillatorResolution(G4double resolution) {
-    fScintResolution = resolution;
-  }
-
-  void SetGridResolution(G4double resolution) {
-    fGridResolution = resolution;
-  }
-
-  void SetWriteAllEvents(G4bool writeAll) {
-    fWriteAllEvents = writeAll;
-  }
+  void SetFanoFactor(G4double fanoFactor) {fFanoFactor = fanoFactor;}
+  void SetWorkFunction(G4double workFunction) {fWorkFunction = workFunction;}
+  void SetNumGrids(G4int numGrids) {fNumGrids = numGrids;}
+  void SetScintillatorResolution(G4double resolution) {fScintResolution = resolution;}
+  void SetGridResolution(G4double resolution) {fGridResolution = resolution;}
+  void SetWriteAllEvents(G4bool writeAll) {fWriteAllEvents = writeAll;}
 
 private:
-    MMDetectorConstruction* fDetector;
-    std::map<std::string, G4double> fEventActionParams;
-    G4double fFanoFactor;
-    G4double fWorkFunction;
-    G4int fNumGrids;
-    G4double fScintResolution;
-    G4double fGridResolution;
-    G4bool fWriteAllEvents;
+  MMDetectorConstruction* fDetector;
+  std::map<std::string, G4double> fEventActionParams;
+  G4double fFanoFactor;
+  G4double fWorkFunction;
+  G4int fNumGrids;
+  G4double fScintResolution;
+  G4double fGridResolution;
+  G4bool fWriteAllEvents;
 };
 
 #endif

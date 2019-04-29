@@ -16,47 +16,49 @@ class MMAnalysis {
 public:
   MMAnalysis();
   static MMAnalysis* Instance();
-  void SetFilename(const char*);
+  void SetFilename(const char* filename) {fFilename = filename;}
 
   void OpenFile();
-  void CloseFile();
+  void CloseFile() {
+    fTree->Write();
+    fFile->Close();
+  }
 
-  void SetGridEnergy(std::vector<G4double>);
-  void SetGridID(std::vector<G4int>);
-  void SetGridTrackID(std::vector<G4int>);
+  void SetGridEnergy(std::vector<G4double> energy) {fGridEnergy = energy;}
+  void SetGridID(std::vector<G4int> id) {fGridID = id;}
+  void SetGridTrackID(std::vector<G4int> trackID) {fGridTrackID = trackID;}
 
-  void SetScintXPosition(std::vector<G4double>);
-  void SetScintYPosition(std::vector<G4double>);
-  void SetScintZPosition(std::vector<G4double>);
-  void SetScintEnergy(std::vector<G4double>);
-  void SetScintTime(std::vector<G4double>);
-  void SetScintTrackID(std::vector<G4int>);
-  void SetScintCharge(std::vector<G4int>);
-  void SetScintMass(std::vector<G4int>);
+  void SetScintXPosition(std::vector<G4double> position) {fScintXPosition = position;}
+  void SetScintYPosition(std::vector<G4double> position) {fScintYPosition = position;}
+  void SetScintZPosition(std::vector<G4double> position) {fScintZPosition = position;}
+  void SetScintEnergy(std::vector<G4double> energy) {fScintEnergy = energy;}
+  void SetScintTime(std::vector<G4double> time) {fScintTime = time;}
+  void SetScintTrackID(std::vector<G4int> trackID) {fScintTrackID = trackID;}
+  void SetScintCharge(std::vector<G4int> charge) {fScintCharge = charge;}
+  void SetScintMass(std::vector<G4int> mass) {fScintMass = mass;}
 
-  void SetEnergy(G4double);
-  void SetCMEnergy(G4double);
+  void SetEnergy(G4double energy) {fEnergy = energy;}
+  void SetCMEnergy(G4double energy) {fCMEnergy = energy;}
 
-  void SetBeamEnergy(G4double);
-  void SetBeamCharge(G4int);
-  void SetBeamMass(G4int);
+  void SetBeamEnergy(G4double energy) {fBeamEnergy = energy;}
+  void SetBeamCharge(G4int charge) {fBeamCharge = charge;}
+  void SetBeamMass(G4int mass) {fBeamMass = mass;}
 
-  void SetCMLightAngle(G4double);
-  void SetLabLightAngle(G4double);
-  void SetLightEnergy(G4double);
-  void SetCMHeavyAngle(G4double);
-  void SetLabHeavyAngle(G4double);
-  void SetHeavyEnergy(G4double);
+  void SetCMLightAngle(G4double angle) {fCMLightAngle = angle;}
+  void SetLabLightAngle(G4double angle) {fLabLightAngle = angle;}
+  void SetLightEnergy(G4double energy) {fLightEnergy = energy;}
+  void SetCMHeavyAngle(G4double angle) {fCMHeavyAngle = angle;}
+  void SetLabHeavyAngle(G4double angle) {fLabHeavyAngle = angle;}
+  void SetHeavyEnergy(G4double energy) {fHeavyEnergy = energy;}
+  void SetQValue(G4double qValue) {fQValue = qValue;}
 
-  void Fill();
-  void FillAll();
+  void Fill() {fTree->Fill();}
 
 private:
   static MMAnalysis* fInstance;
   std::string fFilename;
   TFile* fFile;
   TTree* fTree;
-  TTree* fAllTree;
 
   std::vector<G4double> fGridEnergy;
   std::vector<G4int> fGridID;
@@ -84,6 +86,7 @@ private:
   G4double fCMHeavyAngle;
   G4double fLabHeavyAngle;
   G4double fHeavyEnergy;
+  G4double fQValue;
 
 };
 

@@ -27,4 +27,6 @@ void MMTrackingAction::PreUserTrackingAction(const G4Track* track) {
   analysis->SetCMHeavyAngle(info->GetCMHeavyTheta());
   analysis->SetLabHeavyAngle(info->GetLabHeavyTheta());
   analysis->SetHeavyEnergy(info->GetHeavyEnergy());
+  analysis->SetQValue(info->GetQValue());
+
 }

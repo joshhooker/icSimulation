@@ -85,10 +85,10 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   G4double projectileMass = projectile->GetAtomicMass();
 
   G4double B = static_cast<G4double>(projectileMass)*static_cast<G4double>(fLightProductMass)/(static_cast<G4double>(projectileMass) +
-    static_cast<G4double>(fTargetMass))/(static_cast<G4double>(fLightProductMass) + static_cast<G4double>(fHeavyProductMass))*(energy/totalEnergy);
+              static_cast<G4double>(fTargetMass))/(static_cast<G4double>(fLightProductMass) + static_cast<G4double>(fHeavyProductMass))*(energy/totalEnergy);
   G4double D = static_cast<G4double>(fTargetMass)*static_cast<G4double>(fHeavyProductMass)/(static_cast<G4double>(projectileMass) +
-    static_cast<G4double>(fTargetMass))/(static_cast<G4double>(fLightProductMass) + static_cast<G4double>(fHeavyProductMass))*
-    (1. + static_cast<G4double>(projectileMass)/static_cast<G4double>(fTargetMass)*qValue/totalEnergy);
+              static_cast<G4double>(fTargetMass))/(static_cast<G4double>(fLightProductMass) + static_cast<G4double>(fHeavyProductMass))*
+              (1. + static_cast<G4double>(projectileMass)/static_cast<G4double>(fTargetMass)*qValue/totalEnergy);
 
   G4double maxAngle = (B < D) ? M_PI : asin(sqrt(D/B));
 
@@ -100,12 +100,10 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
                             cos(pAngleLightLab));
   G4ThreeVector beamVector(0., 0., 1.);
 
-  G4double lightEnergyLab = (B <= D) ? totalEnergy*B*pow(cos(pAngleLightLab) +
-                                       sqrt(D/B - sin(pAngleLightLab)*sin(pAngleLightLab)), 2.) :
-    totalEnergy*B*pow(cos(pAngleLightLab) - sqrt(D/B - sin(pAngleLightLab)*sin(pAngleLightLab)), 2.);
-  G4double lightEnergyLab2 = (B <= D) ? totalEnergy*B*pow(cos(pAngleLightLab + 0.001) +
-                                        sqrt(D/B - sin(pAngleLightLab + 0.001)*sin(pAngleLightLab + 0.001)), 2.) :
-    totalEnergy*B*pow(cos(pAngleLightLab + 0.001) - sqrt(D/B - sin(pAngleLightLab + 0.001)*sin(pAngleLightLab + 0.001)), 2.);
+  G4double lightEnergyLab = (B <= D) ? totalEnergy*B*pow(cos(pAngleLightLab) + sqrt(D/B - sin(pAngleLightLab)*sin(pAngleLightLab)), 2.) :
+                            totalEnergy*B*pow(cos(pAngleLightLab) - sqrt(D/B - sin(pAngleLightLab)*sin(pAngleLightLab)), 2.);
+  G4double lightEnergyLab2 = (B <= D) ? totalEnergy*B*pow(cos(pAngleLightLab + 0.001) + sqrt(D/B - sin(pAngleLightLab + 0.001)*sin(pAngleLightLab + 0.001)), 2.) :
+                            totalEnergy*B*pow(cos(pAngleLightLab + 0.001) - sqrt(D/B - sin(pAngleLightLab + 0.001)*sin(pAngleLightLab + 0.001)), 2.);
 
   G4double heavyEnergyLab = totalEnergy - lightEnergyLab;
 
@@ -159,7 +157,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   sec1->SetUserInformation(new MMTrackingInformation(energy, energy*fTargetMass/(static_cast<G4double>(projectileMass)
                                                      + static_cast<G4double>(fTargetMass)), pAngleLightCM,
                                                      pAngleLightLab, aAngleLightCM, pAngleHeavyCM, pAngleHeavyLab,
-                                                     lightEnergyLab, heavyEnergyLab, aTrack.GetPosition()));
+                                                     lightEnergyLab, heavyEnergyLab, aTrack.GetPosition(), qValue));
   G4Track* sec2 = new G4Track(new G4DynamicParticle(heavy, heavyLab.unit(), heavyEnergyLab*MeV),
                   aTrack.GetGlobalTime(), aTrack.GetPosition());
 
