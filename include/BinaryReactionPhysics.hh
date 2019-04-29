@@ -21,9 +21,9 @@ public:
   virtual void ConstructParticle();
   virtual void ConstructProcess();
 
-  void SetQValue(G4double qValue) {
-    fQValue = qValue;
-  }
+  void SetQValue(G4double qValue) {fQValue = qValue;}
+  void SetNumGrids(G4int numGrids) {fNumGrids = numGrids;}
+  void SetExcitedStateEnergy(G4double energy) {fExcitedStateEnergy = energy;}
 
   void SetTarget(G4int charge, G4int mass) {
     fTargetCharge = charge;
@@ -38,14 +38,6 @@ public:
   void SetHeavyProduct(G4int charge, G4int mass) {
     fHeavyProductCharge = charge;
     fHeavyProductMass = mass;
-  }
-
-  void SetNumGrids(G4int numGrids) {
-    fNumGrids = numGrids;
-  }
-
-  void SetExcitedStateEnergy(G4double energy) {
-    fExcitedStateEnergy = energy;
   }
 
 private:

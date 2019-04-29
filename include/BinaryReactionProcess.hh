@@ -47,21 +47,11 @@ public:
     G4cout << "SET: Heavy Product: " << fHeavyProductCharge << ' ' << fHeavyProductMass << G4endl;
   }
 
-  void SetNumGrids(G4int numGrids) {
-    fNumGrids = numGrids;
-  }
+  void SetNumGrids(G4int numGrids) {fNumGrids = numGrids;}
+  void SetExcitedStateEnergy(G4double energy) {fExcitedStateEnergy = energy;}
 
-  void SetExcitedStateEnergy(G4double energy) {
-    fExcitedStateEnergy = energy;
-  }
-
-  G4double GetLightProductMass() {
-    return fLightProductMass;
-  }
-
-  G4double GetLightProductCharge() {
-    return fLightProductCharge;
-  }
+  G4double GetLightProductMass() {return fLightProductMass;}
+  G4double GetLightProductCharge() {return fLightProductCharge;}
 
 private:
   G4double fScatteringEnergy;

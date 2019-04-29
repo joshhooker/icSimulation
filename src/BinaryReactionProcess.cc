@@ -1,9 +1,8 @@
 #include "BinaryReactionProcess.hh"
 
 BinaryReactionProcess::BinaryReactionProcess(const G4String& processName)
-  : G4VDiscreteProcess(processName, fHadronic), fScatteringEnergy(1e6) {
+  : G4VDiscreteProcess(processName, fHadronic), fScatteringEnergy(1e6), fQValue(0) {
   SetProcessSubType(111);
-  fQValue = 0.;
 }
 
 BinaryReactionProcess::~BinaryReactionProcess() {}
@@ -38,8 +37,8 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
     }
   }
 
-  if((excitedname != "Be7") && (excitedname != "Li6") && (excitedname != "Li7") &&
-    (excitedname != "B8") && (excitedname != "He4")) {
+  if((excitedname != "He4") && (excitedname != "Li6") && (excitedname != "Li7") &&
+    (excitedname != "Be7") && (excitedname != "B8")) {
     mfp = 0.;
   }
 
