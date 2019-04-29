@@ -43,8 +43,6 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
     mfp = 0.;
   }
 
-  MMAnalysis* analysis = MMAnalysis::Instance();
-
   *condition = NotForced;
   return mfp;
 }
@@ -248,12 +246,6 @@ G4VParticleChange* BinaryReactionProcess::Decay(const G4Track& aTrack, G4int lig
   aParticleChange.AddSecondary(sec2);
   aParticleChange.ProposeEnergy(0.);
   aParticleChange.ProposeTrackStatus(fStopAndKill);
-
-  // G4cout << "Q Value: " << qValue << G4endl;
-  // G4cout << "Particle 1 Mass: " << particle1Mass << '\t' << "Particle 2 Mass: " << particle2Mass << G4endl;
-  // G4cout << "Before KE: " << aTrack.GetKineticEnergy() << G4endl;
-  // G4cout << "Particle 1 KE: " << particle1->GetKineticEnergy() << G4endl;
-  // G4cout << "Particle 2 KE: " << particle2->GetKineticEnergy() << G4endl;
 
   return &aParticleChange;
 }

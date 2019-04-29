@@ -21,8 +21,6 @@ public:
   void OpenFile();
   void CloseFile();
 
-  void SetGunEnergy(G4double);
-
   void SetGridEnergy(std::vector<G4double>);
   void SetGridID(std::vector<G4int>);
   void SetGridTrackID(std::vector<G4int>);
@@ -33,11 +31,15 @@ public:
   void SetScintEnergy(std::vector<G4double>);
   void SetScintTime(std::vector<G4double>);
   void SetScintTrackID(std::vector<G4int>);
-  void SetScintMass(std::vector<G4int>);
   void SetScintCharge(std::vector<G4int>);
+  void SetScintMass(std::vector<G4int>);
 
   void SetEnergy(G4double);
   void SetCMEnergy(G4double);
+
+  void SetBeamEnergy(G4double);
+  void SetBeamCharge(G4int);
+  void SetBeamMass(G4int);
 
   void SetCMLightAngle(G4double);
   void SetLabLightAngle(G4double);
@@ -56,8 +58,6 @@ private:
   TTree* fTree;
   TTree* fAllTree;
 
-  G4double fGunEnergy;
-
   std::vector<G4double> fGridEnergy;
   std::vector<G4int> fGridID;
   std::vector<G4int> fGridTrackID;
@@ -73,6 +73,10 @@ private:
 
   G4double fEnergy;
   G4double fCMEnergy;
+
+  G4double fBeamEnergy;
+  G4int fBeamCharge;
+  G4int fBeamMass;
 
   G4double fCMLightAngle;
   G4double fLabLightAngle;

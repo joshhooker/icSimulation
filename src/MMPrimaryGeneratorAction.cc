@@ -61,6 +61,11 @@ void MMPrimaryGeneratorAction::GeneratePrimaries(G4Event* g4Event) {
   fParticleGun->SetParticleDefinition(fParticle);
 
   fParticleGun->GeneratePrimaryVertex(g4Event);
+
+  MMAnalysis* analysis = MMAnalysis::Instance();
+  analysis->SetBeamEnergy(kinE*MeV);
+  analysis->SetBeamCharge(fParticle->GetAtomicNumber());
+  analysis->SetBeamMass(fParticle->GetAtomicMass());
 }
 
 void MMPrimaryGeneratorAction::DefineCommands() {

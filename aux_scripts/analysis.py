@@ -19,10 +19,12 @@ scintXPosition [vector]
 scintYPosition [vector]
 scintZPosition [vector]
 scintEnergy [vector]
-scintTime [vector]
 scintTrackID [vector]
 scintMass [vector]
 scintCharge [vector]
+beamEnergy
+beamCharge
+beamMass
 '''
 
 ''' allData Branches
@@ -79,6 +81,10 @@ silhouette_arr = []
 silhouette_label_2_clusters = []
 silhouette_label_3_clusters = []
 
+# Define variables for efficiency
+observed = [0]*3
+generated = [0]*3
+
 # Loop over all events in simData
 for event in sim_data:
 
@@ -92,6 +98,8 @@ for event in sim_data:
     elif((sim_data.scintTrackID[i] == 5 and sim_data.scintCharge[i] == 4 and sim_data.scintMass[i] == 7) or
       (sim_data.scintTrackID[i] == 4 and sim_data.scintCharge[i] == 1 and sim_data.scintMass[i] == 1)):
       reaction_type = 2
+
+  observed[reaction_type] += 1
 
   # Get events with multiple particles hitting scintillator
   multiple_particles = 0
@@ -108,14 +116,10 @@ for event in sim_data:
       h_multiple_particles.Fill(sim_data.scintMass[i], sim_data.scintCharge[i])
 
   # Get energy in scintillator
-  scintillator_energy = 0
-  for energy in sim_data.scintEnergy:
-    scintillator_energy += energy
+  scintillator_energy = np.sum(sim_data.scintEnergy)
 
   # Get emergy in grids
-  grid_energy = 0
-  for energy in sim_data.gridEnergy:
-    grid_energy += energy
+  grid_energy = np.sum(sim_data.gridEnergy)
 
   tmp_arr = [scintillator_energy, grid_energy]
   silhouette_arr.append(tmp_arr)
@@ -156,10 +160,10 @@ h_scint_grid_rt[2].Draw("PSame")
 c2.Update()
 c2.Write()
 
-silhouette_avg_2_clusters = silhouette_score(silhouette_arr, silhouette_label_2_clusters)
-print("Silhouette Score for 2 Clusters: ", silhouette_avg_2_clusters)
+# silhouette_avg_2_clusters = silhouette_score(silhouette_arr, silhouette_label_2_clusters)
+# print("Silhouette Score for 2 Clusters: ", silhouette_avg_2_clusters)
 
-silhouette_avg_3_clusters = silhouette_score(silhouette_arr, silhouette_label_3_clusters)
-print("Silhouette Score for 3 Clusters: ", silhouette_avg_3_clusters)
+# silhouette_avg_3_clusters = silhouette_score(silhouette_arr, silhouette_label_3_clusters)
+# print("Silhouette Score for 3 Clusters: ", silhouette_avg_3_clusters)
 
 input('Press Enter to Exit')

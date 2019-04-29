@@ -19,7 +19,6 @@ void MMAnalysis::OpenFile() {
   fFile = new TFile(fFilename.c_str(),"recreate");
 
   fTree = new TTree("simData", "simulation data");
-  fTree->Branch("gunEnergy", &fGunEnergy);
 
   fTree->Branch("gridEnergy", &fGridEnergy);
   fTree->Branch("gridID", &fGridID);
@@ -29,10 +28,13 @@ void MMAnalysis::OpenFile() {
   fTree->Branch("scintYPosition", &fScintYPosition);
   fTree->Branch("scintZPosition", &fScintZPosition);
   fTree->Branch("scintEnergy", &fScintEnergy);
-  fTree->Branch("scintTime", &fScintTime);
   fTree->Branch("scintTrackID", &fScintTrackID);
   fTree->Branch("scintMass", &fScintMass);
   fTree->Branch("scintCharge", &fScintCharge);
+
+  fTree->Branch("beamEnergy", &fBeamEnergy);
+  fTree->Branch("beamCharge", &fBeamCharge);
+  fTree->Branch("beamMass", &fBeamMass);
 
   fAllTree = new TTree("allData", "all events");
   fAllTree->Branch("energy", &fEnergy);
@@ -49,10 +51,6 @@ void MMAnalysis::CloseFile() {
   fTree->Write();
   fAllTree->Write();
   fFile->Close();
-}
-
-void MMAnalysis::SetGunEnergy(G4double gunEnergy) {
-  fGunEnergy = gunEnergy;
 }
 
 void MMAnalysis::SetGridEnergy(std::vector<G4double> energy) {
@@ -105,6 +103,18 @@ void MMAnalysis::SetEnergy(G4double energy) {
 
 void MMAnalysis::SetCMEnergy(G4double energy) {
   fCMEnergy = energy;
+}
+
+void MMAnalysis::SetBeamEnergy(G4double energy) {
+  fBeamEnergy = energy;
+}
+
+void MMAnalysis::SetBeamCharge(G4int charge) {
+  fBeamCharge = charge;
+}
+
+void MMAnalysis::SetBeamMass(G4int mass) {
+  fBeamMass = mass;
 }
 
 void MMAnalysis::SetCMLightAngle(G4double angle) {
