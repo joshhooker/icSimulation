@@ -12,9 +12,7 @@ void MMTrackingAction::PreUserTrackingAction(const G4Track* track) {
 
   if(creatorProcess->GetProcessName() != fName) return;
 
-  BinaryReactionProcess* reactionProcess = (BinaryReactionProcess*) creatorProcess;
-  if(track->GetParticleDefinition()->GetAtomicMass() != G4int(reactionProcess->GetLightProductMass()) ||
-     track->GetParticleDefinition()->GetAtomicNumber() != G4int(reactionProcess->GetLightProductCharge())) return;
+  if(track->GetTrackID() != 2) return;
 
   MMTrackingInformation* info = (MMTrackingInformation*) track->GetUserInformation();
 
