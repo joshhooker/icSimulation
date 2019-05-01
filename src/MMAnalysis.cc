@@ -7,7 +7,8 @@ MMAnalysis::MMAnalysis() : fGridEnergy(0), fGridID(0), fGridTrackID(0),
   fScintTime(0), fScintTrackID(0), fScintMass(0), fScintCharge(0), fBeamEnergy(0),
   fBeamCharge(0), fBeamMass(0), fEnergy(0), fCMEnergy(0), fCMLightAngle(0),
   fLabLightAngle(0), fLightEnergy(0), fCMHeavyAngle(0), fLabHeavyAngle(0),
-  fHeavyEnergy(0), fQValue(0) {}
+  fHeavyEnergy(0), fQValue(0), fLightRecoilCharge(0), fLightRecoilMass(0),
+  fHeavyRecoilCharge(0), fHeavyRecoilMass(0) {}
 
 MMAnalysis* MMAnalysis::Instance() {
   if(!fInstance) {
@@ -46,4 +47,8 @@ void MMAnalysis::OpenFile() {
   fTree->Branch("heavyAngleLab", &fLabHeavyAngle);
   fTree->Branch("heavyEnergy", &fHeavyEnergy);
   fTree->Branch("qValue", &fQValue);
+  fTree->Branch("lightRecoilCharge", &fLightRecoilCharge);
+  fTree->Branch("lightRecoilMass", &fLightRecoilMass);
+  fTree->Branch("heavyRecoilCharge", &fHeavyRecoilCharge);
+  fTree->Branch("heavyRecoilMass", &fHeavyRecoilMass);
 }

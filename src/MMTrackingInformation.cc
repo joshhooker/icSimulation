@@ -3,7 +3,8 @@
 MMTrackingInformation::MMTrackingInformation(G4double energy, G4double cmEnergy, G4double cmLightTheta,
                                              G4double labLightTheta, G4double cmLightPhi, G4double cmHeavyTheta,
                                              G4double labHeavyTheta, G4double lightEnergy, G4double heavyEnergy,
-                                             G4ThreeVector vertex, G4double qValue) {
+                                             G4ThreeVector vertex, G4double qValue, G4ParticleDefinition* lightRecoil,
+                                             G4ParticleDefinition* heavyRecoil) {
   fEnergy = energy;
   fCMEnergy = cmEnergy;
   fCMLightTheta = cmLightTheta;
@@ -15,6 +16,8 @@ MMTrackingInformation::MMTrackingInformation(G4double energy, G4double cmEnergy,
   fHeavyEnergy = heavyEnergy;
   fVertex = vertex;
   fQValue = qValue;
+  fLightRecoil = lightRecoil;
+  fHeavyRecoil = heavyRecoil;
 }
 
 MMTrackingInformation::~MMTrackingInformation() {}

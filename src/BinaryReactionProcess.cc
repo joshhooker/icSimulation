@@ -163,7 +163,8 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   sec1->SetUserInformation(new MMTrackingInformation(energy, energy*fTargetMass/(static_cast<G4double>(projectileMass)
                                                      + static_cast<G4double>(fTargetMass)), pAngleLightCM,
                                                      pAngleLightLab, aAngleLightCM, pAngleHeavyCM, pAngleHeavyLab,
-                                                     lightEnergyLab, heavyEnergyLab, aTrack.GetPosition(), qValue));
+                                                     lightEnergyLab, heavyEnergyLab, aTrack.GetPosition(), qValue, light,
+                                                     heavy));
   G4Track* sec2 = new G4Track(new G4DynamicParticle(heavy, heavyLab.unit(), heavyEnergyLab*MeV),
                   aTrack.GetGlobalTime(), aTrack.GetPosition());
 
