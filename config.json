@@ -15,6 +15,5 @@
   "useInches"           : false,
   "scintResolution"     : 0.1,
   "extraGridResolution" : 0.1,
-  "excitedStateEnergy"  : 0.7685,
-  "writeAllEvents"      : true
+  "excitedStateEnergy"  : 0.7685
 }

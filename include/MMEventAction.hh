@@ -35,29 +35,11 @@ public:
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
 
-  void SetFanoFactor(G4double fanoFactor) {
-    fFanoFactor = fanoFactor;
-  }
-
-  void SetWorkFunction(G4double workFunction) {
-    fWorkFunction = workFunction;
-  }
-
-  void SetScintillatorResolution(G4double resolution) {
-    fScintResolution = resolution;
-  }
-
-  void SetGridResolution(G4double resolution) {
-    fGridResolution = resolution;
-  }
-
-  void SetNumGrids(G4int numGrids) {
-    fNumGrids = numGrids;
-  }
-
-  void SetWriteAllEvents(G4bool writeAll) {
-    fWriteAllEvents = writeAll;
-  }
+  void SetFanoFactor(G4double fanoFactor) {fFanoFactor = fanoFactor;}
+  void SetWorkFunction(G4double workFunction) {fWorkFunction = workFunction;}
+  void SetScintillatorResolution(G4double resolution) {fScintResolution = resolution;}
+  void SetGridResolution(G4double resolution) {fGridResolution = resolution;}
+  void SetNumGrids(G4int numGrids) {fNumGrids = numGrids;}
 
 private:
   std::vector<G4int> fICGridHCID;
@@ -70,8 +52,6 @@ private:
   G4double fScintResolution;
   G4double fGridResolution;
   G4int fNumGrids;
-
-  G4bool fWriteAllEvents;
 
   gsl_rng *r;
   TRandom3 *fRandom3;

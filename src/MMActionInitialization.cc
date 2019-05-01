@@ -22,7 +22,6 @@ void MMActionInitialization::Build() const {
   eventAction->SetWorkFunction(fWorkFunction);
   eventAction->SetScintillatorResolution(fScintResolution);
   eventAction->SetGridResolution(fGridResolution);
-  eventAction->SetWriteAllEvents(fWriteAllEvents);
   SetUserAction(eventAction);
 
   SetUserAction(new MMTrackingAction);

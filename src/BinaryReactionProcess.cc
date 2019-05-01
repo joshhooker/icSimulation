@@ -68,6 +68,13 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   // If it's 8B in an excited state, decay to proton and 7Be
   if(beamName == "B8[768.500]") return Decay(aTrack, 1, 1, 4, 7);
 
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+  G4String particleName;
+
+  G4ParticleDefinition* neutron = particleTable->FindParticle(particleName="neutron");
+  G4ParticleDefinition* deutron = particleTable->GetIonTable()->GetIon(1, 2, 0.0);
+  G4ParticleDefinition* carbon = particleTable->GetIonTable()->GetIon(6, 12, 0.0);
+
   aParticleChange.Initialize(aTrack);
 
   // Randomly choose if populating excited states
@@ -131,10 +138,8 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 			 cos(pAngleHeavyLab));
   heavyLab = heavyLab.rotate(v, rotAngle);
 
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4ParticleDefinition* light;
   if(fLightProductCharge == 0 && fLightProductMass == 1) { // Neutron
-    G4String particleName;
     light = particleTable->FindParticle(particleName="neutron");
   }
   else {
@@ -150,6 +155,8 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   else heavy = particleTable->GetIonTable()->GetIon(fHeavyProductCharge, fHeavyProductMass, excitedEnergy);
 
   // G4cout << heavy->GetParticleName() << G4endl;
+  G4cout << (aTrack.GetDynamicParticle()->GetDefinition()->GetPDGMass() + deutron->GetPDGMass())-
+    (light->GetPDGMass() + heavy->GetPDGMass()) << G4endl;
 
   G4Track* sec1 = new G4Track(new G4DynamicParticle(light,lightLab.unit(), lightEnergyLab*MeV),
                   aTrack.GetGlobalTime(), aTrack.GetPosition());

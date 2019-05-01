@@ -65,8 +65,6 @@ int main(int argc,char** argv)
 
   G4double excitedStateEnergy = config["excitedStateEnergy"].asDouble();
 
-  G4bool writeAllEvents = config["writeAllEvents"].asBool();
-
   // Work out fanoFactor and workFunction from gasType
   G4double fanoFactor;
   G4double workFunction;
@@ -136,7 +134,6 @@ int main(int argc,char** argv)
   actionInit->SetNumGrids(numGrids);
   actionInit->SetScintillatorResolution(scintResolution);
   actionInit->SetGridResolution(extraGridResolution);
-  actionInit->SetWriteAllEvents(writeAllEvents);
   runManager->SetUserInitialization(actionInit);
 
   // Initialize Geant4 kernel
