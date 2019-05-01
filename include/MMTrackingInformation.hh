@@ -10,7 +10,8 @@ class MMTrackingInformation : public G4VUserTrackInformation {
 public:
   MMTrackingInformation(G4double, G4double, G4double, G4double, G4double,
                         G4double, G4double, G4double, G4double, G4ThreeVector,
-                        G4double, G4ParticleDefinition*, G4ParticleDefinition*);
+                        G4double, G4double, G4ParticleDefinition*,
+                        G4ParticleDefinition*);
   ~MMTrackingInformation();
 
   void Print() const;
@@ -26,6 +27,7 @@ public:
   G4double GetHeavyEnergy() const {return fHeavyEnergy;}
   G4ThreeVector GetVertex() const {return fVertex;}
   G4double GetQValue() const {return fQValue;}
+  G4double GetExcitedEnergy() const {return fExcitedEnergy;}
   G4ParticleDefinition* GetLightRecoil() const {return fLightRecoil;}
   G4ParticleDefinition* GetHeavyRecoil() const {return fHeavyRecoil;}
 
@@ -40,6 +42,7 @@ public:
   void SetHeavyEnergy(G4double energy) {fHeavyEnergy = energy;}
   void SetVertex(G4ThreeVector v) {fVertex = v;}
   void SetQValue(G4double qValue) {fQValue = qValue;}
+  void SetExcitedEnergy(G4double excitedEnergy) {fExcitedEnergy = excitedEnergy;}
   void SetLightRecoil(G4ParticleDefinition* particle) {fLightRecoil = particle;}
   void SetHeavyRecoil(G4ParticleDefinition* particle) {fHeavyRecoil = particle;}
 
@@ -55,6 +58,7 @@ private:
   G4double fHeavyEnergy;
   G4ThreeVector fVertex;
   G4double fQValue;
+  G4double fExcitedEnergy;
   G4ParticleDefinition* fLightRecoil;
   G4ParticleDefinition* fHeavyRecoil;
 };

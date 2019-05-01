@@ -51,6 +51,7 @@ public:
   void SetLabHeavyAngle(G4double angle) {fLabHeavyAngle = angle;}
   void SetHeavyEnergy(G4double energy) {fHeavyEnergy = energy;}
   void SetQValue(G4double qValue) {fQValue = qValue;}
+  void SetExcitedEnergy(G4double excitedEnergy) {fExcitedEnergy = excitedEnergy;}
   void SetLightRecoilCharge(G4int charge) {fLightRecoilCharge = charge;}
   void SetLightRecoilMass(G4int mass) {fLightRecoilMass = mass;}
   void SetHeavyRecoilCharge(G4int charge) {fHeavyRecoilCharge = charge;}
@@ -91,6 +92,7 @@ private:
   G4double fLabHeavyAngle;
   G4double fHeavyEnergy;
   G4double fQValue;
+  G4double fExcitedEnergy;
   G4int fLightRecoilCharge;
   G4int fLightRecoilMass;
   G4int fHeavyRecoilCharge;

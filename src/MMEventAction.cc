@@ -122,6 +122,7 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
   analysis->SetLabHeavyAngle(0.);
   analysis->SetHeavyEnergy(0.);
   analysis->SetQValue(0.);
+  analysis->SetExcitedEnergy(0.);
   analysis->SetLightRecoilCharge(0);
   analysis->SetLightRecoilMass(0);
   analysis->SetHeavyRecoilCharge(0);
