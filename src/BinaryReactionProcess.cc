@@ -1,4 +1,6 @@
 #include "BinaryReactionProcess.hh"
+#include "NucleonStates.hh"
+#include "TypeDef.hh"
 
 BinaryReactionProcess::BinaryReactionProcess(const G4String& processName)
   : G4VDiscreteProcess(processName, fHadronic), fScatteringEnergy(1e6), fQValue(0) {
@@ -47,6 +49,34 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
 }
 
 G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep) {
+
+  // Determine if particle needs to decay due to excited state
+  G4String beamName = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
+  size_t pos = beamName.find('[');
+  double measuredExcitedEnergy = 0.;
+  G4String beamNameEnergy = "";
+  if(pos > 100) {
+    measuredExcitedEnergy = 0.;
+  }
+  else {
+    beamNameEnergy = beamName.substr(pos + 1, std::string::npos);
+    beamNameEnergy.pop_back();
+    measuredExcitedEnergy = std::atof(beamNameEnergy.c_str())/1000.;
+  }
+
+  NucleonStates* states = NucleonStates::Instance();
+
+  // Get thresholds
+  auto thresholds = states->GetThresholds(aTrack.GetParticleDefinition()->GetAtomicNumber(),
+    aTrack.GetParticleDefinition()->GetAtomicMass());
+
+  if(!thresholds.empty()) {
+    thresholdStruct threshold = thresholds[0];
+    if(measuredExcitedEnergy > threshold.thresholdEnergy) {
+      return Decay(aTrack, threshold.lightDecayCharge, threshold.lightDecayMass, threshold.heavyDecayCharge, threshold.heavyDecayMass);
+    }
+  }
+
   G4StepPoint* preStepPoint = aStep.GetPreStepPoint();
   G4StepPoint* postStepPoint = aStep.GetPostStepPoint();
 
@@ -63,10 +93,6 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
      postStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume() != fWorldLogical) {
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
-
-  G4String beamName = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
-  // If it's 8B in an excited state, decay to proton and 7Be
-  if(beamName == "B8[768.500]") return Decay(aTrack, 1, 1, 4, 7);
 
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
@@ -156,7 +182,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 
   // G4cout << heavy->GetParticleName() << G4endl;
   G4cout << (aTrack.GetDynamicParticle()->GetDefinition()->GetPDGMass() + deutron->GetPDGMass())-
-    (light->GetPDGMass() + heavy->GetPDGMass()) << G4endl;
+    (light->GetPDGMass() + heavy->GetPDGMass()) << '\t' << qValue << G4endl;
 
   G4Track* sec1 = new G4Track(new G4DynamicParticle(light,lightLab.unit(), lightEnergyLab*MeV),
                   aTrack.GetGlobalTime(), aTrack.GetPosition());

@@ -3,6 +3,7 @@
 #include "MMDetectorConstruction.hh"
 
 #include "BinaryReactionPhysics.hh"
+#include "NucleonStates.hh"
 #include "QGSP_BERT.hh"
 
 #include "G4RadioactiveDecayPhysics.hh"
