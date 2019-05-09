@@ -5,6 +5,7 @@
 
 #include "TypeDef.hh"
 
+#include <iostream>
 #include <map>
 #include <vector>
 
@@ -14,8 +15,9 @@ public:
   static NucleonStates* Instance();
 
   void GenerateStates();
-  std::vector<excitedStruct> GetExcitedLevel(G4int charge, G4int mass);
-  std::vector<thresholdStruct> GetThresholds(G4int charge, G4int mass);
+  void MakeCDF();
+  G4double GetExcitedLevel(G4int, G4int, G4double);
+  std::vector<thresholdStruct> GetThresholds(G4int, G4int);
 
 private:
   static NucleonStates* fInstance;
