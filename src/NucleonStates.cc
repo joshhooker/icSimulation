@@ -91,10 +91,10 @@ void NucleonStates::Li6() {
 void NucleonStates::Li7() {
   std::vector<excitedStruct> states;
 
-  excitedStruct state = {0., 0.5};
+  excitedStruct state = {0., 0.8};
   states.push_back(state);
 
-  state = {0.47761, 0.5};
+  state = {0.47761, 0.2};
   states.push_back(state);
 
   nucleonStates[3][7] = states;
