@@ -29,9 +29,7 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
                   aTrack.GetTrackID() > 1 ||
                   currentVolume == fDetectLogical ||
                   currentVolume == fFoilLogical ||
-                  currentVolume == fScintLogical ||
-                  particleMass != 7 ||
-                  particleCharge != 4) ? DBL_MAX : 0.;
+                  currentVolume == fScintLogical) ? DBL_MAX : 0.;
 
   for(G4int i = 0; i < fNumGrids; i++) {
     if(currentVolume == detectorConstruction->GetGridVolume(i)) {
@@ -39,6 +37,7 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
     }
   }
 
+  // Look at excited name and see if it's in an excited state
   size_t pos = excitedname.find('[');
   double measuredExcitedEnergy = 0.;
   G4String beamNameEnergy = "";
@@ -57,7 +56,6 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
 
   if(measuredExcitedEnergy > 0 && !thresholds.empty()) {
     if(measuredExcitedEnergy > thresholds[0].thresholdEnergy) {
-      G4cout << excitedname << G4endl;
       mfp = 0.;
     }
   }
@@ -73,17 +71,17 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
 G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep) {
 
   // Determine if particle needs to decay due to excited state
-  G4String beamName = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
-  size_t pos = beamName.find('[');
+  G4String incomingParticleName = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
+  size_t pos = incomingParticleName.find('[');
   double measuredExcitedEnergy = 0.;
-  G4String beamNameEnergy = "";
+  G4String incomingParticleNameEnergy = "";
   if(pos > 100) {
     measuredExcitedEnergy = 0.;
   }
   else {
-    beamNameEnergy = beamName.substr(pos + 1, std::string::npos);
-    beamNameEnergy.pop_back();
-    measuredExcitedEnergy = std::atof(beamNameEnergy.c_str())/1000.;
+    incomingParticleNameEnergy = incomingParticleName.substr(pos + 1, std::string::npos);
+    incomingParticleNameEnergy.pop_back();
+    measuredExcitedEnergy = std::atof(incomingParticleNameEnergy.c_str())/1000.;
   }
 
   NucleonStates* states = NucleonStates::Instance();
@@ -125,7 +123,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   G4ParticleDefinition* deutron = particleTable->GetIonTable()->GetIon(1, 2, 0.0);
   G4ParticleDefinition* carbon = particleTable->GetIonTable()->GetIon(6, 12, 0.0);
 
-  // Determine of (d, d), (d, n) or (c, c)
+  // Get beam properties
   G4int beamCharge = aTrack.GetParticleDefinition()->GetAtomicNumber();
   G4int beamMass = aTrack.GetParticleDefinition()->GetAtomicMass();
   G4double beamMassPDG = aTrack.GetParticleDefinition()->GetPDGMass();
@@ -135,6 +133,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   G4int heavyRecoilCharge, heavyRecoilMass;
   G4double targetMassPDG, lightRecoilMassPDG, heavyRecoilMassPDG;
 
+  // Determine if (d, d), (d, n) or (c, c)
   // 90% of the time choose the deutron as the target
   G4ParticleDefinition* targetDef = G4UniformRand() > 0.9 ? carbon : deutron;
 
@@ -171,6 +170,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   G4ParticleDefinition* heavyRecoilDef = particleTable->GetIonTable()->GetIon(heavyRecoilCharge, heavyRecoilMass, excitedEnergy);
   heavyRecoilMassPDG = heavyRecoilDef->GetPDGMass();
 
+  // If the light recoil is heavier than the heavy recoil, switch them
   if(lightRecoilMass > heavyRecoilMass) {
     std::swap(lightRecoilCharge, heavyRecoilCharge);
     std::swap(lightRecoilMass, heavyRecoilMass);
@@ -180,7 +180,11 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 
   G4double qValue = beamMassPDG + targetMassPDG - (lightRecoilMassPDG + heavyRecoilMassPDG);
 
-  if(cmEnergy + qValue < 0) return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
+  // Check if reaction is possible
+  if(cmEnergy + qValue < 0) {
+    G4cout << "Not enough energy: " << incomingParticleName << '\t' << cmEnergy << '\t' << qValue << G4endl;
+    return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
+  }
 
   G4double totalEnergy = energy + qValue;
 
@@ -190,11 +194,11 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
               (1. + beamMassPDG/targetMassPDG*qValue/totalEnergy);
 
   G4double maxAngle = (B < D) ? M_PI : asin(sqrt(D/B));
-
   // G4double arg = (1. - cos(maxAngle))*G4UniformRand() + cos(maxAngle);
   // G4double pAngleLightLab = acos(arg);
   G4double pAngleLightLab = maxAngle*G4UniformRand();
   G4double aAngleLightLab = 2.*M_PI*G4UniformRand();
+
   G4ThreeVector lightVector(sin(pAngleLightLab)*cos(aAngleLightLab), sin(pAngleLightLab)*sin(aAngleLightLab),
                             cos(pAngleLightLab));
   G4ThreeVector beamVector(0., 0., 1.);
@@ -206,6 +210,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 
   G4double heavyEnergyLab = totalEnergy - lightEnergyLab;
 
+  // Make sure the energies of both recoils are greater than 0
   if(lightEnergyLab < 0 || heavyEnergyLab < 0) {
     G4cout << lightEnergyLab << '\t' << heavyEnergyLab << G4endl;
   }
@@ -258,13 +263,13 @@ void BinaryReactionProcess::StartTracking(G4Track* track) {
   G4VProcess::StartTracking(track);	// Apply base class actions
 
   // To make interaction happen anywhere from beam energy to 0
-  fScatteringEnergy = track->GetKineticEnergy()*G4UniformRand()/MeV;
+  // fScatteringEnergy = track->GetKineticEnergy()*G4UniformRand()/MeV;
 
   // To make interaction happen anywhere from beam energy to beam energy - 20 MeV
-  // G4double beamEnergy = track->GetKineticEnergy()/MeV;
-  // G4double beamEnergyMin = 20.*MeV;
+  G4double beamEnergy = track->GetKineticEnergy()/MeV;
+  G4double beamEnergyMin = beamEnergy/2.;
 
-  // fScatteringEnergy = (beamEnergy - beamEnergyMin)*G4UniformRand() + beamEnergyMin;
+  fScatteringEnergy = (beamEnergy - beamEnergyMin)*G4UniformRand() + beamEnergyMin;
 }
 
 G4VParticleChange* BinaryReactionProcess::Decay(const G4Track& aTrack, G4int lightCharge, G4int lightMass,
