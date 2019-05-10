@@ -17,6 +17,7 @@ NucleonStates* NucleonStates::Instance() {
 // These are the nuclei and thresholds that can be excited and decayed from
 void NucleonStates::GenerateStates() {
   He4();
+  Li5();
   Li6();
   Li7();
   Be7();
@@ -68,6 +69,21 @@ void NucleonStates::He4() {
   states.push_back(state);
 
   nucleonStates[2][4] = states;
+}
+
+void NucleonStates::Li5() {
+  std::vector<excitedStruct> states;
+
+  excitedStruct state = {0., 1.};
+  states.push_back(state);
+
+  std::vector<thresholdStruct> thresholds;
+
+  thresholdStruct threshold = {-1.69, 1, 1, 2, 4};
+  thresholds.push_back(threshold);
+
+  nucleonStates[3][5] = states;
+  nucleonThresholds[3][5] = thresholds;
 }
 
 void NucleonStates::Li6() {

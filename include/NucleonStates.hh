@@ -23,6 +23,7 @@ private:
   static NucleonStates* fInstance;
 
   void He4();
+  void Li5();
   void Li6();
   void Li7();
   void Be7();
