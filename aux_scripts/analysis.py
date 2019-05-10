@@ -11,31 +11,33 @@ sim_data = tfile.Get("simData")
 all_data = tfile.Get("allData")
 
 ''' simData Branches
-gunEnergy
-gridEnergy [vector]
-gridID [vector]
-gridTrackID [vector]
-scintXPosition [vector]
-scintYPosition [vector]
-scintZPosition [vector]
-scintEnergy [vector]
-scintTrackID [vector]
-scintMass [vector]
-scintCharge [vector]
-beamEnergy
-beamCharge
-beamMass
-'''
-
-''' allData Branches
-energy
-cmEnergy
-lighAngleCM
-lightAngleLab
-lightEnergy
-heavyAngleCM
-heavyAngleLab
-heavyEnergy
+gridEnergy [vector<double>]
+gridID [vector<int>]
+gridTrackID [vector<int>]
+scintXPosition [vector<double>]
+scintYPosition [vector<double>]
+scintZPosition [vector<double>]
+scintEnergy [vector<double>]
+scintTrackID [vector<int>]
+scintMass [vector<int>]
+scintCharge [vector<int>]
+beamEnergy [double]
+beamCharge [int]
+beamMass [int]
+energy [double]
+cmEnergy [double]
+lightAngleCM [double]
+lightAngleLab [double]
+lightEnergy [double]
+heavyAngleCM [double]
+heavyAngleLab [double]
+heavyEnergy [double]
+qValue [double]
+excitedEnergy [double]
+lightRecoilCharge [int]
+lightRecoilMass [int]
+heavyRecoilCharge [int]
+heavyRecoilMass [int]
 '''
 
 ''' Reaction Types
@@ -127,9 +129,10 @@ for event in sim_data:
   silhouette_label_3_clusters.append(reaction_type)
 
   # Fill Histograms
-  h_scint_grid.Fill(scintillator_energy, grid_energy)
-  h_scint_grid_rt[reaction_type].Fill(scintillator_energy, grid_energy)
-  h_scint_grid_mp[multiple_particles].Fill(scintillator_energy, grid_energy)
+  if scintillator_energy > 0.001:
+    h_scint_grid.Fill(scintillator_energy, grid_energy)
+    h_scint_grid_rt[reaction_type].Fill(scintillator_energy, grid_energy)
+    h_scint_grid_mp[multiple_particles].Fill(scintillator_energy, grid_energy)
 
 ############################
 # Done with event by event #
