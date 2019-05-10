@@ -46,12 +46,20 @@ heavyRecoilMass [int]
 2: 7Be or 1H with trackID = 5, 4 there was (d, n)8B*
 '''
 
+''' Scattering Types
+0: No scattering
+1: (d, d)
+2: (12C, 12C)
+3: (d, n)
+'''
+
 # Output Files
 output_root = TFile("output.root", "recreate")
 
 # Canvas Definitions
 #c1 = TCanvas('c1', 'Scint. Energy vs Grid Energy', 200, 10, 800, 600 )
 c2 = TCanvas('scintGridRT', 'Scint. Energy vs Grid Energy with Reaction Types', 500, 10, 800, 600 )
+c3 = TCanvas('scintGridST', 'Scint. Energy vs Grid Energy with Scattering Types', 500, 10, 800, 600 )
 
 gStyle.SetOptStat(10)
 gStyle.SetStatW(0.1)
@@ -68,6 +76,14 @@ h_scint_grid_rt.append(TH2F('scintGridRT1', 'Scint. Energy vs Grid Energy with R
 h_scint_grid_rt.append(TH2F('scintGridRT2', 'Scint. Energy vs Grid Energy with Reaction Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
 for i in range(len(h_scint_grid_rt)):
   h_scint_grid_rt[i].GetXaxis().CenterTitle(); h_scint_grid_rt[i].GetYaxis().CenterTitle();
+
+h_scint_grid_st = []
+h_scint_grid_st.append(TH2F('scintGridST0', 'Scint. Energy vs Grid Energy with Scattering Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
+h_scint_grid_st.append(TH2F('scintGridST1', 'Scint. Energy vs Grid Energy with Scattering Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
+h_scint_grid_st.append(TH2F('scintGridST2', 'Scint. Energy vs Grid Energy with Scattering Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
+h_scint_grid_st.append(TH2F('scintGridST3', 'Scint. Energy vs Grid Energy with Scattering Types; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
+for i in range(len(h_scint_grid_st)):
+  h_scint_grid_st[i].GetXaxis().CenterTitle(); h_scint_grid_st[i].GetYaxis().CenterTitle();
 
 h_scint_grid_mp = []
 h_scint_grid_mp.append(TH2F('scintGridMP0', 'Scint. Energy vs Grid Energy with Multiple Particles; Scintillator Energy [MeV]; Total Grid Energy [MeV]', 500, 0, 40, 500, 0, 4))
@@ -90,38 +106,47 @@ generated = [0]*3
 # Loop over all events in simData
 for event in sim_data:
 
-  # Get reactionType
+  # Get Reaction Type
   reaction_type = 0
-  for i in range(len(sim_data.scintTrackID)):
-    if(sim_data.scintTrackID[i] == 1):
+  for i in range(len(event.scintTrackID)):
+    if(event.scintTrackID[i] == 1):
       reaction_type = 0
-    elif(sim_data.scintTrackID[i] == 3 and sim_data.scintCharge[i] == 5 and sim_data.scintMass[i] == 8):
+    elif(event.scintTrackID[i] == 3 and event.scintCharge[i] == 5 and event.scintMass[i] == 8):
       reaction_type = 1
-    elif((sim_data.scintTrackID[i] == 5 and sim_data.scintCharge[i] == 4 and sim_data.scintMass[i] == 7) or
-      (sim_data.scintTrackID[i] == 4 and sim_data.scintCharge[i] == 1 and sim_data.scintMass[i] == 1)):
+    elif((event.scintTrackID[i] == 5 and event.scintCharge[i] == 4 and event.scintMass[i] == 7) or
+      (event.scintTrackID[i] == 4 and event.scintCharge[i] == 1 and event.scintMass[i] == 1)):
       reaction_type = 2
+
+  # Get Scattering Type
+  scattering_type = 0
+  if event.lightRecoilCharge == 1 and event.lightRecoilMass == 2:
+    scattering_type = 1
+  elif event.heavyRecoilCharge == 6 and event.heavyRecoilMass == 12:
+    scattering_type = 2
+  elif event.lightRecoilCharge == 0 and event.lightRecoilMass == 1:
+    scattering_type = 3
 
   observed[reaction_type] += 1
 
   # Get events with multiple particles hitting scintillator
   multiple_particles = 0
-  for i in range(len(sim_data.scintTrackID)):
+  for i in range(len(event.scintTrackID)):
     if i == 0:
-      previousTrack = sim_data.scintTrackID[i]
+      previousTrack = event.scintTrackID[i]
     else:
-      currentTrack = sim_data.scintTrackID[i]
+      currentTrack = event.scintTrackID[i]
       if(previousTrack != currentTrack):
         multiple_particles = 1
 
   if multiple_particles:
-    for i in range(len(sim_data.scintTrackID)):
-      h_multiple_particles.Fill(sim_data.scintMass[i], sim_data.scintCharge[i])
+    for i in range(len(event.scintTrackID)):
+      h_multiple_particles.Fill(event.scintMass[i], event.scintCharge[i])
 
   # Get energy in scintillator
-  scintillator_energy = np.sum(sim_data.scintEnergy)
+  scintillator_energy = np.sum(event.scintEnergy)
 
   # Get emergy in grids
-  grid_energy = np.sum(sim_data.gridEnergy)
+  grid_energy = np.sum(event.gridEnergy)
 
   tmp_arr = [scintillator_energy, grid_energy]
   silhouette_arr.append(tmp_arr)
@@ -132,6 +157,7 @@ for event in sim_data:
   if scintillator_energy > 0.001:
     h_scint_grid.Fill(scintillator_energy, grid_energy)
     h_scint_grid_rt[reaction_type].Fill(scintillator_energy, grid_energy)
+    h_scint_grid_st[scattering_type].Fill(scintillator_energy, grid_energy)
     h_scint_grid_mp[multiple_particles].Fill(scintillator_energy, grid_energy)
 
 ############################
@@ -142,6 +168,8 @@ for event in sim_data:
 h_scint_grid.Write()
 for i in range(len(h_scint_grid_rt)):
   h_scint_grid_rt[i].Write()
+for i in range(len(h_scint_grid_st)):
+  h_scint_grid_st[i].Write()
 for i in range(len(h_scint_grid_mp)):
   h_scint_grid_mp[i].Write()
 h_multiple_particles.Write()
@@ -162,6 +190,23 @@ h_scint_grid_rt[2].SetMarkerColor(3)
 h_scint_grid_rt[2].Draw("PSame")
 c2.Update()
 c2.Write()
+
+# Draw Scintillator Energy vs Grid Energy for Scattering Types
+c3.cd()
+h_scint_grid_st[1].SetMarkerStyle(20)
+h_scint_grid_st[1].SetMarkerSize(0.3)
+h_scint_grid_st[1].SetMarkerColor(1)
+h_scint_grid_st[1].Draw("P")
+h_scint_grid_st[2].SetMarkerStyle(20)
+h_scint_grid_st[2].SetMarkerSize(0.3)
+h_scint_grid_st[2].SetMarkerColor(2)
+h_scint_grid_st[2].Draw("PSame")
+h_scint_grid_st[3].SetMarkerStyle(20)
+h_scint_grid_st[3].SetMarkerSize(0.3)
+h_scint_grid_st[3].SetMarkerColor(3)
+h_scint_grid_st[3].Draw("PSame")
+c3.Update()
+c3.Write()
 
 # silhouette_avg_2_clusters = silhouette_score(silhouette_arr, silhouette_label_2_clusters)
 # print("Silhouette Score for 2 Clusters: ", silhouette_avg_2_clusters)
