@@ -24,47 +24,12 @@ public:
 
   void StartTracking(G4Track*);
 
-  void SetQValue(G4double qValue) {
-    fQValue = qValue;
-    G4cout << "SET: Q Value: " << fQValue << G4endl;
-  }
-
-  void SetTarget(G4int charge, G4int mass) {
-    fTargetMass = mass;
-    fTargetCharge = charge;
-    G4cout << "SET: Target: " << fTargetCharge << ' ' << fTargetMass << G4endl;
-  }
-
-  void SetLightProduct(G4int charge, G4int mass) {
-    fLightProductMass = mass;
-    fLightProductCharge = charge;
-    G4cout << "SET: Light Product: " << fLightProductCharge << ' ' << fLightProductMass << G4endl;
-  }
-
-  void SetHeavyProduct(G4int charge, G4int mass) {
-    fHeavyProductMass = mass;
-    fHeavyProductCharge = charge;
-    G4cout << "SET: Heavy Product: " << fHeavyProductCharge << ' ' << fHeavyProductMass << G4endl;
-  }
-
   void SetNumGrids(G4int numGrids) {fNumGrids = numGrids;}
-  void SetExcitedStateEnergy(G4double energy) {fExcitedStateEnergy = energy;}
-
-  G4double GetLightProductMass() {return fLightProductMass;}
-  G4double GetLightProductCharge() {return fLightProductCharge;}
 
 private:
   G4double fScatteringEnergy;
-  G4double fQValue;
 
-  G4int fTargetMass;
-  G4int fTargetCharge;
-  G4int fLightProductMass;
-  G4int fLightProductCharge;
-  G4int fHeavyProductMass;
-  G4int fHeavyProductCharge;
   G4int fNumGrids;
-  G4double fExcitedStateEnergy;
 };
 
 #endif

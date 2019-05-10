@@ -3,7 +3,7 @@
 #include "TypeDef.hh"
 
 BinaryReactionProcess::BinaryReactionProcess(const G4String& processName)
-  : G4VDiscreteProcess(processName, fHadronic), fScatteringEnergy(1e6), fQValue(0) {
+  : G4VDiscreteProcess(processName, fHadronic), fScatteringEnergy(1e6) {
   SetProcessSubType(111);
 }
 

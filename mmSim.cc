@@ -56,16 +56,6 @@ int main(int argc,char** argv)
   G4String macroName   = config["macroName"].asString();
   G4bool isInteractive = config["interactive"].asBool();
 
-  G4double qValue          = config["qValue"].asDouble();
-  G4int lightProductCharge = config["lightProduct"][0].asInt();
-  G4int lightProductMass   = config["lightProduct"][1].asInt();
-  G4int heavyProductCharge = config["heavyProduct"][0].asInt();
-  G4int heavyProductMass   = config["heavyProduct"][1].asInt();
-  G4int targetCharge       = config["target"][0].asInt();
-  G4int targetMass         = config["target"][1].asInt();
-
-  G4double excitedStateEnergy = config["excitedStateEnergy"].asDouble();
-
   // Work out fanoFactor and workFunction from gasType
   G4double fanoFactor;
   G4double workFunction;
@@ -119,12 +109,7 @@ int main(int argc,char** argv)
 
   G4VModularPhysicsList* physicsList = new QGSP_BERT(0);
   BinaryReactionPhysics* reactionPhysics = new BinaryReactionPhysics();
-  reactionPhysics->SetQValue(qValue);
-  reactionPhysics->SetTarget(targetCharge, targetMass);
-  reactionPhysics->SetLightProduct(lightProductCharge, lightProductMass);
-  reactionPhysics->SetHeavyProduct(heavyProductCharge, heavyProductMass);
   reactionPhysics->SetNumGrids(numGrids);
-  reactionPhysics->SetExcitedStateEnergy(excitedStateEnergy);
   physicsList->RegisterPhysics(reactionPhysics);
   runManager->SetUserInitialization(physicsList);
 
