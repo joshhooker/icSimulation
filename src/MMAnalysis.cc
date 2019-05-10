@@ -38,7 +38,7 @@ void MMAnalysis::OpenFile() {
 
   fTree->Branch("energy", &fEnergy);
   fTree->Branch("cmEnergy", &fCMEnergy);
-  fTree->Branch("lighAngleCM", &fCMLightAngle);
+  fTree->Branch("lightAngleCM", &fCMLightAngle);
   fTree->Branch("lightAngleLab", &fLabLightAngle);
   fTree->Branch("lightEnergy", &fLightEnergy);
   fTree->Branch("heavyAngleCM", &fCMHeavyAngle);
