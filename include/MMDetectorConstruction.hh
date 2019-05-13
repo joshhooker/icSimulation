@@ -9,6 +9,7 @@
 #include "G4ExtrudedSolid.hh"
 #include "G4FieldManager.hh"
 #include "G4GenericMessenger.hh"
+#include "G4IntersectionSolid.hh"
 #include "G4LogicalVolume.hh"
 #include "G4MagIntegratorDriver.hh"
 #include "G4NistManager.hh"
@@ -131,7 +132,7 @@ private:
   G4LogicalVolume* fDetectLogical;
   G4LogicalVolume* fFoilLogical;
   std::vector<G4LogicalVolume*> fGridLogical;
-  std::vector<G4LogicalVolume*> fWireGridLogical;
+  std::vector<G4LogicalVolume*> fWireGridLogical[49];
   G4LogicalVolume* fScintLogical;
 
   void ConstructMaterials();
