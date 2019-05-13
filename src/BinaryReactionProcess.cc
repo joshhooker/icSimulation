@@ -22,6 +22,7 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
   G4LogicalVolume* fFoilLogical = detectorConstruction->GetFoilVolume();
   G4LogicalVolume* fScintLogical = detectorConstruction->GetScintVolume();
   G4LogicalVolume* currentVolume = aTrack.GetStep()->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
+  G4LogicalVolume* motherVolume = aTrack.GetStep()->GetPostStepPoint()->GetPhysicalVolume()->GetMotherLogical();
 
   G4String excitedname = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
 
@@ -29,16 +30,15 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
                   aTrack.GetTrackID() > 1 ||
                   currentVolume == fDetectLogical ||
                   currentVolume == fFoilLogical ||
-                  currentVolume == fScintLogical) ? DBL_MAX : 0.;
+                  currentVolume == fScintLogical ||
+                  motherVolume == fDetectLogical) ? DBL_MAX : 0.;
 
   for(G4int i = 0; i < fNumGrids; i++) {
     if(currentVolume == detectorConstruction->GetGridVolume(i)) {
       mfp = DBL_MAX;
     }
-    for(G4int j = 0; j < 49; j++) {
-      if(currentVolume == detectorConstruction->GetWireVolume(i, j)) {
-        mfp = DBL_MAX;
-      }
+    if(motherVolume == detectorConstruction->GetGridVolume(i)) {
+      mfp = DBL_MAX;
     }
   }
 
