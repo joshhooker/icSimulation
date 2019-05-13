@@ -39,6 +39,7 @@ public:
 
   void SetEnergy(G4double energy) {fEnergy = energy;}
   void SetCMEnergy(G4double energy) {fCMEnergy = energy;}
+  void SetVertex(G4double vertex) {fVertex = vertex;}
 
   void SetBeamEnergy(G4double energy) {fBeamEnergy = energy;}
   void SetBeamCharge(G4int charge) {fBeamCharge = charge;}
@@ -80,6 +81,7 @@ private:
 
   G4double fEnergy;
   G4double fCMEnergy;
+  G4double fVertex;
 
   G4double fBeamEnergy;
   G4int fBeamCharge;

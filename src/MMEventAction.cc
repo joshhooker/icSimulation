@@ -115,6 +115,8 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
 
   analysis->SetEnergy(0.);
   analysis->SetCMEnergy(0.);
+  analysis->SetVertex(-1000.);
+
   analysis->SetCMLightAngle(0.);
   analysis->SetLabLightAngle(0.);
   analysis->SetLightEnergy(0.);

@@ -96,8 +96,11 @@ def analysis(input_file, output_file):
   h_multiple_particles = TH2F('multiple_particles', 'Mass vs Charge of Events with > 1 Particles; Mass; Charge', 9, 0, 9, 9, 0, 9)
   h_multiple_particles.GetXaxis().CenterTitle(); h_multiple_particles.GetYaxis().CenterTitle()
 
-  h_scint_position = TH2F('scint_pos', 'X-Y Position of Hits in the Scintillator; X [mm]; Y [mm]', 200, -100, 100, 200, -100, 100)
+  h_scint_position = TH2F('scint_pos', 'X-Y Position of Hits in the Scintillator; X [mm]; Y [mm]', 2000, -100, 100, 2000, -100, 100)
   h_scint_position.GetXaxis().CenterTitle(); h_scint_position.GetYaxis().CenterTitle()
+
+  h_vertex_position = TH1F('vertex_pos', 'Vertex Position of Reaction; Z[mm]', 200, -20, 200)
+  h_vertex_position.GetXaxis().CenterTitle(); h_vertex_position.GetYaxis().CenterTitle()
 
   # Define variables for silhouette score
   silhouette_arr = []
@@ -146,10 +149,6 @@ def analysis(input_file, output_file):
     if multiple_particles:
       for i in range(len(event.scintTrackID)):
         h_multiple_particles.Fill(event.scintMass[i], event.scintCharge[i])
-    else:
-      scintAvgXPos = np.average(event.scintXPosition)
-      scintAvgYPos = np.average(event.scintYPosition)
-      h_scint_position.Fill(scintAvgXPos, scintAvgYPos)
 
     # Get energy in scintillator
     scintillator_energy = np.sum(event.scintEnergy)
@@ -169,6 +168,12 @@ def analysis(input_file, output_file):
       h_scint_grid_st[scattering_type].Fill(scintillator_energy, grid_energy)
       h_scint_grid_mp[multiple_particles].Fill(scintillator_energy, grid_energy)
 
+      scintAvgXPos = np.mean(event.scintXPosition)
+      scintAvgYPos = np.mean(event.scintYPosition)
+      h_scint_position.Fill(scintAvgXPos, scintAvgYPos)
+
+    h_vertex_position.Fill(event.vertex)
+
   ############################
   # Done with event by event #
   ############################
@@ -183,6 +188,7 @@ def analysis(input_file, output_file):
     h_scint_grid_mp[i].Write()
   h_multiple_particles.Write()
   h_scint_position.Write()
+  h_vertex_position.Write()
 
   # Draw histograms
   c2.cd()
