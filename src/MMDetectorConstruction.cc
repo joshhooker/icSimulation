@@ -186,7 +186,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   }
 
   // IC wires
-  G4double wireRadius = 50./2.*um;
+  G4double wireRadius = 100./2.*um;
   G4double wireSpacing = 2.794*mm; // 24 wires on each side of center for 49 total
   G4VSolid* gridSolid = new G4Tubs(name, 0., gridRadius, distancePerGrid/2., 0., 360.*deg);
   for(G4int i = 0; i < fNumGrids; i++) {

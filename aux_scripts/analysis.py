@@ -132,7 +132,7 @@ def analysis(input_file, output_file):
     elif event.lightRecoilCharge == 0 and event.lightRecoilMass == 1:
       scattering_type = 3
 
-    observed[reaction_type] += 1
+    generated[reaction_type] += 1
 
     # Get events with multiple particles hitting scintillator
     multiple_particles = 0
@@ -169,6 +169,8 @@ def analysis(input_file, output_file):
       scintAvgXPos = np.mean(event.scintXPosition)
       scintAvgYPos = np.mean(event.scintYPosition)
       h_scint_position.Fill(scintAvgXPos, scintAvgYPos)
+
+      observed[reaction_type] += 1
 
     h_vertex_position.Fill(event.vertex)
 
@@ -237,6 +239,10 @@ def analysis(input_file, output_file):
 
   # silhouette_avg_3_clusters = silhouette_score(silhouette_arr, silhouette_label_3_clusters)
   # print("Silhouette Score for 3 Clusters: ", silhouette_avg_3_clusters)
+
+  print("Observed/Generated Ratios:")
+  for i in range(len(observed)):
+    print("Reaction Type %d: %f", i, observed[i]/generated[i])
 
   input('Press Enter to Exit')
 
