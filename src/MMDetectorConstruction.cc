@@ -45,6 +45,10 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   BC400->AddElement(H, natoms = 10);
   BC400->AddElement(C, natoms = 9);
 
+  // Define Tungsten Wires
+  G4Material* Tungsten = new G4Material("Tungsten", 19.3*g/cm3, nel = 1);
+  Tungsten->AddElement(W, natoms = 1);
+
   G4double atmPressure = 760; // torr
 
   if(fGasType == "P10" || fGasType == "p10") {
@@ -94,7 +98,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 		   1.e-25*g/cm3); //Pressure for Vaccum
 
   // Overlaps flag
-  G4bool checkOverlaps = true;
+  G4bool checkOverlaps = false;
 
   // Create vacuum filled world
   G4VSolid* worldSolid = new G4Box("worldBox", 0.2*m, 0.15*m, 0.7*m);
@@ -181,6 +185,36 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
     }
   }
 
+  // IC wires
+  G4double wireRadius = 0.01778/2.*mm; // .0007 inch diameter Tungsten
+  G4double wireSpacing = 2.794*mm; // 24 wires on each side of center for 49 total
+  for(G4int i = 0; i < fNumGrids; i++) {
+    sprintf(name, "wire_grid%d", i + 1);
+    G4VSolid* wireSolid = new G4Tubs(name, 0., wireRadius, gridRadius, 0., 360.*deg);
+    sprintf(name, "wireGridLogical%d", i + 1);
+    fWireGridLogical.push_back(new G4LogicalVolume(wireSolid, Tungsten, name));
+    sprintf(name, "wireGridPhysical%d", i + 1);
+    G4RotationMatrix *rm = new G4RotationMatrix();
+    rm->rotateX(90.*deg);
+    for(G4int j = -24; j < 25; j++) {
+      G4double frontGrid = -distancePerGrid/2.;
+      new G4PVPlacement(rm, G4ThreeVector(wireSpacing*j, 0, frontGrid), fWireGridLogical[i],
+                        name, fGridLogical[i], false, j + 24, checkOverlaps);
+    }
+    for(G4int j = -24; j < 25; j++) {
+      new G4PVPlacement(rm, G4ThreeVector(wireSpacing*j, 0., 0.), fWireGridLogical[i],
+                        name, fGridLogical[i], false, j + 24 + 49, checkOverlaps);
+    }
+    if(i == fNumGrids - 1) {
+      for(G4int j = -24; j < 25; j++) {
+        G4double backGrid = distancePerGrid/2.;
+        new G4PVPlacement(rm, G4ThreeVector(wireSpacing*j, 0, backGrid), fWireGridLogical[i],
+                          name, fGridLogical[i], false, j + 24 + 49 + 49, checkOverlaps);
+      }
+    }
+  }
+
+
   // BC-400 Plastic Scintillator
   G4VSolid* scintSolid = new G4Tubs("scintSolid", 0., scintRadius, scintillatorThickness/2., 0., 360.*deg);
   fScintLogical =  new G4LogicalVolume(scintSolid, BC400, "scintLogical");
@@ -262,6 +296,13 @@ void MMDetectorConstruction::SetAttributes() {
     gridAttr->SetVisibility(true);
     gridAttr->SetForceSolid(true);
     fGridLogical[i]->SetVisAttributes(gridAttr);
+  }
+
+  for(G4int i = 0; i < fNumGrids; i++) {
+    G4VisAttributes* wireAttr = new G4VisAttributes(G4Colour::Red());
+    wireAttr->SetVisibility(true);
+    wireAttr->SetForceSolid(true);
+    fWireGridLogical[i]->SetVisAttributes(wireAttr);
   }
 
   G4VisAttributes* scintAttr = new G4VisAttributes(G4Colour::Red());

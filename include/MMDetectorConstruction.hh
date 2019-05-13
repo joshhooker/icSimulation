@@ -13,6 +13,7 @@
 #include "G4MagIntegratorDriver.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
+#include "G4RotationMatrix.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
 #include "G4SubtractionSolid.hh"
@@ -130,6 +131,7 @@ private:
   G4LogicalVolume* fDetectLogical;
   G4LogicalVolume* fFoilLogical;
   std::vector<G4LogicalVolume*> fGridLogical;
+  std::vector<G4LogicalVolume*> fWireGridLogical;
   G4LogicalVolume* fScintLogical;
 
   void ConstructMaterials();
