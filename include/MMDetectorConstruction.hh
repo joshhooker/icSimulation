@@ -113,6 +113,7 @@ public:
   G4LogicalVolume* GetScintVolume() const {return fScintLogical;}
   G4LogicalVolume* GetFoilVolume() const {return fFoilLogical;}
   G4LogicalVolume* GetGridVolume(G4int grid) const {return fGridLogical[grid];}
+  G4LogicalVolume* GetWireVolume(G4int grid, G4int wire) const {return fWireGridLogical[wire][grid];}
 
 private:
   G4double fPressureInTorr;

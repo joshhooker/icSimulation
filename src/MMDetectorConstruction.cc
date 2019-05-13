@@ -191,7 +191,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   G4VSolid* gridSolid = new G4Tubs(name, 0., gridRadius, distancePerGrid/2., 0., 360.*deg);
   for(G4int i = 0; i < fNumGrids; i++) {
     sprintf(name, "wire_grid%d", i + 1);
-    G4VSolid* wireSolid = new G4Tubs(name, 0., wireRadius, gridRadius, 0., 360.*deg);
+    G4VSolid* wireSolid = new G4Tubs(name, 0., wireRadius, gridRadius*2., 0., 360.*deg);
     G4RotationMatrix *rm = new G4RotationMatrix();
     rm->rotateX(90.*deg);
     for(G4int j = -24; j < 25; j++) {

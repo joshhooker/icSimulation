@@ -35,6 +35,11 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
     if(currentVolume == detectorConstruction->GetGridVolume(i)) {
       mfp = DBL_MAX;
     }
+    for(G4int j = 0; j < 49; j++) {
+      if(currentVolume == detectorConstruction->GetWireVolume(i, j)) {
+        mfp = DBL_MAX;
+      }
+    }
   }
 
   // Look at excited name and see if it's in an excited state
