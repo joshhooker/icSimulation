@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.metrics import silhouette_score
 import sys
 
-from ROOT import TCanvas, TFile, TPad
+from ROOT import TCanvas, TFile, TLegend, TPad
 from ROOT import TH1F, TH1I, TH2F
 from ROOT import gROOT, gStyle
 
@@ -28,6 +28,7 @@ def analysis(input_file, output_file):
   beamMass [int]
   energy [double]
   cmEnergy [double]
+  vertex [double]
   lightAngleCM [double]
   lightAngleLab [double]
   lightEnergy [double]
@@ -116,13 +117,10 @@ def analysis(input_file, output_file):
 
     # Get Reaction Type
     reaction_type = 0
-    for i in range(len(event.scintTrackID)):
-      if(event.scintTrackID[i] == 1):
-        reaction_type = 0
-      elif(event.scintTrackID[i] == 3 and event.scintCharge[i] == 5 and event.scintMass[i] == 8):
+    if(event.beamCharge == 4 and event.lightRecoilCharge == 0 and event.lightRecoilMass == 1):
+      if(event.excitedEnergy < 0.001):
         reaction_type = 1
-      elif((event.scintTrackID[i] == 5 and event.scintCharge[i] == 4 and event.scintMass[i] == 7) or
-        (event.scintTrackID[i] == 4 and event.scintCharge[i] == 1 and event.scintMass[i] == 1)):
+      else:
         reaction_type = 2
 
     # Get Scattering Type
@@ -204,6 +202,11 @@ def analysis(input_file, output_file):
   h_scint_grid_rt[2].SetMarkerSize(0.3)
   h_scint_grid_rt[2].SetMarkerColor(3)
   h_scint_grid_rt[2].Draw("PSame")
+  legend_rt = TLegend(0.6, 0.75, 0.9, 0.9)
+  legend_rt.AddEntry(h_scint_grid_rt[0], "No Reaction/Other", "p")
+  legend_rt.AddEntry(h_scint_grid_rt[1], "(d, n)^{8}B", "p")
+  legend_rt.AddEntry(h_scint_grid_rt[2], "(d, n)^{8}B*", "p")
+  legend_rt.Draw()
   c2.Update()
   c2.Write()
 
@@ -221,6 +224,11 @@ def analysis(input_file, output_file):
   h_scint_grid_st[3].SetMarkerSize(0.3)
   h_scint_grid_st[3].SetMarkerColor(3)
   h_scint_grid_st[3].Draw("PSame")
+  legend_st = TLegend(0.6, 0.75, 0.9, 0.9)
+  legend_st.AddEntry(h_scint_grid_st[1], "(d, d)", "p")
+  legend_st.AddEntry(h_scint_grid_st[2], "(^{12}C, ^{12}C)", "p")
+  legend_st.AddEntry(h_scint_grid_st[3], "(d, n)", "p")
+  legend_st.Draw()
   c3.Update()
   c3.Write()
 

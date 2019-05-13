@@ -4,5 +4,5 @@ build/
 *.d
 *.user
 cmake-build-debug/
-sim.root
+sim*.root
 output*.root
