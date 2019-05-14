@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.metrics import silhouette_score
 import sys
+from tqdm import tqdm
 
 from ROOT import TCanvas, TFile, TLegend, TPad
 from ROOT import TH1F, TH1I, TH2F
@@ -113,7 +114,8 @@ def analysis(input_file, output_file):
   generated = [0]*3
 
   # Loop over all events in simData
-  for event in sim_data:
+  print("Reading All Events in TTree:")
+  for event in tqdm(sim_data, total=sim_data.GetEntries()):
 
     # Get Reaction Type
     reaction_type = 0
@@ -234,15 +236,19 @@ def analysis(input_file, output_file):
   c3.Update()
   c3.Write()
 
+  # print()
+  # print("Calculating Silhouette Score")
   # silhouette_avg_2_clusters = silhouette_score(silhouette_arr, silhouette_label_2_clusters)
   # print("Silhouette Score for 2 Clusters: ", silhouette_avg_2_clusters)
 
   # silhouette_avg_3_clusters = silhouette_score(silhouette_arr, silhouette_label_3_clusters)
   # print("Silhouette Score for 3 Clusters: ", silhouette_avg_3_clusters)
 
+  print()
   print("Observed/Generated Ratios:")
   for i in range(len(observed)):
     print("Reaction Type %d: %f", i, observed[i]/generated[i])
+  print()
 
   input('Press Enter to Exit')
 

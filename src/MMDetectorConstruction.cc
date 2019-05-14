@@ -18,16 +18,17 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   inchtocm = 2.54;
 
   // Define Elements
-  G4Element* H = new G4Element("Hydrogen",  "H",  z = 1.,  1.008*g/mole);
-  G4Element* C = new G4Element("Carbon",    "C",  z = 6.,  12.011*g/mole);
-  G4Element* O = new G4Element("Oxygen",    "O",  z = 8.,  15.999*g/mole);
-  G4Element* F = new G4Element("Fluorine",  "F",  z = 9.,  18.998*g/mole);
+  G4Element* H  = new G4Element("Hydrogen", "H",  z = 1.,  1.008*g/mole);
+  G4Element* C  = new G4Element("Carbon",   "C",  z = 6.,  12.011*g/mole);
+  G4Element* O  = new G4Element("Oxygen",   "O",  z = 8.,  15.999*g/mole);
+  G4Element* F  = new G4Element("Fluorine", "F",  z = 9.,  18.998*g/mole);
   G4Element* Ar = new G4Element("Argon",    "Ar", z = 18., 39.948*g/mole);
   G4Element* Cr = new G4Element("Chrome",   "Cr", z = 25., 51.996*g/mole);
   G4Element* Fe = new G4Element("Iron",     "Fe", z = 26., 55.845*g/mole);
   G4Element* Co = new G4Element("Cobalt",   "Co", z = 27., 58.933*g/mole);
   G4Element* Ni = new G4Element("Nickel",   "Ni", z = 28., 58.693*g/mole);
   G4Element* W  = new G4Element("Tungsten", "W",  z = 74., 183.850*g/mole);
+  G4Element* Au = new G4Element("Gold",     "Au", z = 79., 196.967*g/mole);
 
   // Define Havar
   G4Material* Havar = new G4Material("Havar", 8.3*g/cm3, nel = 5);
@@ -60,6 +61,10 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   // Define Tungsten Wires
   G4Material* Tungsten = new G4Material("Tungsten", 19.3*g/cm3, nel = 1);
   Tungsten->AddElement(W, natoms = 1);
+
+  // Define Gold Wires
+  G4Material* Gold = new G4Material("Gold", 193*g/cm3, nel = 1);
+  Gold->AddElement(Au, natoms = 1);
 
   G4double atmPressure = 760; // torr
 
@@ -186,7 +191,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   }
 
   // IC wires
-  G4double wireRadius = 100./2.*um;
+  G4double wireRadius = 20./2.*um;
   G4double wireSpacing = 2.794*mm; // 24 wires on each side of center for 49 total
   G4VSolid* gridSolid = new G4Tubs(name, 0., gridRadius, distancePerGrid/2., 0., 360.*deg);
   for(G4int i = 0; i < fNumGrids; i++) {
@@ -198,7 +203,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
       sprintf(name, "wire_grid%d_%d", i + 1, j + 1);
       G4VSolid* wireIntersectSolid = new G4IntersectionSolid("Wire-Grid", gridSolid, wireSolid, rm, G4ThreeVector(wireSpacing*j, 0, 0.));
       sprintf(name, "wireGridLogical%d_%d", i + 1, j + 1);
-      fWireGridLogical[j + 24].push_back(new G4LogicalVolume(wireIntersectSolid, Tungsten, name));
+      fWireGridLogical[j + 24].push_back(new G4LogicalVolume(wireIntersectSolid, Gold, name));
     }
     sprintf(name, "wireGridPhysical%d", i + 1);
     for(G4int j = -24; j < 25; j++) {
