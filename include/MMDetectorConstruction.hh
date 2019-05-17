@@ -95,6 +95,16 @@ public:
     }
   }
 
+  void SetWireThickness(G4double wireThickness) {
+    fWireThickness = wireThickness;
+    if(fUseInches) {
+      G4cout << "SET: Wire Thickness (in): " << fWireThickness << G4endl;
+    }
+    else {
+      G4cout << "SET: Wire Thickness (mm): " << fWireThickness << " (" << fWireThickness*1000. << " um)" << G4endl;
+    }
+  }
+
   void SetUseInches(G4bool inch) {
     fUseInches = inch;
     if(fUseInches) {
@@ -126,6 +136,7 @@ private:
   G4double fGridDist;
   G4double fGridSize;
   G4double fDistScint;
+  G4double fWireThickness;
   G4bool fUseInches;
 
   G4LogicalVolume* fWorldLogical;

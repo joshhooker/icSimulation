@@ -133,6 +133,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   G4double foilRadius;
   G4double scintRadius;
   G4double scintDist;
+  G4double wireThickness;
 
   if(fUseInches) {
     gridDist = fGridDist*inchtocm*cm;
@@ -140,6 +141,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
     foilRadius = fGridSize*inchtocm*cm;
     scintRadius = fGridSize*inchtocm*cm;
     scintDist = fDistScint*inchtocm*cm;
+    wireThickness = fWireThickness*inchtocm*cm;
   }
   else {
     gridDist = fGridDist*mm;
@@ -147,6 +149,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
     foilRadius = fGridSize*mm;
     scintRadius = fGridSize*mm;
     scintDist = fDistScint*mm;
+    wireThickness = fWireThickness*mm;
   }
 
   // Mylar foil
@@ -191,7 +194,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   }
 
   // IC wires
-  G4double wireRadius = 20./2.*um;
+  G4double wireRadius = wireThickness/2.;
   G4double wireSpacing = 2.794*mm; // 24 wires on each side of center for 49 total
   G4VSolid* gridSolid = new G4Tubs(name, 0., gridRadius, distancePerGrid/2., 0., 360.*deg);
   for(G4int i = 0; i < fNumGrids; i++) {

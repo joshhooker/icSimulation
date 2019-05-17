@@ -151,10 +151,16 @@ def analysis(input_file, output_file):
         h_multiple_particles.Fill(event.scintMass[i], event.scintCharge[i])
 
     # Get energy in scintillator
-    scintillator_energy = np.sum(event.scintEnergy)
+    if(len(event.scintEnergy) != 0):
+      scintillator_energy = np.sum(event.scintEnergy)
+    else:
+      scintillator_energy = 0
 
     # Get emergy in grids
-    grid_energy = np.sum(event.gridEnergy)
+    if(len(event.gridEnergy) != 0):
+      grid_energy = np.sum(event.gridEnergy)
+    else:
+      grid_energy = 0
 
     tmp_arr = [scintillator_energy, grid_energy]
     silhouette_arr.append(tmp_arr)

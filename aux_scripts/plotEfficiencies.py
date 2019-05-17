@@ -9,7 +9,7 @@ num_grids = 3
 num_wires = num_grids*2 + 1
 
 wireSize = [0, 20, 50, 100, 150]
-efficiency = [0.999, 0.964, 0.884, 0.793, 0.681]
+efficiency = [0.999, 0.952, 0.871, 0.774, 0.688]
 
 expected = []
 for wire in wireSize:

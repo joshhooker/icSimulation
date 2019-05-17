@@ -44,11 +44,12 @@ int main(int argc,char** argv)
   G4double gasTemperature = config["gasTemperature"].asDouble(); // K
   G4String gasType        = config["gasType"].asString();
 
-  G4int numGrids      = config["numberGrids"].asInt();
-  G4double gridDist   = config["gridDistance"].asDouble();
-  G4double gridRadius = config["gridRadius"].asDouble();
-  G4double scintDist  = config["distanceScint"].asDouble();
-  G4bool useInches    = config["useInches"].asBool();
+  G4int numGrids         = config["numberGrids"].asInt();
+  G4double gridDist      = config["gridDistance"].asDouble();
+  G4double gridRadius    = config["gridRadius"].asDouble();
+  G4double scintDist     = config["distanceScint"].asDouble();
+  G4double wireThickness = config["wireThickness"].asDouble();
+  G4bool useInches       = config["useInches"].asBool();
 
   G4double scintResolution   = config["scintResolution"].asDouble();
   G4double extraGridResolution = config["extraGridResolution"].asDouble();
@@ -105,6 +106,7 @@ int main(int argc,char** argv)
   detector->SetGridDistance(gridDist);
   detector->SetGridRadius(gridRadius);
   detector->SetDistScint(scintDist);
+  detector->SetWireThickness(wireThickness);
   runManager->SetUserInitialization(detector);
 
   G4VModularPhysicsList* physicsList = new QGSP_BERT(0);
