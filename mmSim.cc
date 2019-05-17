@@ -6,13 +6,16 @@
 #include "NucleonStates.hh"
 #include "QGSP_BERT.hh"
 
+#include "G4MTRunManager.hh"
 #include "G4RadioactiveDecayPhysics.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4VModularPhysicsList.hh"
+
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
+
 #ifdef G4UI_USE
 #include "G4UIExecutive.hh"
 #endif
@@ -88,13 +91,14 @@ int main(int argc,char** argv)
   if(argc>2) seed += 473879*atoi(argv[2]);
   CLHEP::HepRandom::setTheSeed(seed);
 
-  MMAnalysis* analysis = MMAnalysis::Instance();
-  char name[10];
-  sprintf(name, "sim.root");
-  analysis->SetFilename(name);
-
   // Construct the default run manager
+#ifdef G4MULTITHREADED
+  G4MTRunManager* runManager = new G4MTRunManager;
+  runManager->SetNumberOfThreads(2);
+#else
   G4RunManager* runManager = new G4RunManager;
+#endif
+
 
   // Mandatory user initialization classes
   MMDetectorConstruction* detector = new MMDetectorConstruction();

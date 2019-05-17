@@ -5,6 +5,7 @@
 #include "G4ParticleGun.hh"
 #include "G4ProcessManager.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Threading.hh"
 #include "G4UnitsTable.hh"
 #include "G4UserRunAction.hh"
 
