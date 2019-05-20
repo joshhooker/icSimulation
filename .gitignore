@@ -6,4 +6,6 @@ build/
 cmake-build-debug/
 sim*.root
 output*.root
-bayesian_optimization/test/*
+bayesian_optimization/*config.json*
+bayesian_optimization/*/output
+bayesian_optimization/testing/test
