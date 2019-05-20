@@ -91,14 +91,12 @@ int main(int argc,char** argv)
   if(argc>2) seed += 473879*atoi(argv[2]);
   CLHEP::HepRandom::setTheSeed(seed);
 
-  // Construct the default run manager
-#ifdef G4MULTITHREADED
-  G4MTRunManager* runManager = new G4MTRunManager;
-  runManager->SetNumberOfThreads(2);
-#else
   G4RunManager* runManager = new G4RunManager;
-#endif
 
+  MMAnalysis* analysis = MMAnalysis::Instance();
+  char name[10];
+  sprintf(name, "sim.root");
+  analysis->SetFilename(name);
 
   // Mandatory user initialization classes
   MMDetectorConstruction* detector = new MMDetectorConstruction();

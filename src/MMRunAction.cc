@@ -10,9 +10,7 @@ MMRunAction::~MMRunAction() {
 }
 
 void MMRunAction::BeginOfRunAction(const G4Run*) {
-  if(G4Threading::G4GetThreadId() < 0) return;
-
-  G4cout << "Thread ID is: " << G4Threading::G4GetThreadId() << G4endl;
+  MMAnalysis::Instance()->OpenFile();
 
   bool printTable = true;
   if(printTable) {
@@ -29,26 +27,26 @@ void MMRunAction::BeginOfRunAction(const G4Run*) {
       }
     }
 
-    // G4double energyCut[3];
-    // energyCut[0] = (*(theCoupleTable->GetEnergyCutsVector(idxG4GammaCut)))[index];
-    // energyCut[1] = (*(theCoupleTable->GetEnergyCutsVector(idxG4ElectronCut)))[index];
-    // energyCut[2] = (*(theCoupleTable->GetEnergyCutsVector(idxG4PositronCut)))[index];
+    G4double energyCut[3];
+    energyCut[0] = (*(theCoupleTable->GetEnergyCutsVector(idxG4GammaCut)))[index];
+    energyCut[1] = (*(theCoupleTable->GetEnergyCutsVector(idxG4ElectronCut)))[index];
+    energyCut[2] = (*(theCoupleTable->GetEnergyCutsVector(idxG4PositronCut)))[index];
 
-    // G4ParticleDefinition* particle = fPrimary->GetParticleGun()->GetParticleDefinition();
-    // G4ProcessVector* plist = particle->GetProcessManager()->GetProcessList();
+    G4ParticleDefinition* particle = fPrimary->GetParticleGun()->GetParticleDefinition();
+    G4ProcessVector* plist = particle->GetProcessManager()->GetProcessList();
 
-    // std::vector<G4String> emName;
-    // std::vector<G4double> enerCut;
-    // size_t length = plist->size();
-    // for(size_t j = 0; j < length; j++) {
-    //   G4String procName = (*plist)[j]->GetProcessName();
-    //   G4double cut = energyCut[1];
-    //   if((procName == "eBrem") || (procName == "muBrems")) cut = energyCut[0];
-    //   if(((*plist)[j]->GetProcessType() == fElectromagnetic) && (procName != "msc")) {
-    //     emName.push_back(procName);
-    //     enerCut.push_back(cut);
-    //   }
-    // }
+    std::vector<G4String> emName;
+    std::vector<G4double> enerCut;
+    size_t length = plist->size();
+    for(size_t j = 0; j < length; j++) {
+      G4String procName = (*plist)[j]->GetProcessName();
+      G4double cut = energyCut[1];
+      if((procName == "eBrem") || (procName == "muBrems")) cut = energyCut[0];
+      if(((*plist)[j]->GetProcessType() == fElectromagnetic) && (procName != "msc")) {
+        emName.push_back(procName);
+        enerCut.push_back(cut);
+      }
+    }
   }
 }
 
