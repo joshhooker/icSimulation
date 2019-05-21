@@ -48,9 +48,10 @@ int main(int argc,char** argv)
   G4String gasType        = config["gasType"].asString();
 
   G4int numGrids         = config["numberGrids"].asInt();
-  G4double gridDist      = config["gridDistance"].asDouble();
+  G4double gridSize      = config["gridSize"].asDouble();
   G4double gridRadius    = config["gridRadius"].asDouble();
-  G4double scintDist     = config["distanceScint"].asDouble();
+  G4double gridDist      = config["gridDistance"].asDouble();
+  G4double scintDist     = config["scintDistance"].asDouble();
   G4double wireThickness = config["wireThickness"].asDouble();
   G4bool useInches       = config["useInches"].asBool();
 
@@ -105,9 +106,10 @@ int main(int argc,char** argv)
   detector->SetGasPressure(gasPressure);
   detector->SetNumGrids(numGrids);
   detector->SetUseInches(useInches);
-  detector->SetGridDistance(gridDist);
+  detector->SetGridSize(gridSize);
   detector->SetGridRadius(gridRadius);
-  detector->SetDistScint(scintDist);
+  detector->SetGridDistance(gridDist);
+  detector->SetScintDistance(scintDist);
   detector->SetWireThickness(wireThickness);
   runManager->SetUserInitialization(detector);
 

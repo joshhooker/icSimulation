@@ -128,27 +128,30 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.367*m), fDetectLogical, "detectPhysical", fWorldLogical,
                     false, 0, checkOverlaps);
 
-  G4double gridDist;
+  G4double gridSize;
   G4double gridRadius;
+  G4double gridDist;
   G4double foilRadius;
   G4double scintRadius;
   G4double scintDist;
   G4double wireThickness;
 
   if(fUseInches) {
+    gridSize = fGridSize*inchtocm*cm;
+    gridRadius = fGridRadius*inchtocm*cm;
     gridDist = fGridDist*inchtocm*cm;
-    gridRadius = fGridSize*inchtocm*cm;
-    foilRadius = fGridSize*inchtocm*cm;
-    scintRadius = fGridSize*inchtocm*cm;
-    scintDist = fDistScint*inchtocm*cm;
+    foilRadius = fGridRadius*inchtocm*cm;
+    scintRadius = fGridRadius*inchtocm*cm;
+    scintDist = fScintDist*inchtocm*cm;
     wireThickness = fWireThickness*inchtocm*cm;
   }
   else {
+    gridSize = fGridSize*mm;
+    gridRadius = fGridRadius*mm;
     gridDist = fGridDist*mm;
-    gridRadius = fGridSize*mm;
-    foilRadius = fGridSize*mm;
-    scintRadius = fGridSize*mm;
-    scintDist = fDistScint*mm;
+    foilRadius = fGridRadius*mm;
+    scintRadius = fGridRadius*mm;
+    scintDist = fScintDist*mm;
     wireThickness = fWireThickness*mm;
   }
 
@@ -164,9 +167,9 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
 
   // IC grids
   char name[256];
-  G4double distancePerGrid = gridDist;
+  G4double distancePerGrid = gridSize;
   G4double distanceTotalGrid = distancePerGrid*static_cast<G4double>(fNumGrids);
-  G4double midGrid = scintDist/2.; // Picking halfway between foil and scintillator
+  G4double midGrid = gridDist; // Picking halfway between foil and scintillator
   G4double midGridPos = -icChamberLength/2. + midGrid; // Position of middle of IC Grids
   // G4cout << distancePerGrid << '\t' << distanceTotalGrid << '\t' << foilToScintillator << '\t' << midGrid << G4endl;
   for(G4int i = 0; i < fNumGrids; i++) {

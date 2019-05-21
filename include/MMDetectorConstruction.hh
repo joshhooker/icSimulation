@@ -65,6 +65,26 @@ public:
     G4cout << "SET: Number of IC Grids: " << fNumGrids << G4endl;
   }
 
+  void SetGridSize(G4double size) {
+    fGridSize = size;
+    if(fUseInches) {
+      G4cout << "SET: Grid Distance (in): " << fGridSize << G4endl;
+    }
+    else {
+      G4cout << "SET: Grid Distance (mm): " << fGridSize << G4endl;
+    }
+  }
+
+  void SetGridRadius(G4double radius) {
+    fGridRadius = radius;
+    if(fUseInches) {
+      G4cout << "SET: Grid Radius (in): " << fGridRadius << G4endl;
+    }
+    else {
+      G4cout << "SET: Grid Radius (mm): " << fGridRadius << G4endl;
+    }
+  }
+
   void SetGridDistance(G4double distance) {
     fGridDist = distance;
     if(fUseInches) {
@@ -75,23 +95,13 @@ public:
     }
   }
 
-  void SetGridRadius(G4double size) {
-    fGridSize = size;
+  void SetScintDistance(G4double dist) {
+    fScintDist = dist;
     if(fUseInches) {
-      G4cout << "SET: Grid Radius (in): " << fGridSize << G4endl;
+      G4cout << "SET: Distance from window to scintillator (in): " << fScintDist << G4endl;
     }
     else {
-      G4cout << "SET: Grid Radius (mm): " << fGridSize << G4endl;
-    }
-  }
-
-  void SetDistScint(G4double dist) {
-    fDistScint = dist;
-    if(fUseInches) {
-      G4cout << "SET: Distance from window to scintillator (in): " << fDistScint << G4endl;
-    }
-    else {
-      G4cout << "SET: Distance from window to scintillator (mm): " << fDistScint << G4endl;
+      G4cout << "SET: Distance from window to scintillator (mm): " << fScintDist << G4endl;
     }
   }
 
@@ -133,9 +143,10 @@ private:
 
   G4double inchtocm;
   G4int fNumGrids;
-  G4double fGridDist;
   G4double fGridSize;
-  G4double fDistScint;
+  G4double fGridRadius;
+  G4double fGridDist;
+  G4double fScintDist;
   G4double fWireThickness;
   G4bool fUseInches;
 
