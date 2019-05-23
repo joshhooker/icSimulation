@@ -7,7 +7,7 @@
   "numberGrids"         : 4,
   "gridSize"            : 20,
   "gridRadius"          : 70,
-  "gridDistance"        : 50,
+  "gridDistance"        : 70,
   "scintDistance"       : 140,
   "wireThickness"       : 0.02,
   "useInches"           : false,
