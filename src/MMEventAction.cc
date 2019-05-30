@@ -87,15 +87,15 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
   std::vector<G4int> gridHitID;
   std::vector<G4int> gridHitTrackID;
   for(G4int i = 0; i < fNumGrids; i++) {
+    G4double gridEnergy = 0.;
     for(G4int j = 0; j < hICGridHC[i]->entries(); ++j) {
-      G4double energy = (*hICGridHC[i])[j]->GetEnergy();
-      G4double energyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*energy);
-      energy = fRandom3->Gaus(energy, energyRes);
-      energy = fRandom3->Gaus(energy, energy*fGridResolution);
-      gridHitEnergy.push_back(energy);
-      gridHitID.push_back(i);
-      gridHitTrackID.push_back((*hICGridHC[i])[j]->GetTrackID());
+      gridEnergy += (*hICGridHC[i])[j]->GetEnergy();
     }
+    G4double energyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*gridEnergy);
+    gridEnergy = fRandom3->Gaus(gridEnergy, energyRes);
+    gridEnergy = fRandom3->Gaus(gridEnergy, gridEnergy*fGridResolution);
+    gridHitEnergy.push_back(gridEnergy);
+    gridHitID.push_back(i);
   }
 
   analysis->SetGridEnergy(gridHitEnergy);
