@@ -24,10 +24,12 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
 
   G4String excitedname = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
 
+  G4double position = aTrack.GetPosition().z();
+
   G4double mfp = (energy <= fScatteringEnergy &&
                   aTrack.GetTrackID() == 1 &&
                   (currentVolume == fTargetLogical ||
-                  (currentVolume == fWorldLogical && aTrack.GetPosition().z() > -0.0066))) ? 0. : DBL_MAX;
+                  (currentVolume == fWorldLogical && position > -0.0066 && position < 0.1))) ? 0. : DBL_MAX;
 
   // if(mfp < 1) G4cout << fScatteringEnergy << '\t' << energy << '\t' << aTrack.GetTrackID() << '\t' << currentVolume->GetName() << '\t' << mfp << '\t' << aTrack.GetPosition().z() << G4endl;
   // G4cout << fScatteringEnergy << '\t' << energy << '\t' << aTrack.GetTrackID() << '\t' << currentVolume->GetName() << '\t' << mfp << '\t' << aTrack.GetPosition().z() << G4endl;
