@@ -120,6 +120,10 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), fTargetLogical, "targetPhysical", fWorldLogical,
                                                         false, 0, checkOverlaps);
 
+  G4double maxStep = 0.05*targetThickness;
+  fStepLimit = new G4UserLimits(maxStep);
+  fTargetLogical->SetUserLimits(fStepLimit);
+
   G4double icChamberLength = 0.3*m;
   G4double targetToWindow = 21.7*cm;
 

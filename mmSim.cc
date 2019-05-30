@@ -5,6 +5,7 @@
 #include "BinaryReactionPhysics.hh"
 #include "NucleonStates.hh"
 #include "QGSP_BERT.hh"
+#include "G4StepLimiterPhysics.hh"
 
 #include "G4MTRunManager.hh"
 #include "G4RadioactiveDecayPhysics.hh"
@@ -116,6 +117,7 @@ int main(int argc,char** argv)
   G4VModularPhysicsList* physicsList = new QGSP_BERT(0);
   BinaryReactionPhysics* reactionPhysics = new BinaryReactionPhysics();
   reactionPhysics->SetNumGrids(numGrids);
+  physicsList->RegisterPhysics(new G4StepLimiterPhysics());
   physicsList->RegisterPhysics(reactionPhysics);
   runManager->SetUserInitialization(physicsList);
 

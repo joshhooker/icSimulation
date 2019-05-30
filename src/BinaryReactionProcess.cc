@@ -19,12 +19,8 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
   const MMDetectorConstruction* detectorConstruction = static_cast<const MMDetectorConstruction*>
       (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
   G4LogicalVolume* fWorldLogical = detectorConstruction->GetWorldVolume();
-  G4LogicalVolume* fDetectLogical = detectorConstruction->GetDetectVolume();
-  G4LogicalVolume* fFoilLogical = detectorConstruction->GetFoilVolume();
-  G4LogicalVolume* fScintLogical = detectorConstruction->GetScintVolume();
   G4LogicalVolume* fTargetLogical = detectorConstruction->GetTargetVolume();
   G4LogicalVolume* currentVolume = aTrack.GetStep()->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
-  G4LogicalVolume* motherVolume = aTrack.GetStep()->GetPostStepPoint()->GetPhysicalVolume()->GetMotherLogical();
 
   G4String excitedname = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
 
@@ -34,6 +30,7 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
                   (currentVolume == fWorldLogical && aTrack.GetPosition().z() > -0.0066))) ? 0. : DBL_MAX;
 
   // if(mfp < 1) G4cout << fScatteringEnergy << '\t' << energy << '\t' << aTrack.GetTrackID() << '\t' << currentVolume->GetName() << '\t' << mfp << '\t' << aTrack.GetPosition().z() << G4endl;
+  // G4cout << fScatteringEnergy << '\t' << energy << '\t' << aTrack.GetTrackID() << '\t' << currentVolume->GetName() << '\t' << mfp << '\t' << aTrack.GetPosition().z() << G4endl;
 
   // Look at excited name and see if it's in an excited state
   size_t pos = excitedname.find('[');
@@ -106,11 +103,6 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
       (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
 
   G4LogicalVolume* fWorldLogical = detectorConstruction->GetWorldVolume();
-
-  if(preStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume() != fWorldLogical &&
-     postStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume() != fWorldLogical) {
-    return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
-  }
 
   aParticleChange.Initialize(aTrack);
 

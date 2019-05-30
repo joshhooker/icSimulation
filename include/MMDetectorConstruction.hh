@@ -158,6 +158,8 @@ private:
   std::vector<G4LogicalVolume*> fWireGridLogical[49];
   G4LogicalVolume* fScintLogical;
 
+  G4UserLimits* fStepLimit;
+
   void ConstructMaterials();
   void SetAttributes();
 };
