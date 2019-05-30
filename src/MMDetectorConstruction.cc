@@ -120,7 +120,7 @@ G4VPhysicalVolume* MMDetectorConstruction::Construct() {
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), fTargetLogical, "targetPhysical", fWorldLogical,
                                                         false, 0, checkOverlaps);
 
-  G4double maxStep = 0.05*targetThickness;
+  G4double maxStep = 0.02*targetThickness;
   fStepLimit = new G4UserLimits(maxStep);
   fTargetLogical->SetUserLimits(fStepLimit);
 
