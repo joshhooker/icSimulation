@@ -18,29 +18,22 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
 
   const MMDetectorConstruction* detectorConstruction = static_cast<const MMDetectorConstruction*>
       (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+  G4LogicalVolume* fWorldLogical = detectorConstruction->GetWorldVolume();
   G4LogicalVolume* fDetectLogical = detectorConstruction->GetDetectVolume();
   G4LogicalVolume* fFoilLogical = detectorConstruction->GetFoilVolume();
   G4LogicalVolume* fScintLogical = detectorConstruction->GetScintVolume();
+  G4LogicalVolume* fTargetLogical = detectorConstruction->GetTargetVolume();
   G4LogicalVolume* currentVolume = aTrack.GetStep()->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
   G4LogicalVolume* motherVolume = aTrack.GetStep()->GetPostStepPoint()->GetPhysicalVolume()->GetMotherLogical();
 
   G4String excitedname = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
 
-  G4double mfp = (energy > fScatteringEnergy ||
-                  aTrack.GetTrackID() > 1 ||
-                  currentVolume == fDetectLogical ||
-                  currentVolume == fFoilLogical ||
-                  currentVolume == fScintLogical ||
-                  motherVolume == fDetectLogical) ? DBL_MAX : 0.;
+  G4double mfp = (energy <= fScatteringEnergy &&
+                  aTrack.GetTrackID() == 1 &&
+                  (currentVolume == fTargetLogical ||
+                  (currentVolume == fWorldLogical && aTrack.GetPosition().z() > -0.0066))) ? 0. : DBL_MAX;
 
-  for(G4int i = 0; i < fNumGrids; i++) {
-    if(currentVolume == detectorConstruction->GetGridVolume(i)) {
-      mfp = DBL_MAX;
-    }
-    if(motherVolume == detectorConstruction->GetGridVolume(i)) {
-      mfp = DBL_MAX;
-    }
-  }
+  // if(mfp < 1) G4cout << fScatteringEnergy << '\t' << energy << '\t' << aTrack.GetTrackID() << '\t' << currentVolume->GetName() << '\t' << mfp << '\t' << aTrack.GetPosition().z() << G4endl;
 
   // Look at excited name and see if it's in an excited state
   size_t pos = excitedname.find('[');
@@ -187,7 +180,8 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 
   // Check if reaction is possible
   if(cmEnergy + qValue < 0) {
-    G4cout << "Not enough energy: " << incomingParticleName << '\t' << cmEnergy << '\t' << qValue << G4endl;
+    G4cout << "Not enough energy: " << incomingParticleName << '\t' << "; Energy: " << energy << "; CM Energy: " << cmEnergy << G4endl;
+    G4cout << "\t Q Value: " << qValue << "; Vertex Location: " << aTrack.GetPosition().z() << G4endl;
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
 

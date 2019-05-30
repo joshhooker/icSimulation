@@ -9,3 +9,4 @@ output*.root
 bayesian_optimization/*config.json*
 bayesian_optimization/*/output
 bayesian_optimization/testing/test
+*__pycache__

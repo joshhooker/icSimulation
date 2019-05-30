@@ -1,5 +1,5 @@
 {
-  "interactive"         : true,
+  "interactive"         : false,
   "macroName"           : "run.mac",
   "gasType"             : "P10",
   "gasTemperature"      : 293.15,
