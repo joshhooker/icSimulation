@@ -10,6 +10,8 @@ import shutil
 import sys
 from tqdm import tqdm
 
+sys.path.insert(0, '../aux_scripts/')
+
 from analysis import analysis
 
 counter = 0
@@ -78,7 +80,7 @@ def run_simulation(gas_type, pressure, num_grid, grid_distance, scint_distance):
 
   make_json_file(gas_type, pressure, num_grid, grid_distance, scint_distance)
 
-  cmd = '../../build/mmSim config.json'
+  cmd = '../build/mmSim config.json -t 6'
   os.system(cmd)
 
   silhouette_score, efficiency = analysis('sim.root', 'output.root')

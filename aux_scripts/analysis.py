@@ -267,7 +267,7 @@ def analysis(input_file, output_file):
 
   # input('Press Enter to Exit')
 
-  return 0
+  return silhouette_avg_2_clusters, efficiency_ratio[1]
 
 if __name__ == "__main__":
   if(len(sys.argv) != 3):
