@@ -115,11 +115,6 @@ int main(int argc,char** argv)
   G4RunManager* runManager = new G4RunManager;
 #endif
 
-  G4cout << nThreads << G4endl;
-  char name[10];
-  sprintf(name, "sim.root");
-  analysis->SetFilename(name);
-
   // Mandatory user initialization classes
   MMDetectorConstruction* detector = new MMDetectorConstruction();
   detector->SetGasType(gasType);
@@ -127,10 +122,10 @@ int main(int argc,char** argv)
   detector->SetGasPressure(gasPressure);
   detector->SetNumGrids(numGrids);
   detector->SetUseInches(useInches);
-  detector->SetGridDistance(gridDist);
+  detector->SetGridSize(gridSize);
   detector->SetGridRadius(gridRadius);
   detector->SetGridDistance(gridDist);
-  detector->SetDistScint(scintDist);
+  detector->SetScintDistance(scintDist);
   detector->SetWireThickness(wireThickness);
   runManager->SetUserInitialization(detector);
 

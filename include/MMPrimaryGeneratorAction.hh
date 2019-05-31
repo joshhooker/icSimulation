@@ -12,12 +12,11 @@
 
 #include "MMAnalysis.hh"
 #include "MMEventAction.hh"
-#include "MMRunData.hh"
 
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 
-#include <time.h>
+#include <ctime>
 
 class G4ParticleGun;
 class G4ParticleDefinition;

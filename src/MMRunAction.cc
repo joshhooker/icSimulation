@@ -20,9 +20,7 @@ MMRunAction::~MMRunAction() {
   delete G4AnalysisManager::Instance();
 }
 
-G4Run* MMRunAction::GenerateRun() {
-  return (new MMRunData);
-}
+G4Run* MMRunAction::GenerateRun() {return (new MMRunData);}
 
 void MMRunAction::BeginOfRunAction(const G4Run* run) {
   auto analysisManager = G4AnalysisManager::Instance();

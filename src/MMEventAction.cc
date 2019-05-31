@@ -155,8 +155,6 @@ void MMEventAction::EndOfEventAction(const G4Event* event) {
     analysisManager->FillNtupleDColumn(11, fEnergy);
     analysisManager->FillNtupleDColumn(12, fCMEnergy);
     analysisManager->FillNtupleDColumn(13, fVertexZ);
-    }
-    G4double energyRes = 2.35*sqrt(fFanoFactor*fWorkFunction*(1e-6)*gridEnergy);
     analysisManager->FillNtupleDColumn(14, fQValue);
     analysisManager->FillNtupleDColumn(15, fExcitedEnergy);
 

@@ -1,4 +1,4 @@
- #ifndef MMRunData_h
+#ifndef MMRunData_h
 #define MMRunData_h
 
 #include "G4Run.hh"

@@ -7,7 +7,6 @@
 
 #include "BinaryReactionProcess.hh"
 #include "MMEventAction.hh"
-#include "MMRunData.hh"
 #include "MMTrackingInformation.hh"
 
 class MMTrackingAction : public G4UserTrackingAction {

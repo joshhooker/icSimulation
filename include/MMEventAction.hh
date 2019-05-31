@@ -10,8 +10,8 @@
 #include "G4Types.hh"
 #include "G4UserEventAction.hh"
 
+#include "MMAnalysis.hh"
 #include "MMGenHit.hh"
-#include "MMRunData.hh"
 
 #include "Randomize.hh"
 
@@ -23,7 +23,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 
-#include <assert.h>
+#include <cassert>
 #include <cstdio>
 #include <map>
 #include <vector>
