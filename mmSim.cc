@@ -1,5 +1,4 @@
 #include "MMActionInitialization.hh"
-#include "MMAnalysis.hh"
 #include "MMDetectorConstruction.hh"
 
 #include "BinaryReactionPhysics.hh"
@@ -56,7 +55,7 @@ int main(int argc,char** argv)
   G4double wireThickness = config["wireThickness"].asDouble();
   G4bool useInches       = config["useInches"].asBool();
 
-  G4double scintResolution   = config["scintResolution"].asDouble();
+  G4double scintResolution     = config["scintResolution"].asDouble();
   G4double extraGridResolution = config["extraGridResolution"].asDouble();
 
   G4String macroName   = config["macroName"].asString();
@@ -93,9 +92,30 @@ int main(int argc,char** argv)
   if(argc>2) seed += 473879*atoi(argv[2]);
   CLHEP::HepRandom::setTheSeed(seed);
 
-  G4RunManager* runManager = new G4RunManager;
+#ifdef G4MULTITHREADED
+  G4int nThreads = 0;
+#endif
 
-  MMAnalysis* analysis = MMAnalysis::Instance();
+  for(G4int i = 1; i < argc; i++) {
+    G4cout << argv[i] << G4endl;
+#ifdef G4MULTITHREADED
+    if(G4String(argv[i]) == "-t") {
+      nThreads = G4UIcommand::ConvertToInt(argv[i + 1]);
+    }
+#endif
+  }
+
+  // Construct the default run manager
+#ifdef G4MULTITHREADED
+  G4MTRunManager* runManager = new G4MTRunManager;
+  if(nThreads > 0) {
+    runManager->SetNumberOfThreads(nThreads);
+  }
+#else
+  G4RunManager* runManager = new G4RunManager;
+#endif
+
+  G4cout << nThreads << G4endl;
   char name[10];
   sprintf(name, "sim.root");
   analysis->SetFilename(name);
@@ -107,10 +127,10 @@ int main(int argc,char** argv)
   detector->SetGasPressure(gasPressure);
   detector->SetNumGrids(numGrids);
   detector->SetUseInches(useInches);
-  detector->SetGridSize(gridSize);
+  detector->SetGridDistance(gridDist);
   detector->SetGridRadius(gridRadius);
   detector->SetGridDistance(gridDist);
-  detector->SetScintDistance(scintDist);
+  detector->SetDistScint(scintDist);
   detector->SetWireThickness(wireThickness);
   runManager->SetUserInitialization(detector);
 

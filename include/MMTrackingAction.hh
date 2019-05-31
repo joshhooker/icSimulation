@@ -6,18 +6,20 @@
 #include "G4VProcess.hh"
 
 #include "BinaryReactionProcess.hh"
-#include "MMAnalysis.hh"
+#include "MMEventAction.hh"
+#include "MMRunData.hh"
 #include "MMTrackingInformation.hh"
 
 class MMTrackingAction : public G4UserTrackingAction {
 public:
-  MMTrackingAction();
-  ~MMTrackingAction();
+    MMTrackingAction(MMEventAction*);
+    ~MMTrackingAction();
 
-  void PreUserTrackingAction(const G4Track*);
+    void PreUserTrackingAction(const G4Track*);
 
 private:
-  G4String fName;
+    G4String fName;
+    MMEventAction* fEventAction;
 };
 
 #endif

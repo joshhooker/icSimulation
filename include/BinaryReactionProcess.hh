@@ -6,7 +6,6 @@
 #include "G4SystemOfUnits.hh"
 #include "G4VDiscreteProcess.hh"
 
-#include "MMAnalysis.hh"
 #include "MMDetectorConstruction.hh"
 #include "MMTrackingInformation.hh"
 

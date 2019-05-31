@@ -1,3 +1,4 @@
+import array
 import numpy as np
 from sklearn.metrics import silhouette_score
 import sys
@@ -11,7 +12,6 @@ def analysis(input_file, output_file):
   tfile = TFile.Open(input_file, "read")
 
   sim_data = tfile.Get("simData")
-  all_data = tfile.Get("allData")
 
   ''' simData Branches
   gridEnergy [vector<double>]
@@ -62,8 +62,8 @@ def analysis(input_file, output_file):
 
   # Canvas Definitions
   #c1 = TCanvas('c1', 'Scint. Energy vs Grid Energy', 200, 10, 800, 600 )
-  #c2 = TCanvas('scintGridRT', 'Scint. Energy vs Grid Energy with Reaction Types', 500, 10, 800, 600 )
-  #c3 = TCanvas('scintGridST', 'Scint. Energy vs Grid Energy with Scattering Types', 500, 10, 800, 600 )
+  c2 = TCanvas('scintGridRT', 'Scint. Energy vs Grid Energy with Reaction Types', 500, 10, 800, 600 )
+  c3 = TCanvas('scintGridST', 'Scint. Energy vs Grid Energy with Scattering Types', 500, 10, 800, 600 )
 
   gStyle.SetOptStat(10)
   gStyle.SetStatW(0.1)
@@ -117,6 +117,16 @@ def analysis(input_file, output_file):
   print("Reading All Events in TTree:")
   for event in tqdm(sim_data, total=sim_data.GetEntries()):
 
+    grid_energy_arr = np.ndarray(event.gridEnergy_count, 'd', event.gridEnergy)
+    grid_id_arr = np.ndarray(event.gridID_count, 'i', event.gridID)
+
+    scint_x_position_arr = np.ndarray(event.scintXPosition_count, 'd', event.scintXPosition)
+    scint_y_position_arr = np.ndarray(event.scintYPosition_count, 'd', event.scintYPosition)
+    scint_energy_arr = np.ndarray(event.scintEnergy_count, 'd', event.scintEnergy)
+    scint_trackid_arr = np.ndarray(event.scintTrackID_count, 'i', event.scintTrackID)
+    scint_mass_arr = np.ndarray(event.scintMass_count, 'i', event.scintMass)
+    scint_charge_arr = np.ndarray(event.scintCharge_count, 'i', event.scintCharge)
+
     # Get Reaction Type
     reaction_type = 0
     if(event.beamCharge == 4 and event.lightRecoilCharge == 0 and event.lightRecoilMass == 1):
@@ -138,23 +148,23 @@ def analysis(input_file, output_file):
 
     # Get events with multiple particles hitting scintillator
     multiple_particles = 0
-    for i in range(len(event.scintTrackID)):
+    for i in range(len(scint_trackid_arr)):
       if i == 0:
-        previousTrack = event.scintTrackID[i]
+        previous_track = scint_trackid_arr[i]
       else:
-        currentTrack = event.scintTrackID[i]
-        if(previousTrack != currentTrack):
+        current_track = scint_trackid_arr[i]
+        if previous_track != current_track:
           multiple_particles = 1
 
     if multiple_particles:
-      for i in range(len(event.scintTrackID)):
-        h_multiple_particles.Fill(event.scintMass[i], event.scintCharge[i])
+      for i in range(len(scint_trackid_arr)):
+        h_multiple_particles.Fill(scint_mass_arr[i], scint_charge_arr[i])
 
     # Get energy in scintillator
-    scintillator_energy = np.sum(event.scintEnergy)
+    scintillator_energy = np.sum(scint_energy_arr)
 
-    # Get emergy in grids
-    grid_energy = np.sum(event.gridEnergy)
+    # Get energy in grids
+    grid_energy = np.sum(grid_energy_arr)
 
     tmp_arr = [scintillator_energy, grid_energy]
     silhouette_arr.append(tmp_arr)
@@ -168,8 +178,8 @@ def analysis(input_file, output_file):
       h_scint_grid_st[scattering_type].Fill(scintillator_energy, grid_energy)
       h_scint_grid_mp[multiple_particles].Fill(scintillator_energy, grid_energy)
 
-      scintAvgXPos = np.mean(event.scintXPosition)
-      scintAvgYPos = np.mean(event.scintYPosition)
+      scintAvgXPos = np.mean(scint_x_position_arr)
+      scintAvgYPos = np.mean(scint_y_position_arr)
       h_scint_position.Fill(scintAvgXPos, scintAvgYPos)
 
       observed[reaction_type] += 1
@@ -192,54 +202,54 @@ def analysis(input_file, output_file):
   h_scint_position.Write()
   h_vertex_position.Write()
 
-  # Draw histograms
-  # c2.cd()
-  # h_scint_grid_rt[0].SetMarkerStyle(20)
-  # h_scint_grid_rt[0].SetMarkerSize(0.3)
-  # h_scint_grid_rt[0].SetMarkerColor(1)
-  # h_scint_grid_rt[0].Draw("P")
-  # h_scint_grid_rt[1].SetMarkerStyle(20)
-  # h_scint_grid_rt[1].SetMarkerSize(0.3)
-  # h_scint_grid_rt[1].SetMarkerColor(2)
-  # h_scint_grid_rt[1].Draw("PSame")
-  # h_scint_grid_rt[2].SetMarkerStyle(20)
-  # h_scint_grid_rt[2].SetMarkerSize(0.3)
-  # h_scint_grid_rt[2].SetMarkerColor(3)
-  # h_scint_grid_rt[2].Draw("PSame")
-  # legend_rt = TLegend(0.6, 0.75, 0.9, 0.9)
-  # legend_rt.AddEntry(h_scint_grid_rt[0], "No Reaction/Other", "p")
-  # legend_rt.AddEntry(h_scint_grid_rt[1], "(d, n)^{8}B", "p")
-  # legend_rt.AddEntry(h_scint_grid_rt[2], "(d, n)^{8}B*", "p")
-  # legend_rt.Draw()
-  # c2.Update()
-  # c2.Write()
+  # # Draw histograms
+  c2.cd()
+  h_scint_grid_rt[0].SetMarkerStyle(20)
+  h_scint_grid_rt[0].SetMarkerSize(0.3)
+  h_scint_grid_rt[0].SetMarkerColor(1)
+  h_scint_grid_rt[0].Draw("P")
+  h_scint_grid_rt[1].SetMarkerStyle(20)
+  h_scint_grid_rt[1].SetMarkerSize(0.3)
+  h_scint_grid_rt[1].SetMarkerColor(2)
+  h_scint_grid_rt[1].Draw("PSame")
+  h_scint_grid_rt[2].SetMarkerStyle(20)
+  h_scint_grid_rt[2].SetMarkerSize(0.3)
+  h_scint_grid_rt[2].SetMarkerColor(3)
+  h_scint_grid_rt[2].Draw("PSame")
+  legend_rt = TLegend(0.6, 0.75, 0.9, 0.9)
+  legend_rt.AddEntry(h_scint_grid_rt[0], "No Reaction/Other", "p")
+  legend_rt.AddEntry(h_scint_grid_rt[1], "(d, n)^{8}B", "p")
+  legend_rt.AddEntry(h_scint_grid_rt[2], "(d, n)^{8}B*", "p")
+  legend_rt.Draw()
+  c2.Update()
+  c2.Write()
 
   # Draw Scintillator Energy vs Grid Energy for Scattering Types
-  # c3.cd()
-  # h_scint_grid_st[1].SetMarkerStyle(20)
-  # h_scint_grid_st[1].SetMarkerSize(0.3)
-  # h_scint_grid_st[1].SetMarkerColor(1)
-  # h_scint_grid_st[1].Draw("P")
-  # h_scint_grid_st[2].SetMarkerStyle(20)
-  # h_scint_grid_st[2].SetMarkerSize(0.3)
-  # h_scint_grid_st[2].SetMarkerColor(2)
-  # h_scint_grid_st[2].Draw("PSame")
-  # h_scint_grid_st[3].SetMarkerStyle(20)
-  # h_scint_grid_st[3].SetMarkerSize(0.3)
-  # h_scint_grid_st[3].SetMarkerColor(3)
-  # h_scint_grid_st[3].Draw("PSame")
-  # legend_st = TLegend(0.6, 0.75, 0.9, 0.9)
-  # legend_st.AddEntry(h_scint_grid_st[1], "(d, d)", "p")
-  # legend_st.AddEntry(h_scint_grid_st[2], "(^{12}C, ^{12}C)", "p")
-  # legend_st.AddEntry(h_scint_grid_st[3], "(d, n)", "p")
-  # legend_st.Draw()
-  # c3.Update()
-  # c3.Write()
+  c3.cd()
+  h_scint_grid_st[1].SetMarkerStyle(20)
+  h_scint_grid_st[1].SetMarkerSize(0.3)
+  h_scint_grid_st[1].SetMarkerColor(1)
+  h_scint_grid_st[1].Draw("P")
+  h_scint_grid_st[2].SetMarkerStyle(20)
+  h_scint_grid_st[2].SetMarkerSize(0.3)
+  h_scint_grid_st[2].SetMarkerColor(2)
+  h_scint_grid_st[2].Draw("PSame")
+  h_scint_grid_st[3].SetMarkerStyle(20)
+  h_scint_grid_st[3].SetMarkerSize(0.3)
+  h_scint_grid_st[3].SetMarkerColor(3)
+  h_scint_grid_st[3].Draw("PSame")
+  legend_st = TLegend(0.6, 0.75, 0.9, 0.9)
+  legend_st.AddEntry(h_scint_grid_st[1], "(d, d)", "p")
+  legend_st.AddEntry(h_scint_grid_st[2], "(^{12}C, ^{12}C)", "p")
+  legend_st.AddEntry(h_scint_grid_st[3], "(d, n)", "p")
+  legend_st.Draw()
+  c3.Update()
+  c3.Write()
 
-  # print()
-  # print("Calculating Silhouette Score")
-  # silhouette_avg_2_clusters = silhouette_score(silhouette_arr, silhouette_label_2_clusters)
-  # print("Silhouette Score for 2 Clusters: ", silhouette_avg_2_clusters)
+  print()
+  print("Calculating Silhouette Score")
+  silhouette_avg_2_clusters = silhouette_score(silhouette_arr, silhouette_label_2_clusters)
+  print("Silhouette Score for 2 Clusters: ", silhouette_avg_2_clusters)
 
   # silhouette_avg_3_clusters = silhouette_score(silhouette_arr, silhouette_label_3_clusters)
   # print("Silhouette Score for 3 Clusters: ", silhouette_avg_3_clusters)
@@ -257,7 +267,7 @@ def analysis(input_file, output_file):
 
   # input('Press Enter to Exit')
 
-  return efficiency_ratio[1]
+  return 0
 
 if __name__ == "__main__":
   if(len(sys.argv) != 3):

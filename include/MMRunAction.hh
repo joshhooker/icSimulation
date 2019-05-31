@@ -11,7 +11,9 @@
 
 #include "MMAnalysis.hh"
 #include "MMDetectorConstruction.hh"
+#include "MMEventAction.hh"
 #include "MMPrimaryGeneratorAction.hh"
+#include "MMRunData.hh"
 
 class MMDetectorConstruction;
 class MMPrimaryGeneratorAction;
@@ -21,12 +23,16 @@ public:
   MMRunAction(MMDetectorConstruction*, MMPrimaryGeneratorAction*);
   ~MMRunAction();
 
+  virtual G4Run* GenerateRun();
+
   void BeginOfRunAction(const G4Run*);
   void EndOfRunAction(const G4Run*);
 
 private:
   MMDetectorConstruction* fDetector;
   MMPrimaryGeneratorAction* fPrimary;
+
+  std::vector<G4double> fGridEnergy;
 };
 
 #endif

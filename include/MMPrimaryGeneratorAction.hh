@@ -11,6 +11,8 @@
 #include "Randomize.hh"
 
 #include "MMAnalysis.hh"
+#include "MMEventAction.hh"
+#include "MMRunData.hh"
 
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
@@ -40,7 +42,6 @@ private:
 
   const gsl_rng_type *T;
   gsl_rng *r;
-
 };
 
 #endif

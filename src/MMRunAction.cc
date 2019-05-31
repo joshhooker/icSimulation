@@ -2,54 +2,81 @@
 
 MMRunAction::MMRunAction(MMDetectorConstruction* detector, MMPrimaryGeneratorAction* primary) :
   G4UserRunAction(), fDetector(detector), fPrimary(primary) {
-  MMAnalysis::Instance();
+  // set printing event number per each event
+  G4RunManager::GetRunManager()->SetPrintProgress(1);
+
+  // Create analysis manager
+  auto analysisManager = G4AnalysisManager::Instance();
+  G4cout << "Using " << analysisManager->GetType() << G4endl;
+
+  analysisManager->SetVerboseLevel(1);
+  analysisManager->SetNtupleMerging(true);
+  analysisManager->SetFileName("sim");
+
+
 }
 
 MMRunAction::~MMRunAction() {
-  delete MMAnalysis::Instance();
+  delete G4AnalysisManager::Instance();
 }
 
-void MMRunAction::BeginOfRunAction(const G4Run*) {
-  MMAnalysis::Instance()->OpenFile();
+G4Run* MMRunAction::GenerateRun() {
+  return (new MMRunData);
+}
 
-  bool printTable = true;
-  if(printTable) {
-    G4Material* material = fDetector->GetGasMaterial();
-    G4ProductionCutsTable* theCoupleTable = G4ProductionCutsTable::GetProductionCutsTable();
-    size_t numOfCouples = theCoupleTable->GetTableSize();
-    const G4MaterialCutsCouple* couple = 0;
-    G4int index = 0;
-    for(size_t i = 0; i < numOfCouples; i++) {
-      couple = theCoupleTable->GetMaterialCutsCouple(i);
-      if(couple->GetMaterial() == material) {
-        index = i;
-        break;
-      }
-    }
+void MMRunAction::BeginOfRunAction(const G4Run* run) {
+  auto analysisManager = G4AnalysisManager::Instance();
 
-    G4double energyCut[3];
-    energyCut[0] = (*(theCoupleTable->GetEnergyCutsVector(idxG4GammaCut)))[index];
-    energyCut[1] = (*(theCoupleTable->GetEnergyCutsVector(idxG4ElectronCut)))[index];
-    energyCut[2] = (*(theCoupleTable->GetEnergyCutsVector(idxG4PositronCut)))[index];
+//  if(run->GetRunID() == 0) {
+    const MMEventAction* constEventAction = static_cast<const MMEventAction*>(G4RunManager::GetRunManager()->GetUserEventAction());
+    MMEventAction* eventAction = const_cast<MMEventAction*>(constEventAction);
 
-    G4ParticleDefinition* particle = fPrimary->GetParticleGun()->GetParticleDefinition();
-    G4ProcessVector* plist = particle->GetProcessManager()->GetProcessList();
+    analysisManager->CreateNtuple("simData", "simulation data");
 
-    std::vector<G4String> emName;
-    std::vector<G4double> enerCut;
-    size_t length = plist->size();
-    for(size_t j = 0; j < length; j++) {
-      G4String procName = (*plist)[j]->GetProcessName();
-      G4double cut = energyCut[1];
-      if((procName == "eBrem") || (procName == "muBrems")) cut = energyCut[0];
-      if(((*plist)[j]->GetProcessType() == fElectromagnetic) && (procName != "msc")) {
-        emName.push_back(procName);
-        enerCut.push_back(cut);
-      }
-    }
-  }
+    analysisManager->CreateNtupleDColumn("gridEnergy", eventAction->GetGridEnergy()); // columnID = 0
+    analysisManager->CreateNtupleIColumn("gridID" , eventAction->GetGridID());        // columnID = 1
+
+    analysisManager->CreateNtupleDColumn("scintXPosition", eventAction->GetScintXPosition()); // columnID = 2
+    analysisManager->CreateNtupleDColumn("scintYPosition", eventAction->GetScintYPosition()); // columnID = 3
+    analysisManager->CreateNtupleDColumn("scintEnergy", eventAction->GetScintEnergy());       // columnID = 4
+    analysisManager->CreateNtupleIColumn("scintTrackID", eventAction->GetScintTrackID());     // columnID = 5
+    analysisManager->CreateNtupleIColumn("scintMass", eventAction->GetScintMass());           // columnID = 6
+    analysisManager->CreateNtupleIColumn("scintCharge", eventAction->GetScintCharge());       // columnID = 7
+
+    analysisManager->CreateNtupleDColumn("beamEnergy"); // columnID = 8
+    analysisManager->CreateNtupleIColumn("beamCharge"); // columnID = 9
+    analysisManager->CreateNtupleIColumn("beamMass");   // columnID = 10
+
+    analysisManager->CreateNtupleDColumn("energy");        // columnID = 11
+    analysisManager->CreateNtupleDColumn("cmEnergy");      // columnID = 12
+    analysisManager->CreateNtupleDColumn("vertex");        // columnID = 13
+    analysisManager->CreateNtupleDColumn("qValue");        // columnID = 14
+    analysisManager->CreateNtupleDColumn("excitedEnergy"); // columnID = 15
+
+    analysisManager->CreateNtupleDColumn("lightAngleCM");  // columnID = 16
+    analysisManager->CreateNtupleDColumn("lightAngleLab"); // columnID = 17
+    analysisManager->CreateNtupleDColumn("lightEnergy");   // columnID = 18
+
+    analysisManager->CreateNtupleDColumn("heavyAngleCM");  // columnID = 19
+    analysisManager->CreateNtupleDColumn("heavyAngleLab"); // columnID = 20
+    analysisManager->CreateNtupleDColumn("heavyEnergy");   // columnID = 21
+
+    analysisManager->CreateNtupleIColumn("lightRecoilCharge"); // columnID = 22
+    analysisManager->CreateNtupleIColumn("lightRecoilMass");   // columnID = 23
+    analysisManager->CreateNtupleIColumn("heavyRecoilCharge"); // columnID = 24
+    analysisManager->CreateNtupleIColumn("heavyRecoilMass");   // columnID = 25
+
+    analysisManager->FinishNtuple();
+//  }
+
+  // Open an output file
+  analysisManager->OpenFile();
 }
 
 void MMRunAction::EndOfRunAction(const G4Run*) {
-  MMAnalysis::Instance()->CloseFile();
+
+  // save histograms & ntuple
+  auto analysisManager = G4AnalysisManager::Instance();
+  analysisManager->Write();
+  analysisManager->CloseFile();
 }
