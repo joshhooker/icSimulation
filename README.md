@@ -35,8 +35,9 @@ cmake .. && make
 To run the simulation, use the created executable with a configuration file (a sample is provided)
 
 ```
-./mmSim config.json
+./mmSim config.json -t N
 ```
+where N is the number of threads to run for multi-threading.
 
 ### Configuration Files
 
@@ -64,19 +65,15 @@ The current example config.json file looks like this:
   "gasType"             : "P10",
   "gasTemperature"      : 293.15,
   "gasPressure"         : 40,
-  "qValue"              : -2.09,
-  "target"              : [1,2],
-  "lightProduct"        : [0,1],
-  "heavyProduct"        : [5,8],
   "numberGrids"         : 4,
-  "gridDistance"        : 20.,
+  "gridSize"            : 20,
   "gridRadius"          : 70,
-  "distanceScint"       : 140,
+  "gridDistance"        : 70,
+  "scintDistance"       : 140,
+  "wireThickness"       : 0.02,
   "useInches"           : false,
   "scintResolution"     : 0.1,
-  "extraGridResolution" : 0.1,
-  "writeAllEvents"      : true
-}
+  "extraGridResolution" : 0.1
 ```
 
 An explanation of each configuration parameter is described below:
@@ -86,60 +83,75 @@ An explanation of each configuration parameter is described below:
 - "gasType": This is the name of the gas to use in the ionization chamber. Currently there are four gases to choose from: “P10” (Argon 90% CH4 10%), “CH4”, “CO2” and “CF4”. Other gases can be added by editing the MMDetectorConstruction files.
 - "gasTemperature": This is temperature of the above gas in Kelvin.
 - "gasPressure": This is the pressure of the above gas in Torr.
-- "qValue": This is the Q-Value of the reaction.
-- "target": Defined the be the [charge, mass] of the target nuclei.
-- "lightProduct": The [charge, mass] of the light recoil.
-- "heavyProduct": The [charge, mass] of the heavy recoil.
 - "numberGrids": This is the total number of cathode-anode-cathode grids to use in the setup.
-- "gridDistance": This is the total distance from cathode to cathode. Cathode to anode distance is half of this value. This can be in mm or inches and a parameter below will describe this.
+- "gridSize": This is the total distance from cathode to cathode. Cathode to anode distance is half of this value. This can be in mm or inches and a parameter below will describe this.
 - "gridRadius": This is the radius of the grids assuming they are circular. This can be in mm or inches and a parameter below will describe this.
-- "distanceScint": This is the distance from the window (entrance of the ionization chamber) to the scintillator. This can be in mm or inches and a parameter below will describe this.
+- "gridDistance": This is the distance from the window (entrance of the ionization chamber) to the middle of the IC grids. This can be in mm or inches and a parameter below ("useInches") will describe this.
+- "scintDistance": This is the distance from the window (entrance of the ionization chamber) to the scintillator. This can be in mm or inches and a parameter below ("useInches") will describe this.
 - "useInches": When this is set to true, "gridDistance", "gridRadius" and "distanceScint" will be in inches. When it is false, they will be in mm.
 - "scintResolution": This is the resolution of the scintillator resolution (1 is 100%).
 - "extraGridResolution": Just using the fanoFactor will still under estimate the errors of the energy in the grids. This is an extra resolution on top of that (1 is 100%).
-- "writeAllEvents": When this is set to true, it will create a second TTree called "allData". This will be discussed below. This can be only set to true or false.
-
 
 ### Output Files
 Currently, the GEANT4 simulation is not available to be run with multi-threading. So as of right now, there will but one output file called "sim.root". In this file, there will be up to two TTrees depending on the "writeAllEvents" flag. The TTrees are:
 ```
 simData
-allData
 ```
-
-The simData TTree has the following branches:
+The simData Tree has the following branches:
 ```
-gunEnergy
-icGridEnergy
-icGridTotalEnergy
-scintE
-scintMass
+gridEnergy_count
+gridEnergy [vector]
+gridID_count
+gridID [vector]
+scintXPosition_count 
+scintXPosition [vector]
+scintYPosition_count
+scintYPosition [vector]
+scintEnergy_count
+scintEnergy [vector]
+scintTrackID_count
+scintTrackID [vector]
+scintMass_count
+scintMass [vector]
+scintCharge_count
 scintCharge
-scintXPos
-scintYPos
-scintZPos
-```
-- "gunEnergy": The energy of the incoming beam.
-- "icGridEnergy": This is a vector and its length is determined by the "numberGrids" parameter in the config.json file. This is the energy deposited (with resolution) in each individual grid.
-- "icGridTotalEnergy": The summed energy of all of the grids.
-- "scintE": The energy measured in the scintillator (with resolution).
-- "scintMass": The mass of the particle depositing energy in the scintillator.
-- "scintCharge": The charge of the particle depositing energy in the scintillator.
-- "scintXPos": The x-position of the particle in the scintillator.
-- "scintYPos": The y-position of the particle in the scintillator.
-- "scintZPos": The z-position of the particle (beam axis) in the scintillator. This should be removed and was for testing purposes.
-
-The allData Tree has the following branches:
-```
+beamEnergy
+beamCharge
+beamMass
 energy
 cmEnergy
+vertex
+qValue
+excitedEnergy
 lightAngleCM
 lightAngleLab
 lightEnergy
 heavyAngleCM
 heavyAngleLab
 heavyEnergy
+lightRecoilCharge
+lightRecoilMass
+heavyRecoilCharge
+heavyRecoilMass
 ```
+
+- "gridEnergy": This is a vector and its length is determined by the "numberGrids" parameter in the config.json file. This is the energy deposited (with resolution) in each individual grid.
+- "gridID": This is a vector and its length is determined by the "numberGrids" parameter in the config.json file. This is the id of each individual grid.
+- "scintXPosition": This is a vector. The x-position of the particle(s) in the scintillator.
+- "scintYPosition": This is a vector. The y-position of the particle(s) in the scintillator.
+- "scintEnergy": This is a vector. The energy measured of the particle(s) in the scintillator (with resolution).
+- "scintTrackID": This is a vector. The Track IDs of the particle(s) in the scintillator. 1 is the original beam, higher are reaction products.
+- "scintMass": This is a vector. The mass of the particle(s) depositing energy in the scintillator.
+- "scintCharge": This is a vector. The charge of the particle(s) depositing energy in the scintillator.
+- "beamEnergy": The energy of the incoming beam.
+- "beamCharge": The charge of the incoming beam.
+- "beamMass": The mass of the incoming beam.
+- "energy": The energy of the beam at the reaction point.
+- "cmEnergy": The center of mass energy at the reaction point.
+- "vertex": The vertex at the reaction point.
+- "qValue": The q-value of the reaction.
+- "excitedEnergy": The excited energy of the recoil from the reaction.
+
 The light and heavy refer to the recoil products. This is mainly used to check the kinematics of the reaction.
 
 #### Example Plots
