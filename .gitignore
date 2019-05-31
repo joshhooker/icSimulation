@@ -8,6 +8,5 @@ cmake-build-debug/
 sim*.root
 output*.root
 bayesian_optimization/*config.json*
-bayesian_optimization/*/output
-bayesian_optimization/testing/test
+bayesian_optimization/output
 *__pycache__
