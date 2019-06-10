@@ -8,6 +8,7 @@ sim*.root
 output*.root
 .DS_Store
 bayesian_optimization/.ipynb_checkpoints
+bayesian_optimization/*/.ipynb_checkpoints
 bayesian_optimization/*config.json*
 bayesian_optimization/output
 *__pycache__
