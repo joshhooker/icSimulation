@@ -36,7 +36,7 @@ def run_bayesian_optimization():
 
   # n_iter: How many steps of bayesian optimization you want to perform
   # init_points: How many steps of random exploration you want to perform
-  optimizer.maximize(init_points=40, n_iter=40)
+  optimizer.maximize(init_points=80, n_iter=60)
 
   for i, res in enumerate(optimizer.res):
     print("Iteration {}: \n\t{}".format(i, res))
@@ -55,10 +55,13 @@ def black_box(x, y, g, w, gz):
   print(x, y, g, w, gz, gz + w*20./2., gz - w*20./2.)
 
   if(gz + w*20./2. > y):
-    return 0
+    gz = y - w*20./2. - 5.
+    print("new gz = ", gz)
 
   if(gz - w*20./2. < 0):
-    return 0
+    gz = w*20./2. + 5.
+    print("new gz = ", gz)
+
 
   return black_box_discrete_params(x, y, gz, a, b)
 
@@ -72,7 +75,7 @@ def black_box_discrete_params(x, y, z, a, b):
   assert type(b) == int
 
   silhouette_score, efficiency = run_simulation(a, x, b, z, y)
-  return silhouette_score + efficiency
+  return silhouette_score*2. + efficiency
 
 def run_simulation(gas_type, pressure, num_grid, grid_distance, scint_distance):
   global counter
