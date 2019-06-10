@@ -1,0 +1,16 @@
+{
+    "interactive": false,
+    "macroName": "run.mac",
+    "gasType": "P10",
+    "gasTemperature": 293.15,
+    "gasPressure": 140.0,
+    "numberGrids": 3,
+    "gridSize": 20,
+    "gridRadius": 70,
+    "gridDistance": 104.00346406040268,
+    "scintDistance": 209.9297482646286,
+    "wireThickness": 0.02,
+    "useInches": false,
+    "scintResolution": 0.1,
+    "extraGridResolution": 0.1
+}

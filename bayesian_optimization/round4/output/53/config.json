@@ -1,0 +1,16 @@
+{
+    "interactive": false,
+    "macroName": "run.mac",
+    "gasType": "CF4",
+    "gasTemperature": 293.15,
+    "gasPressure": 56.733849658568175,
+    "numberGrids": 3,
+    "gridSize": 20,
+    "gridRadius": 70,
+    "gridDistance": 112.13165795225483,
+    "scintDistance": 155.2310213117392,
+    "wireThickness": 0.02,
+    "useInches": false,
+    "scintResolution": 0.1,
+    "extraGridResolution": 0.1
+}
