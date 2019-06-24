@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(vandleIC)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 
 #Find GSL
 find_package(gsl REQUIRED)
@@ -64,6 +64,7 @@ set(_SCRIPTS
   init_vis.mac
   run.mac
   vis.mac
+  nuclear_states.json
   )
 
 foreach(_script ${_SCRIPTS})

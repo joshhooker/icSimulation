@@ -129,6 +129,8 @@ int main(int argc,char** argv)
   detector->SetWireThickness(wireThickness);
   runManager->SetUserInitialization(detector);
 
+  NucleonStates* states = NucleonStates::Instance();
+
   G4VModularPhysicsList* physicsList = new QGSP_BERT(0);
   BinaryReactionPhysics* reactionPhysics = new BinaryReactionPhysics();
   reactionPhysics->SetNumGrids(numGrids);

@@ -3,163 +3,123 @@
 NucleonStates* NucleonStates::fInstance = NULL;
 
 NucleonStates::NucleonStates() {
-  GenerateStates();
-  MakeCDF();
+    ReadJSON();
 }
 
 NucleonStates* NucleonStates::Instance() {
-  if(!fInstance) {
-    fInstance = new NucleonStates();
-  }
-  return fInstance;
-}
-
-// These are the nuclei and thresholds that can be excited and decayed from
-void NucleonStates::GenerateStates() {
-  He4();
-  Li5();
-  Li6();
-  Li7();
-  Be7();
-  Be8();
-  B8();
-}
-
-void NucleonStates::MakeCDF() {
-  for(auto &ent1 : nucleonStates) {
-    for(auto &ent2 : ent1.second) {
-      G4double totalProbability = 0.;
-      std::vector<excitedStruct> &states = ent2.second;
-      for(auto &state : states) {
-        totalProbability += state.probability;
-      }
-      for(size_t i = 0; i < states.size(); i++) {
-        states[i].probability /= totalProbability;
-        if(i > 0) states[i].probability = states[i - 1].probability + states[i].probability;
-      }
+    if(!fInstance) {
+        fInstance = new NucleonStates();
     }
-  }
+    return fInstance;
 }
 
-G4double NucleonStates::GetExcitedLevel(G4int charge, G4int mass, G4double probability) {
-  std::vector<excitedStruct> states = nucleonStates[charge][mass];
+void NucleonStates::ReadJSON() {
+    // Read and parse nuclear_states.json
+    Json::Value config_nuclear_states;
+    std::ifstream config_nuclear_states_stream("nuclear_states.json");
+    ASSERT_WITH_MESSAGE(config_nuclear_states_stream.is_open(), 
+        "Could not find 'nuclear_states.json'\n");
+    config_nuclear_states_stream >> config_nuclear_states;
+    config_nuclear_states_stream.close();
+
+    std::vector<isotope_struct> isotopes;
+    for(int i = 0; i < config_nuclear_states["Isotopes"].size(); i++) {
+        std::string name = config_nuclear_states["Isotopes"][i]["Name"].asString();
+        uint charge = config_nuclear_states["Isotopes"][i]["ZA"][0].asUInt();
+        uint mass = config_nuclear_states["Isotopes"][i]["ZA"][1].asUInt();
+
+        std::vector<state_struct> states;
+        for(int j = 0; j < config_nuclear_states["Isotopes"][i]["States"].size(); j++) {
+            double energy = config_nuclear_states["Isotopes"][i]["States"][j]["Energy"].asDouble();
+            uint spin;
+            std::string spinparity = config_nuclear_states["Isotopes"][i]["States"][j]["Spin-parity"].asString();
+            char parity_char = spinparity.back();
+            bool parity, good_state;
+            if(parity_char == '+') {
+                parity = true;
+                good_state = true;
+            }
+            else if(parity_char == '-') {
+                parity = false;
+                good_state = true;
+            }
+            else {
+                printf("Spin-parity for isotope %s with energy %f not set correctly!\n", name.c_str(), energy);
+                printf("Setting state to 0+\n");
+                parity = true;
+                good_state = false;
+            }
+            if(good_state) {
+                std::string spinparity_copy = spinparity;
+                spinparity_copy.pop_back();
+                double spind = stof(spinparity_copy)*2;
+                spin = static_cast<int>(spind);
+            }
+            else {
+                spin = 0;
+            }
+            double probability = 1.;
+            if(config_nuclear_states["Isotopes"][i]["States"][j]["Probability"].isDouble()) {
+                probability = config_nuclear_states["Isotopes"][i]["States"][j]["Probability"].asDouble();
+            }
+            state_struct state = {energy, spin, parity, probability};
+            states.push_back(state);
+        }
+
+        double totalProbability = 0.;
+        for(auto state: states) {
+            totalProbability += state.probability;
+        }
+        for(size_t i = 0; i < states.size(); i++) {
+            states[i].probability /= totalProbability;
+            if(i > 0) states[i].probability = states[i - 1].probability + states[i].probability;
+        }
+
+        std::vector<theshold_struct> thresholds;
+        for(int j = 0; j < config_nuclear_states["Isotopes"][i]["Thresholds"].size(); j++) {
+            double energy = config_nuclear_states["Isotopes"][i]["Thresholds"][j]["Energy"].asDouble();
+            uint threshold_charge = config_nuclear_states["Isotopes"][i]["Thresholds"][j]["Decay"][0].asUInt();
+            uint threshold_mass = config_nuclear_states["Isotopes"][i]["Thresholds"][j]["Decay"][1].asUInt();
+            theshold_struct threshold = {energy, threshold_charge, threshold_mass};
+            thresholds.push_back(threshold);
+        }
+
+        isotope_struct isotope = {name, charge, mass, states, thresholds};
+        isotopes.push_back(isotope);
+    }
+
+    printf("Printing nuclear table to use:\n");
+    for(auto isotope: isotopes) {
+        printf("Name: %5s; Z: %3d; A: %3d\n", isotope.name.c_str(), isotope.charge, isotope.mass);
+        printf("\t States:\n");
+        for(auto state: isotope.states) {
+            printf("\t\tEnergy: %8.3f; Spin*2: %2d; Parity: %d; Probability: %f\n", state.energy, state.spin2, state.parity, state.probability);
+        }
+        printf("\t Thresholds:\n");
+        for(auto threshold: isotope.thresholds) {
+            printf("\t\tEnergy: %8.3f; Decay Product [%3d, %3d]\n", threshold.energy, threshold.decay_charge, threshold.decay_mass);
+        }
+        nucleons_[isotope.charge][isotope.mass] = isotope;
+    }
+}
+
+G4double NucleonStates::GetExcitedLevel(uint charge, uint mass, G4double probability) {
+  std::vector<state_struct> states = nucleons_[charge][mass].states;
+  if(states.empty()) {
+      return 0.;
+  }
   G4double exEnergy = 0.;
-  size_t energyLoc = 0;
-  if(probability < states[0].probability) energyLoc = 0;
+  if(probability < states[0].probability) exEnergy = states[0].energy;
   else {
-    G4double minDistance = 1000.;
-    for(size_t i = 0; i < states.size() - 1; i++) {
-      if(probability > states[i].probability && (probability - states[i].probability) < minDistance) {
-        minDistance = probability - states[i].probability;
-        energyLoc = i + 1;
+    for(size_t i = 1; i < states.size(); i++) {
+      if(probability > states[i - 1].probability && probability < states[i].probability) {
+        exEnergy = states[i].energy;
       }
     }
   }
-  return states[energyLoc].energy;
+  return exEnergy;
 }
 
-std::vector<thresholdStruct> NucleonStates::GetThresholds(G4int charge, G4int mass) {
-  return nucleonThresholds[charge][mass];
-}
-
-void NucleonStates::He4() {
-  std::vector<excitedStruct> states;
-
-  excitedStruct state = {0., 1.};
-  states.push_back(state);
-
-  nucleonStates[2][4] = states;
-}
-
-void NucleonStates::Li5() {
-  std::vector<excitedStruct> states;
-
-  excitedStruct state = {0., 1.};
-  states.push_back(state);
-
-  std::vector<thresholdStruct> thresholds;
-
-  thresholdStruct threshold = {-1.69, 1, 1, 2, 4};
-  thresholds.push_back(threshold);
-
-  nucleonStates[3][5] = states;
-  nucleonThresholds[3][5] = thresholds;
-}
-
-void NucleonStates::Li6() {
-  std::vector<excitedStruct> states;
-
-  excitedStruct state = {0., 0.95};
-  states.push_back(state);
-
-  state = {2.186, 0.05};
-  states.push_back(state);
-
-  std::vector<thresholdStruct> thresholds;
-
-  thresholdStruct threshold = {1.4743, 1, 2, 2, 4};
-  thresholds.push_back(threshold);
-
-  nucleonStates[3][6] = states;
-  nucleonThresholds[3][6] = thresholds;
-}
-
-void NucleonStates::Li7() {
-  std::vector<excitedStruct> states;
-
-  excitedStruct state = {0., 0.8};
-  states.push_back(state);
-
-  state = {0.47761, 0.2};
-  states.push_back(state);
-
-  nucleonStates[3][7] = states;
-}
-
-void NucleonStates::Be7() {
-  std::vector<excitedStruct> states;
-
-  excitedStruct state = {0., 0.8};
-  states.push_back(state);
-
-  state = {0.4291, 0.2};
-  states.push_back(state);
-
-  nucleonStates[4][7] = states;
-}
-
-void NucleonStates::Be8() {
-  std::vector<excitedStruct> states;
-
-  excitedStruct state = {0., 1.};
-  states.push_back(state);
-
-  std::vector<thresholdStruct> thresholds;
-
-  thresholdStruct threshold = {-0.0918, 2, 4, 2, 4};
-  thresholds.push_back(threshold);
-
-  nucleonStates[4][8] = states;
-  nucleonThresholds[4][8] = thresholds;
-}
-
-void NucleonStates::B8() {
-  std::vector<excitedStruct> states;
-
-  excitedStruct state = {0., 0.6};
-  states.push_back(state);
-
-  state = {0.7695, 0.3};
-  states.push_back(state);
-
-  state = {2.32, 0.1};
-  states.push_back(state);
-
-  std::vector<thresholdStruct> thresholds;
-
-  thresholdStruct threshold = {0.1375, 1, 1, 4, 7};
-  thresholds.push_back(threshold);
-
-  nucleonStates[5][8] = states;
-  nucleonThresholds[5][8] = thresholds;
+std::vector<theshold_struct> NucleonStates::GetThresholds(G4int charge, G4int mass) {
+  return nucleons_[charge][mass].thresholds;
 }

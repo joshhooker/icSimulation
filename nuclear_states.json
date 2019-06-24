@@ -1,0 +1,68 @@
+{
+    "Isotopes": [
+        {
+            "Name": "4He",
+            "ZA": [2, 4],
+            "States": [
+                {"Energy": 0.0, "Spin-parity": "0+"}
+            ]
+        },
+        {
+            "Name": "5Li",
+            "ZA": [3, 5],
+            "States": [
+                {"Energy": 0.0, "Spin-parity": "1.5-"}
+            ]
+        },
+        {
+            "Name": "6Li",
+            "ZA": [3, 6],
+            "States": [
+                {"Energy": 0.0, "Spin-parity": "1+"},
+                {"Energy": 2.186, "Spin-parity": "3+"}
+            ],
+            "Thresholds": [
+                {"Energy": 1.4743, "Decay": [1, 2]}
+            ]
+        },
+        {
+            "Name": "7Li",
+            "ZA": [3, 7],
+            "States": [
+                {"Energy": 0.0, "Spin-parity": "1.5-"},
+                {"Energy": 0.47761, "Spin-parity": "0.5-"}
+            ]
+        },
+        {
+            "Name": "7Be",
+            "ZA": [4, 7],
+            "States": [
+                {"Energy": 0.0, "Spin-parity": "1.5-"},
+                {"Energy": 0.4291, "Spin-parity": "0.5-"}
+            ]
+        },
+        {
+            "Name": "8Be",
+            "ZA": [4, 8],
+            "States": [
+                {"Energy": 0.0, "Spin-parity": "0+"}
+            ],
+            "Thresholds": [
+                {"Energy": -0.0918, "Decay": [2, 4]}
+            ]
+        },
+        {
+            "Name": "8B",
+            "ZA": [5, 8],
+            "States": [
+                {"Energy": 0.0, "Spin-parity": "2+"},
+                {"Energy": 0.7695, "Spin-parity": "1+"},
+                {"Energy": 2.32, "Spin-parity": "3+"}
+            ],
+            "Thresholds": [
+                {"Energy": 0.1375, "Decay": [4, 7]}
+            ]
+        }
+    ]
+
+}

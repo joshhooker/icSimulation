@@ -52,7 +52,7 @@ G4double BinaryReactionProcess::GetMeanFreePath(const G4Track& aTrack, G4double 
   auto thresholds = states->GetThresholds(particleCharge, particleMass);
 
   if(measuredExcitedEnergy > 0 && !thresholds.empty()) {
-    if(measuredExcitedEnergy > thresholds[0].thresholdEnergy) {
+    if(measuredExcitedEnergy > thresholds[0].energy) {
       mfp = 0.;
     }
   }
@@ -70,7 +70,7 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
   // Determine if particle needs to decay due to excited state
   G4String incomingParticleName = aTrack.GetDynamicParticle()->GetDefinition()->GetParticleName();
   size_t pos = incomingParticleName.find('[');
-  double measuredExcitedEnergy = 0.;
+  G4double measuredExcitedEnergy = 0.;
   G4String incomingParticleNameEnergy = "";
   if(pos > 100) {
     measuredExcitedEnergy = 0.;
@@ -85,12 +85,14 @@ G4VParticleChange* BinaryReactionProcess::PostStepDoIt(const G4Track& aTrack, co
 
   // Get thresholds
   auto thresholds = states->GetThresholds(aTrack.GetParticleDefinition()->GetAtomicNumber(),
-    aTrack.GetParticleDefinition()->GetAtomicMass());
+  aTrack.GetParticleDefinition()->GetAtomicMass());
 
   if(!thresholds.empty()) {
-    thresholdStruct threshold = thresholds[0];
-    if(measuredExcitedEnergy > threshold.thresholdEnergy) {
-      return Decay(aTrack, threshold.lightDecayCharge, threshold.lightDecayMass, threshold.heavyDecayCharge, threshold.heavyDecayMass);
+    auto threshold = thresholds[0];
+    if(measuredExcitedEnergy > threshold.energy) {
+      G4int lightCharge = aTrack.GetDynamicParticle()->GetDefinition()->GetAtomicNumber() - threshold.decay_charge;
+      G4int lightMass = aTrack.GetDynamicParticle()->GetDefinition()->GetAtomicMass() - threshold.decay_mass;
+      return Decay(aTrack, lightCharge, lightMass, threshold.decay_charge, threshold.decay_mass);
     }
   }
 
